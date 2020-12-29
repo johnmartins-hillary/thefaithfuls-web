@@ -1,0 +1,67 @@
+{
+  "status": 200,
+  "isSuccessful": true,
+  "message": "Successful",
+  "data": [
+    {
+      "staffID": "34a5d040-d1db-4663-bfdc-825d55389ce3",
+      "churchId": 425,
+      "status": "Active",
+      "lastLogin": "2020-12-08T13:52:56.0535333",
+      "fullname": "firstname1107 lastname1107",
+      "phoneNumber": "99723912712788",
+      "email": "email1107@gmail.com",
+      "role": "43c08b4b-4320-4d7a-bdd5-2a14ecca4244",
+      "claim": "[\"add_church_activities\",\"add_church_events\",\"assign_group_admin\",\"add_church_activities\",\"add_church_events\",\"assign_group_admin\",\"view_dashboard\",\"add_church_activities\",\"add_church_events\",\"add_groups\",\"view_dashboard\",\"add_church_activities\",\"manage_groups\",\"view_dashboard\",\"add_church_activities\",\"add_church_events\",\"add_groups\",\"view_dashboard\",\"add_church_events\"]",
+      "imageUrl": null
+    },
+    {
+      "staffID": "4e98a779-8197-4cc2-865e-fc102ab9e2bb",
+      "churchId": 425,
+      "status": "Active",
+      "lastLogin": "2020-12-08T14:01:31.084058",
+      "fullname": "firstname1108 lastname1108",
+      "phoneNumber": "23078979878923",
+      "email": "email1108@gmail.com",
+      "role": "43c08b4b-4320-4d7a-bdd5-2a14ecca4244",
+      "claim": "[\"add_church_activities\",\"add_church_events\",\"assign_group_admin\",\"add_church_activities\",\"add_church_events\",\"assign_group_admin\",\"view_dashboard\",\"add_church_activities\",\"add_church_events\",\"add_groups\",\"view_dashboard\",\"add_church_activities\",\"manage_groups\",\"view_dashboard\",\"add_church_activities\",\"add_church_events\",\"add_groups\"]",
+      "imageUrl": null
+    },
+    {
+      "staffID": "8aa4cb12-8b50-4a9b-b0d4-f767977167f4",
+      "churchId": 425,
+      "status": "Active",
+      "lastLogin": "2020-12-08T12:15:16.9908313",
+      "fullname": "firstname1106 lastname1106",
+      "phoneNumber": "090121235895",
+      "email": "email1106@gmail.com",
+      "role": null,
+      "claim": "[\"Admin\",\"view_dashboard\",\"add_church_activities\",\"add_church_events\",\"add_groups\",\"view_dashboard\",\"add_church_events\",\"view_dashboard\",\"add_church_events\"]",
+      "imageUrl": null
+    },
+    {
+      "staffID": "d75b5801-81e7-45c5-b866-b7dbe3339fee",
+      "churchId": 425,
+      "status": "Active",
+      "lastLogin": "2020-12-08T12:05:01.2086398",
+      "fullname": "firstname1103 lastname1103",
+      "phoneNumber": "12233423331212",
+      "email": "email1103@gmail.com",
+      "role": null,
+      "claim": "[\"User\",\"add_church_activities\",\"add_church_events\",\"assign_group_admin\",\"add_church_activities\",\"add_church_events\",\"assign_group_admin\",\"view_dashboard\",\"add_church_activities\",\"add_church_events\",\"add_groups\"]",
+      "imageUrl": null
+    },
+    {
+      "staffID": "e8511e45-9fbd-4e8d-8657-6ddb17fa28dd",
+      "churchId": 425,
+      "status": "Active",
+      "lastLogin": "2020-12-08T12:07:21.7172287",
+      "fullname": "firstname1105 lastname1105",
+      "phoneNumber": "122334233311212121",
+      "email": "email1105@gmail.com",
+      "role": null,
+      "claim": "[\"Admin\",\"add_church_activities\",\"add_church_events\",\"assign_group_admin\"]",
+      "imageUrl": null
+    }
+  ]
+}
