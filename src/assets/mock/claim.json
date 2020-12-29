@@ -1,0 +1,231 @@
+{
+  "status": 200,
+  "isSuccessful": false,
+  "message": "successfully",
+  "data": [
+    {
+      "id": 1,
+      "claimName": "view_dashboard",
+      "claimDisplayValue": "View_Dashboard",
+      "isActive": true,
+      "claimType": "Dashboard"
+    },
+    {
+      "id": 2,
+      "claimName": "add_church_activities",
+      "claimDisplayValue": "Add_church_Activities",
+      "isActive": true,
+      "claimType": "ChurchActivities"
+    },
+    {
+      "id": 3,
+      "claimName": "add_church_events",
+      "claimDisplayValue": "Add_Church_events",
+      "isActive": true,
+      "claimType": "ChurchActivities"
+    },
+    {
+      "id": 4,
+      "claimName": "add_groups",
+      "claimDisplayValue": "Add_Groups",
+      "isActive": true,
+      "claimType": "Groups"
+    },
+    {
+      "id": 5,
+      "claimName": "manage_groups",
+      "claimDisplayValue": "Manage_Groups",
+      "isActive": true,
+      "claimType": "Groups"
+    },
+    {
+      "id": 6,
+      "claimName": "assign_group_admin",
+      "claimDisplayValue": "Assign_Group_Admin",
+      "isActive": true,
+      "claimType": "Groups"
+    },
+    {
+      "id": 7,
+      "claimName": "set_live_stream",
+      "claimDisplayValue": "Set_Live Stream",
+      "isActive": true,
+      "claimType": "Media"
+    },
+    {
+      "id": 8,
+      "claimName": "manage_sermons",
+      "claimDisplayValue": "Manage_Sermons",
+      "isActive": true,
+      "claimType": "Media"
+    },
+    {
+      "id": 9,
+      "claimName": "post_ad",
+      "claimDisplayValue": "Post_Ad",
+      "isActive": true,
+      "claimType": "Ads"
+    },
+    {
+      "id": 10,
+      "claimName": "view_ad_performance",
+      "claimDisplayValue": "View_Ad_performance",
+      "isActive": true,
+      "claimType": "Ads"
+    },
+    {
+      "id": 11,
+      "claimName": "view_subscription",
+      "claimDisplayValue": "View_Subscription",
+      "isActive": true,
+      "claimType": "Subscription"
+    },
+    {
+      "id": 12,
+      "claimName": "manage_subscription_(renew_plan_&upgrade_now)",
+      "claimDisplayValue": "Manage_Subscription (Renew Plan &Upgrade now)",
+      "isActive": true,
+      "claimType": "Subscription"
+    },
+    {
+      "id": 13,
+      "claimName": "add_bank_account",
+      "claimDisplayValue": "Add_bank Account",
+      "isActive": true,
+      "claimType": "Finance"
+    },
+    {
+      "id": 14,
+      "claimName": "setup_donation",
+      "claimDisplayValue": "Setup_Donation",
+      "isActive": true,
+      "claimType": "Finance"
+    },
+    {
+      "id": 15,
+      "claimName": "view_wallet(_balance_and_inflow)",
+      "claimDisplayValue": "View_Wallet( Balance and inflow)",
+      "isActive": true,
+      "claimType": "Finance"
+    },
+    {
+      "id": 16,
+      "claimName": "withdraw_funds",
+      "claimDisplayValue": "Withdraw_Funds",
+      "isActive": true,
+      "claimType": "Finance"
+    },
+    {
+      "id": 17,
+      "claimName": "manage_withdraw_settings",
+      "claimDisplayValue": "Manage_withdraw_settings",
+      "isActive": true,
+      "claimType": "Finance"
+    },
+    {
+      "id": 18,
+      "claimName": "view_transaction_history",
+      "claimDisplayValue": "View_Transaction History",
+      "isActive": true,
+      "claimType": "Finance"
+    },
+    {
+      "id": 19,
+      "claimName": "view_financial_reports",
+      "claimDisplayValue": "View_Financial reports",
+      "isActive": true,
+      "claimType": "Reports"
+    },
+    {
+      "id": 20,
+      "claimName": "export_report",
+      "claimDisplayValue": "Export_report",
+      "isActive": true,
+      "claimType": "Reports"
+    },
+    {
+      "id": 21,
+      "claimName": "view_users",
+      "claimDisplayValue": "View_Users",
+      "isActive": true,
+      "claimType": "UserManagement"
+    },
+    {
+      "id": 22,
+      "claimName": "add_user",
+      "claimDisplayValue": "Add_user",
+      "isActive": true,
+      "claimType": "UserManagement"
+    },
+    {
+      "id": 23,
+      "claimName": "manage_roles",
+      "claimDisplayValue": "Manage_roles",
+      "isActive": true,
+      "claimType": "UserManagement"
+    },
+    {
+      "id": 24,
+      "claimName": "create_roles",
+      "claimDisplayValue": "Create_roles",
+      "isActive": true,
+      "claimType": "UserManagement"
+    },
+    {
+      "id": 25,
+      "claimName": "create_announcements",
+      "claimDisplayValue": "Create_Announcements",
+      "isActive": true,
+      "claimType": "Announcements"
+    },
+    {
+      "id": 26,
+      "claimName": "manage_announcements",
+      "claimDisplayValue": "Manage_announcements",
+      "isActive": true,
+      "claimType": "Announcements"
+    },
+    {
+      "id": 27,
+      "claimName": "view_prayer_requests-&_testimonies",
+      "claimDisplayValue": "View_Prayer_requests-&_testimonies",
+      "isActive": true,
+      "claimType": "Prayers"
+    },
+    {
+      "id": 28,
+      "claimName": "view_church_prayers",
+      "claimDisplayValue": "View Church_prayers",
+      "isActive": true,
+      "claimType": "Prayers"
+    },
+    {
+      "id": 29,
+      "claimName": "create_manage_church_prayers",
+      "claimDisplayValue": "Create_manage_church_prayers",
+      "isActive": true,
+      "claimType": "Prayers"
+    },
+    {
+      "id": 30,
+      "claimName": "manage_daily_verse",
+      "claimDisplayValue": "Manage_Daily verse",
+      "isActive": true,
+      "claimType": "Prayers"
+    },
+    {
+      "id": 31,
+      "claimName": "view_bookings/requests",
+      "claimDisplayValue": "View_Bookings/Requests",
+      "isActive": true,
+      "claimType": "Booking"
+    },
+    {
+      "id": 32,
+      "claimName": "manage_bookings/requests_(approve_&_reject)",
+      "claimDisplayValue": "Manage_Bookings/Requests (approve & reject)",
+      "isActive": true,
+      "claimType": "Booking"
+    }
+  ]
+}

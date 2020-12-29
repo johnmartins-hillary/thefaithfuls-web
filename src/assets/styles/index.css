@@ -1,0 +1,57 @@
+@font-face{
+  font-family: "Montserrat";
+  src:local("MontserratRegular"),
+  url(../../fonts/Montserrat/Montserrat-Medium.ttf) format("truetype");
+}
+
+@font-face{
+  font-family: "MontserratMedium";
+  src:local("MontserratMedium"),
+  url(../../fonts/Montserrat/Montserrat-Regular.ttf) format("truetype");
+}
+
+@font-face{
+  font-family: "MontserratSemiBold";
+  src:local("MontserratSemiBold"),
+  url(../../fonts/Montserrat/Montserrat-SemiBold.ttf) format("truetype");
+}
+
+@font-face{
+  font-family: "MontserratBold";
+  src:local("MontserratBold"),
+  url(../../fonts/Montserrat/Montserrat-Bold.ttf) format("truetype");
+}
+
+@font-face{
+  font-family: "Bahnschrift";
+  src:local("BahnschriftRegular"),
+  url(../../fonts/Bahnscrift/Bahnschrift-Regular.ttf) format("truetype");
+}
+
+@font-face{
+  font-family: "Mulish";
+  src:local("MulishRegular"),
+  url(../../fonts/Mulish/Mulish-Regular.ttf) format("truetype");
+}
+@font-face{
+  font-family: "MulishBold";
+  src:local("MulishBold"),
+  url(../../fonts/Mulish/Mulish-Bold.ttf) format("truetype");
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body *{
+  box-sizing: border-box;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
