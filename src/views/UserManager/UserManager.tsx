@@ -8,7 +8,8 @@ import {
 import { Link } from "react-router-dom"
 import { Button } from "components/Button"
 import { getStaffByChurch, createStaff,deleteStaff,editStaff } from "core/services/account.service"
-import { getAllClaims, getAllRoleByChurchId,assignClaimToUser,removeClaimFromUser, removeRoleFromUser, assignRoleClaimToUser } from "core/services/user.service"
+import { getAllClaims, getAllRoleByChurchId,assignClaimToUser,
+    removeClaimFromUser, removeRoleFromUser, assignRoleClaimToUser } from "core/services/user.service"
 import { IChurchMember } from "core/models/ChurchMember"
 import { useSelector } from "react-redux"
 import { AppState } from "store"
@@ -36,6 +37,7 @@ import { Tag } from "components/Tag"
 import { BsCardImage } from "react-icons/bs"
 import {SearchInput} from "components/Input"
 import {useInputTextValue} from "utils/InputValue"
+import axios, { CancelTokenSource } from "axios"
 
 
 interface IAddUser {
@@ -145,8 +147,9 @@ const AddStaff: React.FC<IAddStaff> = ({ updateStaff, closeDialog }) => {
     const [roles, setRoles] = React.useState<IRole[]>([])
     const toast = useToast()
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
         const getRolesApiCall = async () => {
-            getAllRoleByChurchId(Number(params.churchId)).then(payload => {
+            getAllRoleByChurchId(Number(params.churchId),cancelToken).then(payload => {
                 setRoles(payload.data)
             }).catch(err => {
                 toast({
@@ -157,6 +160,9 @@ const AddStaff: React.FC<IAddStaff> = ({ updateStaff, closeDialog }) => {
             })
         }
         getRolesApiCall()
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -323,8 +329,9 @@ const ChangeStaff: React.FC<IChangeStaffProps> = ({ updateStaff, closeDialog,...
 
     // For Getting the API call
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
         const getClaimApiCall = async () => {
-            getAllClaims().then(payload => {
+            getAllClaims(cancelToken).then(payload => {
                 const checkStaffHasClaims: IStaffClaims[] = checkStaffClaims(payload.data)
                 setInitialStaffClaims(checkStaffHasClaims)
             }).catch(err => {
@@ -337,7 +344,7 @@ const ChangeStaff: React.FC<IChangeStaffProps> = ({ updateStaff, closeDialog,...
         }
         
         const getRolesByChurchApiCall = async () => {
-            getAllRoleByChurchId(Number(params.churchId)).then(payload => {
+            getAllRoleByChurchId(Number(params.churchId),cancelToken).then(payload => {
                 setChurchRoles(payload.data)
                 const foundRole = payload.data.find(item => item.id === currentStaff.role)
                 setCurrentStaff({
@@ -355,6 +362,10 @@ const ChangeStaff: React.FC<IChangeStaffProps> = ({ updateStaff, closeDialog,...
         }
         getClaimApiCall()
         getRolesByChurchApiCall()
+        return () => {
+            cancelToken.cancel()
+        }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     
@@ -690,12 +701,13 @@ const UserManager = () => {
     const [dialog, setDialog] = React.useState("privileges")
     const [currentStaff, setCurrentStaff] = React.useState<IStaff>(defaultStaff)
     const [submitting,setSubmitting] = React.useState(false)
+    const cancelToken = axios.CancelToken.source()
     const handleToggle = () => {
         setOpen(!open)
     }
 
-    const apiStaffMemberCall = async () => {
-        getStaffByChurch(Number(params.churchId)).then(payload => {
+    const staffMemberCall = (cancelToken:CancelTokenSource) => async() => {
+        getStaffByChurch(Number(params.churchId),cancelToken).then(payload => {
         const parseStaffRole = payload.data.map((item) => ({
             ...item,
             claim: JSON.parse(item.claim as string)
@@ -711,6 +723,7 @@ const UserManager = () => {
             })
         })
     }
+    const apiStaffMemberCall = staffMemberCall(cancelToken)
     React.useEffect(() => {
         const testString = new RegExp(inputValue,"i")
         const filteredStaffMember = staffMember.filter(item => testString.test(item.fullname))
@@ -753,6 +766,9 @@ const UserManager = () => {
     React.useEffect(() => {
         dispatch(setPageTitle("User Manager"))
         apiStaffMemberCall()
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

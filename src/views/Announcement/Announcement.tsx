@@ -16,6 +16,7 @@ import useParams from "utils/params"
 import useToast from "utils/Toast"
 import {useDispatch} from "react-redux"
 import {setPageTitle} from "store/System/actions"
+import axios from "axios"
 
 const useStyles = makeStyles(theme => createStyles({
     root:{
@@ -98,19 +99,25 @@ const Announcement = () => {
     const toast = useToast()
 
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
         dispatch(setPageTitle("Announcement"))
         const apiAnnouncementCall = async () => {
-            await announcementService.getAnnouncementByChurch(params.churchId).then(payload => {
+            await announcementService.getAnnouncementByChurch(params.churchId,cancelToken).then(payload => {
                 setAnnouncement(payload.data)
             }).catch(err => {
-                toast({
-                    title: "Unable to load Announcement",
-                    subtitle:`Error: ${err}`,
-                    messageType:MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title: "Unable to load Announcement",
+                        subtitle:`Error: ${err}`,
+                        messageType:MessageType.ERROR
+                    })
+                }
             })
         }
         apiAnnouncementCall()
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 

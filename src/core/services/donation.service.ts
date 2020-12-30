@@ -1,4 +1,4 @@
-import axios,{AxiosRequestConfig} from "axios"
+import axios,{AxiosRequestConfig,CancelTokenSource} from "axios"
 import {IDonation} from "core/models/Donation"
 import {IResponse} from "core/models/Response"
 
@@ -17,20 +17,24 @@ export const AddDonation = async(newDonation:IDonation):Promise<IResponse<IDonat
     }
 }
 
-export const GetDonationByChurch = async (churchId:number):Promise<IResponse<IDonation[]>> => {
+export const GetDonationByChurch = async (churchId:number,cancelToken:CancelTokenSource):Promise<IResponse<IDonation[]>> => {
     try{
         const url = `${baseUrl}/GetDonationByChurch?churchId=${churchId}`
-        const response = await axios.get(url)
+        const response = await axios.get(url,{
+            cancelToken:cancelToken.token
+        })
         return response.data
     }catch(err){
         throw err
     }
 }
 
-export const GetDonationTransactionByChurch = async (churchId:number):Promise<IResponse<IDonation>> => {
+export const GetDonationTransactionByChurch = async (churchId:number,cancelToken:CancelTokenSource):Promise<IResponse<IDonation>> => {
     try{
         const url = `${baseUrl}/GetDonationTransactionsByChurch?churchId=${churchId}`
-        const response = await axios.get(url)
+        const response = await axios.get(url,{
+            cancelToken:cancelToken.token
+        })
         return response.data
     }catch(err){
         throw err

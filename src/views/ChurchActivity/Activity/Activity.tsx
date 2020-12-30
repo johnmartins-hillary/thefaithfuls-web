@@ -13,7 +13,7 @@ import useToast from "utils/Toast"
 import useParams from "utils/params"
 import {MessageType} from "core/enums/MessageType"
 import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
-
+import axios from "axios"
 
 const useStyles = makeStyles((theme:Theme) => createStyles({
     root:{
@@ -37,8 +37,9 @@ const Activity = () => {
     const [showCalendar,setShowCalendar] = React.useState(false)
 
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
         const getChurchActivity = async () => {
-            activityService.getChurchActivity(params.churchId).then(payload => {
+            activityService.getChurchActivity(params.churchId,cancelToken).then(payload => {
                 const newChurchActivity = payload.data.map((item) => ({
                     ...item,
                     schedule:JSON.parse(item.schedule)
@@ -53,7 +54,7 @@ const Activity = () => {
             })
         }
         const getChurchEvent = async () => {
-            activityService.getChurchEvent(params.churchId).then(payload => {
+            activityService.getChurchEvent(params.churchId,cancelToken).then(payload => {
                 setChurchEvent(payload.data)
             }).catch(err => {
                 toast({
@@ -65,6 +66,9 @@ const Activity = () => {
         }
         getChurchActivity()
         getChurchEvent()
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

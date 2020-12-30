@@ -32,6 +32,7 @@ import * as Yup from "yup"
 import { useHistory } from "react-router-dom"
 import { useInputTextValue } from "utils/InputValue"
 import {SearchInput} from "components/Input"
+import axios from "axios"
 
 
 const donationStyles = makeStyles((theme:Theme) => createStyles({
@@ -524,8 +525,9 @@ const Finance = () => {
         setDonation([donation,...donations])
     }
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
         const getChurchBankAccountApi = () => {
-            getChurchBankAccount(Number(params.churchId)).then(payload => {
+            getChurchBankAccount(Number(params.churchId),cancelToken).then(payload => {
                 getBanks().then(bankPayload => {
                     const newBankAccountDetail = payload.data.map((account) => {
                         const foundBankDetail = bankPayload.data.find(item => String(item.bankCode) === account.bankCode)
@@ -546,7 +548,7 @@ const Finance = () => {
             })
         }
         const getChurchDonationApi = () => {
-            donationService.GetDonationByChurch(Number(params.churchId)).then(payload =>{ 
+            donationService.GetDonationByChurch(Number(params.churchId),cancelToken).then(payload =>{ 
                 setDonation(payload.data)
             }).catch(err => {
                 toast({
@@ -558,6 +560,9 @@ const Finance = () => {
         }
         getChurchBankAccountApi()
         getChurchDonationApi()
+        return () => {
+            cancelToken.cancel()
+        }
          // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 

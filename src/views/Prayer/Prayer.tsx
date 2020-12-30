@@ -21,6 +21,7 @@ import {setPageTitle} from "store/System/actions"
 import {useDispatch,useSelector} from "react-redux"
 import {AppState} from "store"
 import { ITestimony, TestimonyStatusType } from "core/models/Testimony"
+import axios, { CancelTokenSource } from "axios"
 
 
 const useStyles = makeStyles((theme) => {
@@ -113,6 +114,7 @@ const Prayer = () => {
     const toast = useToast()
     const location = useLocation()
     const [options,setOptions] = React.useState<string | number>("1")
+    const cancelToken = axios.CancelToken.source()
     // const currentChurch = useSelector((state:AppState) => state.system.currentChurch)
     const defaultPrayer:IPrayer ={
         prayerName:"",
@@ -149,31 +151,36 @@ const Prayer = () => {
         setTabIndex(event)
     }
 
-    const getChurchTestimony = () => {
-        getTestimony({churchId:Number(params.churchId),testimonyType:"General"}).then(payload => {
+    const apiChurchTestimony = (cancelToken:CancelTokenSource) => () => {
+        getTestimony({churchId:Number(params.churchId),testimonyType:"General"},cancelToken).then(payload => {
             setChurchTestimony(payload.data)
         }).catch(err => {
-            toast({
-                title:"Unable to get Church Testimony",
-                subtitle:`Error:${err}`,
-                messageType:MessageType.ERROR
-            })
+            if(!axios.isCancel(err)){
+                toast({
+                    title:"Unable to get Church Testimony",
+                    subtitle:`Error:${err}`,
+                    messageType:MessageType.ERROR
+                })
+            }
         })
     }
+    const getChurchTestimony = apiChurchTestimony(cancelToken)
     
     React.useEffect(() => {
         dispatch(setPageTitle("Prayers/Verses"))
         setTabIndex(Number(location.search.split("=")[1]) || 0)
     
         const getChurchPrayer = async () => {
-            await getPrayer(3).then(payload => {
+            await getPrayer(3,cancelToken).then(payload => {
                 setPrayer(payload.data)
             }).catch(err => {
-                toast({
-                    title:"Unable to get Church Prayer",
-                    subtitle:`Error:${err}`,
-                    messageType:MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title:"Unable to get Church Prayer",
+                        subtitle:`Error:${err}`,
+                        messageType:MessageType.ERROR
+                    })
+                }
             })
         }
 
@@ -183,7 +190,7 @@ const Prayer = () => {
                 return str.length >= 2 ? str : `0${str}`
             }
             const formatDate = `${currentDate[2]}-${padString(currentDate[0])}-${padString(currentDate[1])}`
-            await getDailyReading(formatDate).then(payload => {
+            await getDailyReading(formatDate,cancelToken).then(payload => {
                 const {readings} = payload.data
 
                 const dailyReadings = readings.map((item:any) => {
@@ -197,28 +204,35 @@ const Prayer = () => {
                 })
                 setDailyReading(dailyReadings)
             }).catch(err => {
-                toast({
-                    title:"Unable to get Daily Reading",
-                    subtitle:`Error:${err}`,
-                    messageType:MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title:"Unable to get Daily Reading",
+                        subtitle:`Error:${err}`,
+                        messageType:MessageType.ERROR
+                    })
+                }
             })
         }
         const getChurchPrayerRequest = () => {
-            getPrayerRequest(params.churchId).then(payload => {
+            getPrayerRequest(params.churchId,cancelToken).then(payload => {
                setPrayerRequest(payload.data) 
             }).catch(err => {
-                toast({
-                    title:"Unable to get Church Request",
-                    subtitle:`Error:${err}`,
-                    messageType:MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title:"Unable to get Church Request",
+                        subtitle:`Error:${err}`,
+                        messageType:MessageType.ERROR
+                    })
+                }
             })
         }
         getChurchPrayerRequest()
         getChurchTestimony()
         getChurchPrayer()
         getDailyReadingApi()
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 

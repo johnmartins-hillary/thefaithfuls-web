@@ -32,6 +32,7 @@ import {Media as MediaWrapper,Player} from "react-media-player"
 import { GiCancel } from "react-icons/gi"
 import {withMediaProps} from "react-media-player"
 import ReactHowler from "react-howler"
+import axios from "axios"
 import * as Yup from "yup"
 
 const useStyles = makeStyles((theme) => createStyles({
@@ -374,7 +375,6 @@ const CustomPause = withMediaProps(({media}:any) => {
     )
 })
 
-
 const VideoPlayer:React.FC<IVideoPlayer> = ({video}) => {
     const classes = videoStyles()
 
@@ -426,22 +426,28 @@ const Media = () => {
     }
 
     React.useEffect(() => {
+        const token = axios.CancelToken.source()
         dispatch(setPageTitle("Media/Content"))
         const getSermonForChurchApi = async () => {
-            await sermonService.getChurchSermon(params.churchId).then(payload => {
+            await sermonService.getChurchSermon(params.churchId,token).then(payload => {
                 setChurchSermon(payload.data)
             }).catch(err => {
-                toast({
-                    title: "Unable to load sermon for church",
-                    subtitle: `Error: ${err}`,
-                    messageType: MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title: "Unable to load sermon for church",
+                        subtitle: `Error: ${err}`,
+                        messageType: MessageType.ERROR
+                    })
+                }
             })
         }
         setTimeout(() => {
             setIsLoaded(true)
         }, 2500)
         getSermonForChurchApi()
+        return () => {
+            token.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

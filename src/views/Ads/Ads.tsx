@@ -15,7 +15,7 @@ import useParams from "utils/params"
 import {useInputTextValue} from "utils/InputValue"
 import {SearchInput} from "components/Input"
 import {createStyles,makeStyles,Theme} from "@material-ui/core/styles"
-
+import axios from "axios"
 
 const useStyles = makeStyles((theme:Theme) => createStyles({
     root:{
@@ -29,8 +29,6 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
         }
     }
 }))
-
-
 
 const Ads = () => {
     const classes = useStyles()
@@ -50,9 +48,10 @@ const Ads = () => {
     // const [selectAdvert,setSelectedAdvert] = React.useState<IAdvert>()
     const toast = useToast()
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
         dispatch(setPageTitle("Post Ads"))
         const apiCall = async (churchId:number) => {
-            await advertService.getAdverts(churchId).then(payload => {
+            await advertService.getAdverts(churchId,cancelToken).then(payload => {
                 setAdverts(payload.data)
             }).catch(err => {
                 toast({
@@ -63,6 +62,9 @@ const Ads = () => {
             })
         }
         apiCall(Number(params.churchId))
+        return () => {
+            cancelToken.cancel()
+        }
           // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 

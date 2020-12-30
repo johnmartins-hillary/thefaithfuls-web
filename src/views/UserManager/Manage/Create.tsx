@@ -15,7 +15,7 @@ import * as Yup from "yup"
 import { IClaim } from "core/models/Claim"
 import { assignRoleClaimToUser, createRole, createRoleClaim, getAllClaims } from "core/services/user.service"
 import { CreateLayout } from "layouts"
-
+import axios from "axios"
 
 interface IForm {
     name: string;
@@ -62,8 +62,9 @@ const CreateRole = () => {
     const [allClaim, setAllClaim] = React.useState<IClaim[]>([])
 
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
         const getChurchStaffApi = async () => {
-            await getStaffByChurch(Number(params.churchId)).then(payload => {
+            await getStaffByChurch(Number(params.churchId),cancelToken).then(payload => {
                 // setInitialStaff(payload.data)
                 const removeStaffWithRole = payload.data.filter(item => item.role === null)
                 setInitialStaff(removeStaffWithRole)
@@ -77,7 +78,7 @@ const CreateRole = () => {
         }
 
         const getRoleClaimApi = async () => {
-            await getAllClaims().then(payload => {
+            await getAllClaims(cancelToken).then(payload => {
                 setInitialClaim(payload.data)
             }).catch(err => {
                 toast({
@@ -90,6 +91,9 @@ const CreateRole = () => {
 
         getChurchStaffApi()
         getRoleClaimApi()
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

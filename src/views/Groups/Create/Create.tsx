@@ -16,6 +16,7 @@ import {createStyles,makeStyles} from "@material-ui/styles"
 import {MessageType} from "core/enums/MessageType"
 import {CreateLayout} from "layouts"
 import {TagContainer} from "components/Input/TagContainer"
+import axios from "axios"
 import * as Yup from "yup"
 
 interface IForm {
@@ -79,8 +80,9 @@ const Create = () => {
     const [allGroupMember,setAllGroupMember] = React.useState<IStaff[]>([])
 
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
         const apiStaffCall = async () => { 
-            await getStaffByChurch(Number(params.churchId)).then(payload => {
+            await getStaffByChurch(Number(params.churchId),cancelToken).then(payload => {
                 setInitialGroupMember(payload.data)
             }).catch(err => {
                 toast({
@@ -91,6 +93,9 @@ const Create = () => {
             })
         }
         apiStaffCall()
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
     

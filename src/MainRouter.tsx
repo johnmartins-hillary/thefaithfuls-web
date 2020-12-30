@@ -1,5 +1,6 @@
 import React from "react"
 import {Switch,Route} from "react-router-dom"
+import {TransitionGroup,CSSTransition} from "react-transition-group"
 import {Home} from "views/Home"
 import {LoginRole} from "views/LoginRole"
 import {AuthForm} from "views/AuthForm"
@@ -17,7 +18,7 @@ const MainRouter = () => {
     return(
         <Switch>
             <PrivateRoute isAuthenticated={isAuthenticated} isLoading={isLoading}
-             path="/church/:churchId" component={() => (<DashboardLayout/>)} />
+            path="/church/:churchId" component={() => (<DashboardLayout/>)} />
             <Route exact path="/signup/admin" render={() => <SignupAdmin/>} />
             <Route exact path="/" render={() => <Home/>} />
             <Route exact path="/signup/role" render={() => <LoginRole/>} />

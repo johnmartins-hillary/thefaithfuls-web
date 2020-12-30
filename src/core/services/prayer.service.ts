@@ -1,4 +1,4 @@
-import axios,{AxiosRequestConfig} from "axios"
+import axios,{AxiosRequestConfig,CancelTokenSource} from "axios"
 import {IResponse} from "core/models/Response"
 import {IPrayer,IPrayerRequest} from "core/models/Prayer"
 import { ITestimony,TestimonyType,TestimonyStatusType } from "core/models/Testimony"
@@ -16,19 +16,23 @@ export const addPrayer = async (newPrayer:IPrayer):Promise<IResponse<IPrayer>> =
         throw err
     }
 }
-export const getPrayer = async (denominationId:number):Promise<IResponse<IPrayer[]>> => {
+export const getPrayer = async (denominationId:number,cancelToken:CancelTokenSource):Promise<IResponse<IPrayer[]>> => {
     try{
         const url = `${baseUrl}/GetPrayer?denomination=${denominationId}`
-        const response = await axios.get(url)
+        const response = await axios.get(url,{
+            cancelToken:cancelToken.token
+        })
         return response.data
     }catch(err){
         throw err
     }
 }
-export const getDailyReading = async (dateString:string):Promise<IResponse<any>> => {
+export const getDailyReading = async (dateString:string,cancelToken:CancelTokenSource):Promise<IResponse<any>> => {
     try{
         const url = `${baseUrl}/GetDailyReading?date=${dateString}`
-        const response = await axios.get(url)
+        const response = await axios.get(url,{
+            cancelToken:cancelToken.token
+        })
         return response.data
     }catch(err){
         throw err
@@ -45,10 +49,12 @@ export const getPreviousDailyReading = async (dateString:Date):Promise<IResponse
 }
 
 // Prayer Request
-export const getPrayerRequest = async (churchId:string):Promise<IResponse<IPrayerRequest[]>> => {
+export const getPrayerRequest = async (churchId:string,cancelToken:CancelTokenSource):Promise<IResponse<IPrayerRequest[]>> => {
     try{
         const url = `${baseUrl}/GetPrayerRequest?churchId=${churchId}`
-        const response = await axios.get(url)
+        const response = await axios.get(url,{
+            cancelToken:cancelToken.token
+        })
         return response.data
     }catch(err){
         throw err
@@ -107,10 +113,12 @@ interface IGetTestimony {
     testimonyType: TestimonyType
 }
 
-export const getTestimony = async (arg:IGetTestimony):Promise<IResponse<ITestimony[]>> => {
+export const getTestimony = async (arg:IGetTestimony,cancelToken:CancelTokenSource):Promise<IResponse<ITestimony[]>> => {
     const url = `${baseUrl}/GetTestimony?churchId=${arg.churchId}&testimonyType=${arg.testimonyType}`
     try{
-        const response = await axios.get(url)
+        const response = await axios.get(url,{
+            cancelToken:cancelToken.token
+        })
         return response.data
     }catch(err){
         throw err

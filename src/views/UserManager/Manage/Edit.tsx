@@ -12,6 +12,7 @@ import * as Yup from "yup"
 import * as userService from "core/services/user.service"
 import { IRole } from "core/models/Role"
 import { CreateLayout } from "layouts"
+import axios from "axios"
 
 interface IForm {
     name: string;
@@ -49,8 +50,9 @@ const EditRole = () => {
     const [churchRole, setChurchRole] = React.useState<IRole>()
     const [apiCalled, setApiCalled] = React.useState(false)
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
         const getChurchRoles = () => {
-            userService.getAllRoleByChurchId(Number(params.churchId)).then(payload => {
+            userService.getAllRoleByChurchId(Number(params.churchId),cancelToken).then(payload => {
                 const foundRole = payload.data.find((item) => item.id === params.roleId)
                 if (foundRole) {
                     setChurchRole(foundRole)
@@ -67,6 +69,9 @@ const EditRole = () => {
             })
         }
         getChurchRoles()
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

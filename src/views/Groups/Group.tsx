@@ -28,6 +28,7 @@ import useToast from "utils/Toast"
 import {AppState} from "store"
 import {IStaff} from "core/models/Staff"
 import * as Yup from 'yup'
+import axios from "axios"
 
 interface IAddUser {
     member:string;
@@ -63,6 +64,7 @@ const AddUserToGroup = ({close}:any) => {
     const [member,setMember] = React.useState<IStaff[]>()
 
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
         const apiPositionCall = async () => {
             await getGroupPosition().then(payload => {
                 setPosition(payload.data)
@@ -75,7 +77,7 @@ const AddUserToGroup = ({close}:any) => {
             })
         }
         const apimemberCall = async () => {
-            await getStaffByChurch(Number(params.churchId)).then(payload => {
+            await getStaffByChurch(Number(params.churchId),cancelToken).then(payload => {
                 setMember(payload.data)
             }).catch(err => {
                 toast({
@@ -87,6 +89,9 @@ const AddUserToGroup = ({close}:any) => {
         }
         apiPositionCall()
         apimemberCall()
+        return () => {
+            cancelToken.cancel()
+        }
           // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 

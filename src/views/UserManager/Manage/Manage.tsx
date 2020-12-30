@@ -20,7 +20,7 @@ import { IStaff } from "core/models/Staff"
 import { IRole } from "core/models/Role"
 import { useDispatch } from "react-redux"
 import {SearchInput} from "components/Input"
-
+import axios from "axios"
 
 
 
@@ -128,8 +128,9 @@ const ManageUser = () => {
     const [displayRoleStaff,setDisplayRoleStaff] = React.useState<IRolesForStaff[]>([])
 
     React.useEffect(() => {
-        const getStaff = getStaffByChurch(Number(params.churchId))
-        const getRoles = getAllRoleByChurchId(Number(params.churchId))
+        const cancelToken = axios.CancelToken.source()
+        const getStaff = getStaffByChurch(Number(params.churchId),cancelToken)
+        const getRoles = getAllRoleByChurchId(Number(params.churchId),cancelToken)
         const apiCall = () => {
             const getStaffAndRoles = Promise.all([getStaff,getRoles])
             getStaffAndRoles.then((values) => {
@@ -164,6 +165,9 @@ const ManageUser = () => {
         }
         dispatch(setPageTitle("User Manager"))
         apiCall()
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

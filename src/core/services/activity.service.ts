@@ -1,4 +1,4 @@
-import axios,{AxiosRequestConfig} from "axios"
+import axios,{AxiosRequestConfig,CancelTokenSource} from "axios"
 import {IActivity} from "core/models/Activity"
 import {IResponse} from "core/models/Response"
 import {IEvent} from "core/models/Event"
@@ -27,10 +27,10 @@ export const updateActivity = async (arg:IActivity):Promise<IResponse<IActivity>
     }
 }
 
-export const getChurchActivity = async (churchId:string):Promise<IResponse<IActivity[]>> => {
+export const getChurchActivity = async (churchId:string,cancelToken:CancelTokenSource):Promise<IResponse<IActivity[]>> => {
     const url = `${baseUrl}/Activity/GetChurchActivity?churchId=${churchId}`
     try{
-        const config:AxiosRequestConfig = {headers:{Accept:"text/plain"}}
+        const config:AxiosRequestConfig = {headers:{Accept:"text/plain"},cancelToken:cancelToken.token}
         const response = await axios.get(url,config)
         return response.data
     }catch(err){
@@ -60,10 +60,10 @@ export const updateEvent = async (arg:IEvent):Promise<IResponse<IEvent>> => {
     }
 }
 
-export const getChurchEvent = async (churchId:string):Promise<IResponse<IEvent[]>> => {
+export const getChurchEvent = async (churchId:string,cancelToken:CancelTokenSource):Promise<IResponse<IEvent[]>> => {
     const url = `${baseUrl}/Activity/GetChurchEvent?churchId=${churchId}`
     try{
-        const config:AxiosRequestConfig = {headers:{Accept:"text/plain"}}
+        const config:AxiosRequestConfig = {headers:{Accept:"text/plain"},cancelToken:cancelToken.token}
         const response = await axios.get(url,config)
         return response.data
     }catch(err){

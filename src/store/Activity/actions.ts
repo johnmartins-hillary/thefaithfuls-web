@@ -2,7 +2,6 @@ import {Dispatch} from "redux"
 import {IActivity} from "core/models/Activity"
 import {IEvent} from "core/models/Event"
 import * as activityService from "core/services/activity.service"
-import history from "utils/history"
 import {ToastFunc} from "utils/Toast"
 import {MessageType} from "core/enums/MessageType"
 import {
@@ -11,12 +10,14 @@ import {
     LoadEventsForChurchAction,
     CreateEventAction,
     UpdateEventAction} from "./types"
+import { CancelTokenSource } from "axios"
+
 
 // #region activity Action
-export function LoadActivitiesForChurch (churchId:string,toast:ToastFunc){
+export function LoadActivitiesForChurch (churchId:string,cancelToken:CancelTokenSource,toast:ToastFunc){
     return async (dispatch:Dispatch) => {
         try{
-            return await activityService.getChurchActivity(churchId).then(payload => {
+            return await activityService.getChurchActivity(churchId,cancelToken).then(payload => {
                 dispatch<LoadActivitiesForChurchAction>
                 ({
                     type:ActionTypes.LOAD_ACTIVITIES_FOR_CHURCH,
@@ -32,6 +33,7 @@ export function LoadActivitiesForChurch (churchId:string,toast:ToastFunc){
         }
     }
 }
+
 export function createNewActivity (newActivity:IActivity,toast:ToastFunc){
     return async (dispatch:Dispatch) => {
         try{
@@ -67,10 +69,10 @@ export function updateActivity (updateActivity:IActivity,toast:ToastFunc){
 //#endregion
 
 //#region events Actions
-export function LoadEventsForChurch (churchId:string,toast:ToastFunc){
+export function LoadEventsForChurch (churchId:string,cancelToken:CancelTokenSource,toast:ToastFunc){
     return async (dispatch:Dispatch) => {
         try{
-            return await activityService.getChurchEvent(churchId).then(payload => {
+            return await activityService.getChurchEvent(churchId,cancelToken).then(payload => {
                 dispatch<LoadEventsForChurchAction>
                 ({
                     type:ActionTypes.LOAD_EVENT_FOR_CHURCH,

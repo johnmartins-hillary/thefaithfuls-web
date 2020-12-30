@@ -1,4 +1,4 @@
-import axios,{AxiosRequestConfig} from "axios"
+import axios,{AxiosRequestConfig,CancelTokenSource} from "axios"
 import {IChurchMember} from "core/models/ChurchMember"
 import {IChurch} from "core/models/Church"
 import {IStaff} from "core/models/Staff"
@@ -32,10 +32,12 @@ export const createStaff = async(newStaff:IChurchMember):Promise<IResponse<IStaf
 
 }
 
-export const getStaffByChurch = async (churchId:number):Promise<IResponse<IStaff[]>> => {
+export const getStaffByChurch = async (churchId:number,cancelToken:CancelTokenSource):Promise<IResponse<IStaff[]>> => {
     try{
         const url = `${baseUrl}/GetStaffByChurch?churchId=${churchId}`
-        const response = await axios.get(url)
+        const response = await axios.get(url,{
+            cancelToken:cancelToken.token
+        })
         return response.data
     }catch(err){
         throw err

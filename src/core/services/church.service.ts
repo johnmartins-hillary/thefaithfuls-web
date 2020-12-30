@@ -1,4 +1,4 @@
-import axios,{AxiosRequestConfig} from "axios"
+import axios,{AxiosRequestConfig,CancelTokenSource} from "axios"
 import {IChurch} from "core/models/Church"
 import {IChurchResponse} from "core/models/ChurchResponse"
 import {IChurchMember} from 'core/models/ChurchMember'
@@ -113,10 +113,12 @@ export const createChurchBankDetail = async (newBankDetail:IChurchBankDetail) =>
         throw err
     }
 }
-export const getChurchBankAccount = async (churchId:number):Promise<IResponse<IChurchBankDetail[]>> => {
+export const getChurchBankAccount = async (churchId:number,cancelToken:CancelTokenSource):Promise<IResponse<IChurchBankDetail[]>> => {
     try{
         const url = `${baseUrl}/getchurchBankAccountByChurch?churchId=${churchId}`
-        const response = await axios.get(url)
+        const response = await axios.get(url,{
+            cancelToken:cancelToken.token
+        })
         return response.data
     }catch(err){
         throw err

@@ -27,6 +27,7 @@ import { setPageTitle } from "store/System/actions"
 import { rrulestr } from "rrule"
 import { Free } from "assets/images"
 import { Icon as DotIcon } from "components/Icon"
+import axios from "axios"
 
 
 const useStyles = makeStyles((theme) => createStyles({
@@ -133,13 +134,14 @@ const Dashboard = () => {
 
 
     React.useEffect(() => {
+        const source = axios.CancelToken.source()
         dispatch(setPageTitle("Dashboard"))
         // Parsing the string from rrule format to standard format
         // const stringToDate = (arg: string) => (
         //     `${arg.substring(0, 4)}-${arg.substring(4, 6)}-${arg.substring(6, 8)}T${arg.substring(9, 11)}:${arg.substring(11, 13)}:${arg.substring(13, 15).concat("Z")}`
         // )
         const getChurchActivity = async () => {
-            activityService.getChurchActivity(params.churchId).then(payload => {
+            activityService.getChurchActivity(params.churchId,source).then(payload => {
                 setChurchActivity(payload.data.map((item, idx) => {
                     const schedule = JSON.parse(item.schedule)
                     const { time: { startDate, endDate } } = schedule
@@ -166,7 +168,7 @@ const Dashboard = () => {
             })
         }
         const getChurchEvent = async () => {
-            activityService.getChurchEvent(params.churchId).then(payload => {
+            activityService.getChurchEvent(params.churchId,source).then(payload => {
                 setChurchEvent(payload.data)
             }).catch(err => {
                 toast({
@@ -178,6 +180,9 @@ const Dashboard = () => {
         }
         getChurchActivity()
         getChurchEvent()
+        return () => {
+            source.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
