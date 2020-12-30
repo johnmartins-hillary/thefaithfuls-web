@@ -77,15 +77,15 @@ return (
             display="flex" justifyContent="center"
             >
                 <Avatar border="2px solid #B603C9"
-                    size="lg" name={currentChurch.name}
+                    size="xl" name={currentChurch.name}
                     src={currentChurch.churchLogo || "https://bit.ly/ryan-florence"} />
                 <Heading color="primary" fontSize="1.7rem" fontWeight="400" >
                     {currentChurch.name}
                 </Heading>
             </DrawerHeader>
-            <Divider orientation="horizontal" bgColor="grey.500" />
-            <DrawerBody pt="10" pl="10" >
-                <Stack className={classes.optionContainer} spacing={5}>
+            {/* <Divider orientation="horizontal" bgColor="grey.500" /> */}
+            <DrawerBody pt="12" pl="10" >
+                <Stack className={classes.optionContainer} spacing={8}>
                     {dashboardMenu.map((item,idx) => (
                         <Link key={idx} to={`/church/${params.churchId}${item.link}`} >
                             <Flex

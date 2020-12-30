@@ -65,6 +65,7 @@ const Activity = () => {
         }
         getChurchActivity()
         getChurchEvent()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     React.useEffect(() => {
@@ -92,7 +93,6 @@ const Activity = () => {
         })) 
         const calendarEvents = [...newEvents,...churchCalendarActivity]
         setCalendarEvent(calendarEvents)
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[churchEvent,churchActivity])
 

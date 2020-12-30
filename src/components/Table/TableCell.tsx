@@ -10,7 +10,7 @@ const StyledTableCell = withStyles((theme: Theme) =>
       color: tertiary,
       fontFamily:"Mulish ,Roboto, Helvetica,Arial, sans-serif",
       fontWeight:600,
-      // opacity:.5,
+      opacity:.5,
       fontSize:15,
       [theme.breakpoints.up("sm")]:{
         fontSize: 20
@@ -20,7 +20,7 @@ const StyledTableCell = withStyles((theme: Theme) =>
       fontFamily:"Mulish ,Roboto, Helvetica,Arial, sans-serif",
       fontWeight:600,
       fontSize: 15,
-      opacity:.85,
+      opacity:.65,
       [theme.breakpoints.up("sm")]:{
         fontSize: 20
       }

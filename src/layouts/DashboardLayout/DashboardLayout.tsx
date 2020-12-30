@@ -95,10 +95,10 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
             <Flex className={`${classes.root} ${isDesktop && open && classes.drawerOpen}`} flex={1}>
                 <Route render={({ location }) => {
                     return (
-                        // <TransitionGroup>
-                        //     <CSSTransition
-                        //         classNames="wrapper" timeout={350} key={location.key}
-                        //     >
+                        <TransitionGroup>
+                            <CSSTransition
+                                classNames="wrapper" timeout={350} key={location.key}
+                            >
                                 <Switch location={location} >
                                     <ErrorBoundary>
                                         <Suspense fallback={<div>loading...</div>}>
@@ -280,8 +280,8 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
                                         </Suspense>
                                     </ErrorBoundary>
                                 </Switch>
-                        //    </CSSTransition>
-                        // </TransitionGroup>
+                           </CSSTransition>
+                        </TransitionGroup>
                     )
                 }}
                 />
