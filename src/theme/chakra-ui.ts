@@ -32,13 +32,15 @@ const Input = {
   // Two variants: outline and solid
   variants: {
     solid: {
-      border:"1px solid #CBD5E0",
-      opacity:.5,
+      border:"1px solid rgba(0, 0, 0, .3)",
+      opacity:.85,
       bgColor:"white",
       borderRadius:"4px",
+      color:"#00000099",
+      fontSize:"1.25rem",
+      letterSpacing:".15px",
       _placeholder:{
-        color:"black",
-        fontSize:"1rem"
+        color:"grey",
       }
     }
   },

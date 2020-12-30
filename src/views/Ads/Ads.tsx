@@ -159,8 +159,8 @@ const Ads = () => {
                         </Heading>
                         <Wrap>
                             {displayAdvert.length > 0 ? 
-                            adverts.map((item) => (
-                                <WrapItem>
+                            adverts.map((item,idx) => (
+                                <WrapItem key={item.advertID || idx} >
                                     <Skeleton isLoaded={Boolean(item.advertID)} >
                                         <MediaCard key={item.advertID} title={item.title}
                                         image={item.advertUrl || ""}/>
@@ -181,9 +181,8 @@ const Ads = () => {
                             </Heading>
                         }
                         <Wrap>
-                            {adverts.map((item) => (
-                                <WrapItem>
-
+                            {adverts.map((item,idx) => (
+                                <WrapItem key={item.advertID || idx} >
                                     <Skeleton isLoaded={Boolean(item.advertID)} >
                                         <MediaCard key={item.advertID} title={item.title}
                                             image={item.advertUrl || ""}/>

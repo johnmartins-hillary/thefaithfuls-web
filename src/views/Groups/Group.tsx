@@ -104,10 +104,10 @@ const AddUserToGroup = ({close}:any) => {
         close()
     }
     const validationSchema = Yup.object({
-          // eslint-disable-next-line no-mixed-operators
-          position:Yup.number().oneOf((position && position.map((item,idx) => item.leadersPositionID) as number[] || []),
-          `Item must be one of the following ${position?.map((item,idx) => item.position)} `).required(),
-          // eslint-disable-next-line no-mixed-operators
+        // eslint-disable-next-line no-mixed-operators
+        position:Yup.number().oneOf((position && position.map((item,idx) => item.leadersPositionID) as number[] || []),
+        `Item must be one of the following ${position?.map((item,idx) => item.position)} `).required(),
+        // eslint-disable-next-line no-mixed-operators
         member:Yup.string().oneOf((member && member.map((item,idx) => item.staffID)|| []),
         `Item must be one of the following ${member?.map((item,idx) => item.fullname)} `).required()
     })
@@ -181,7 +181,8 @@ const Group = (props:any) => {
         dispatch(loadGroupMemberForCurrentGroup(societyId,toast))
     }
     React.useEffect(() => {
-        if(groups.length > 0){
+        if(!currentGroup.name && groups[0]?.name.length > 0){
+            console.log("calling us")
             dispatch(setCurrentGroup(groups[0].name))
             setCurrentGroupMember((groups[0].societyID as number))
         }

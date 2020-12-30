@@ -12,9 +12,12 @@ import { LandingImage } from 'assets/images'
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles"
 import { Divider } from "@material-ui/core"
 import { FaFacebookF, FaTwitter, FaLinkedinIn } from "react-icons/fa"
-import { AppStore, PlayStore, BlackMan, Logo } from "assets/images"
+import { AppStore, PlayStore,Logo,
+    ChurchMemberApp,ChurchMemberDesktop,
+    OnTheGo,FeatureImage,ChurchDetail,
+    PrayerHand,Bible,Sermon,Giving,Activity,Reflection,Groups,Announcement
+ } from "assets/images"
 import {HiOutlineMail} from "react-icons/hi"
-import { dashboardMenu } from "components/Dashboard/Dashboard"
 import { primary } from "theme/palette"
 
 
@@ -23,9 +26,7 @@ const useStyles = makeStyles((theme: Theme) => (
         root: {
             "& p": {
                 textAlign: "center",
-                letterSpacing: "0.15px",
-                // opacity:.76,
-                // fontWeight: "600"
+                letterSpacing: "0.15px"
             },
             "& h2":{
                 textAlign:"center",
@@ -90,17 +91,29 @@ const useStyles = makeStyles((theme: Theme) => (
         appContainer: {
             width: "100%",
             margin: theme.spacing(3, 0),
+            "& h1":{
+                textAlign:"center"
+            },
             "& > div": {
                 padding: theme.spacing(2, 3),
+                position:"relative",
+                paddingBottom:"0",
+                paddingRight:"0",
                 minHeight: "45vh",
-                justifyContent: "center",
+                justifyContent: "flex-start",
                 alignItems: "center",
                 flex: 1,
                 marginTop: "0 !important",
+                [theme.breakpoints.up("sm")]:{
+                    height:"50rem",
+                },
                 "& p": {
                     maxWidth: "30rem",
                     width: "65%",
                     margin: `${theme.spacing(5, 0)} !important`
+                },
+                "& > img:last-child":{
+                    maxHeight:"27.5rem"
                 }
             }
         },
@@ -113,17 +126,12 @@ const useStyles = makeStyles((theme: Theme) => (
             }
         },
         churchGoContainer: {
-            margin: theme.spacing(3, 0),
+            margin: theme.spacing(3),
+            width:"100%",
+            marginTop:`${theme.spacing(7)}px !important`,
+            marginBottom:`${theme.spacing(7)}px !important`,
             "& > div": {
                 flex: 1,
-                "& > img": {
-                    width: "75%",
-                    height: "97%",
-                    borderRadius: "4rem 0px 4rem 0",
-                    [theme.breakpoints.up("sm")]: {
-                        borderRadius: "8rem 0px 8rem 0"
-                    }
-                },
                 "& h2": {
                     letterSpacing: 0
                 },
@@ -133,21 +141,27 @@ const useStyles = makeStyles((theme: Theme) => (
                 },
                 "& button": {
                     margin: `${theme.spacing(2, 0)} !important`
+                },
+            },
+            "& > div:first-child":{
+                [theme.breakpoints.up("md")]:{
+                    width:"56%",
+                    flex:"none"
                 }
             }
         },
         featureContainer: {
             width: "80%",
-            margin: theme.spacing(5, 0),
+            margin: theme.spacing(3),
+            marginTop:`${theme.spacing(7)}px !important`,
+            marginBottom:`${theme.spacing(7)}px !important`,
             "& > div": {
-                flex: 1,
-                "& img": {
-                    borderRadius: "0 4rem 0 4rem",
-                    height: "24rem",
-                    [theme.breakpoints.up("sm")]: {
-                        borderRadius: "0 8rem 0 8rem",
-                        height: "28rem"
-                    }
+                flex: 1
+            },
+            "& > div:nth-child(2)":{
+                [theme.breakpoints.up("md")]:{
+                    width:"56%",
+                    flex:"none"
                 }
             }
         },
@@ -167,6 +181,19 @@ const useStyles = makeStyles((theme: Theme) => (
                 fontWeight: 600,
                 [theme.breakpoints.up("sm")]:{
                     fontSize: "2.3rem",
+                }
+            },
+            position:"relative",
+            "& div":{
+                margin:`${theme.spacing(3,1.5)} !important`,
+                "& img":{
+                    position:"absolute",
+                    top:"-27.5px",
+                    left:0,
+                    maxHeight:"20.125rem",
+                    [theme.breakpoints.down("sm")]:{
+                        display:"none"
+                    }
                 }
             }
         },
@@ -219,20 +246,40 @@ const useStyles = makeStyles((theme: Theme) => (
             "& svg": {
                 color: "white",
                 marginRight: theme.spacing(1)
-            },
-            
+            }
+        },
+        storeContainer:{
+            align:"flex-start",
+            "& > img":{
+                marginTop:"0 !important"
+            }
+        },
+        absoluteImage:{
+            [theme.breakpoints.up("sm")]:{
+                position:"absolute",
+                bottom:"0",
+                right:"0"
+            }
         }
     })
-
-
-
 ))
+
 
 
 const Home = () => {
 
     const classes = useStyles()
-
+    const dashboardMenu = [
+        {icon:PrayerHand,title:"Prayer Wall"},
+        {icon:Bible,title:"Bible"},
+        {icon:Sermon,title:"Sermon"},
+        {icon:Giving,title:"Giving"},
+        {icon:Activity,title:"Church Activity"},
+        {icon:Reflection,title:"Daily Reflection"},
+        {icon:Groups,title:"Groups"},
+        {icon:Announcement,title:"Announcement"},
+    ]
+    
     return (
         <VStack className={classes.root}>
             <Box className={classes.churchImageContainer}>
@@ -291,31 +338,35 @@ const Home = () => {
                         account of the system, and expound the actual teachings of the great
                         explorer of the truth, the master-builder of human happiness.
                 </Text>
-                    <Stack flexDirection={["column","row"]} align="flex-start">
+                    <Stack zIndex={5} flexDirection={["column","row"]} className={classes.storeContainer}>
                         <Image w="12rem" src={PlayStore} />
                         <Image w="10rem" src={AppStore} />
                     </Stack>
+                    <Image className={classes.absoluteImage} src={ChurchMemberApp} />
                 </VStack>
                 <VStack bgColor="#FACCFF" ml={{ md: "3" }}>
                     <Heading color="tertiary" fontSize={["2.3rem", "2.5rem"]}>
                         Manage Church Activities
-                </Heading>
-                    <Text color="tertiary">
+                    </Heading>
+                    <Text color="tertiary" zIndex={5}>
                         But I must explain to you how all this mistaken idea of denouncing
                         pleasure and praising pain was born and I will give you a complete
                         account of the system, and expound the actual teachings of the great
                         explorer of the truth, the master-builder of human happiness.
-                </Text>
-                    <Link to="/signup/admin" >
-                        <Button className={classes.button}>
-                            Get Started Now
-                    </Button>
-                    </Link>
+                    </Text>
+
+                        <Button zIndex={5} className={classes.button}>
+                            <Link to="/signup/admin" >
+                                    Get Started Now
+                            </Link>
+                        </Button>
+                    <Image className={classes.absoluteImage} src={ChurchMemberDesktop} />
                 </VStack>
             </Stack>
-            <Stack w="85%" flexDirection={{ base: "column", md: "row" }} className={classes.churchGoContainer}>
+            <Stack w="85%" flexDirection={{ base: "column", md: "row" }}
+             className={classes.churchGoContainer}>
                 <Flex mr={{ md: 3 }}>
-                    <Image src={BlackMan} />
+                    <Image src={OnTheGo} />
                 </Flex>
                 <VStack align="flex-start">
                     <Heading color="tertiary" textAlign="left"
@@ -332,7 +383,7 @@ const Home = () => {
                             Find Your Church
                     </Button>
                     </Link>
-                    <Stack flexDirection={['column', "row"]}>
+                    <Stack className={classes.storeContainer} flexDirection={['column', "row"]}>
                         <Image w="12rem" src={PlayStore} />
                         <Image w="10rem" src={AppStore} />
                     </Stack>
@@ -347,9 +398,10 @@ const Home = () => {
                     <SimpleGrid my={10} columns={[1, 2]} spacingX="2.5rem" spacingY="5" >
                         {dashboardMenu.map((item,idx) => (
                             <HStack key={idx} >
-                                <Icon color="tertiary" padding=".5rem" boxSize="2.5rem" borderRadius="50%" bgColor="#FACCFF" as={item.icon} />
-                                <Text>
-                                    {item.name}
+                                <Image src={item.icon} />
+                                <Text fontSize="1.325" color="tertiary"
+                                letterSpacing="0" fontWeight={600}>
+                                    {item.title}
                                 </Text>
                             </HStack>
                         ))}
@@ -361,14 +413,15 @@ const Home = () => {
                     </Link>
                 </VStack>
                 <Flex>
-                    <Image src={BlackMan} />
+                    <Image src={FeatureImage} />
                 </Flex>
             </Stack>
             <Stack className={classes.detailContainer}>
                 <VStack>
                     <Divider variant="middle" />
+                    <Image src={ChurchDetail} />
                     <HStack justifyContent="flex-end" w="100%" align="flex-start" pr={["5","16"]}>
-                        <VStack mx="3">
+                        <VStack mx="6">
                             <Text mb="3" color="primary">
                                 2,000+
                         </Text>

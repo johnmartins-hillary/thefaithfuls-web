@@ -153,7 +153,7 @@ const Announcement = () => {
         <VStack spacing={14} p={{ base: "4", md: "0" }} bgColor="bgColor"
                 justify="flex-start" className={classes.root}
                 pl={{ md: "12" }} width={["100%", "100%", "93%"]} pt={{ md: "12" }}>
-                    <Button alignSelf="flex-start" px={4} as={Link}>
+                    <Button alignSelf="flex-start" px={4}>
                         <Link to={`/church/${params.churchId}/announcement/create`} >
                                 Create Announcement
                         </Link>

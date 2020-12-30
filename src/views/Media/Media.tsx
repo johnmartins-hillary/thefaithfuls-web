@@ -571,7 +571,7 @@ const Media = () => {
                      display={{ md: "none" }} value={inputValue} />
                     <Wrap spacing="15px">
                         {displaySermons.length > 0 ? displaySermons.map((item, idx) => (
-                            <WrapItem key={item.sermonID}>
+                            <WrapItem key={item.sermonID || idx}>
                                 <DashboardActivity isLoaded={Boolean(item.sermonID)} heading={item.title}
                                 p="4" width="100%" maxWidth="20rem">
                                 <Text as="i" color="#151C4D" fontWeight="600"
@@ -596,7 +596,7 @@ const Media = () => {
                         <Wrap>
                             {draftSermon.map((item, idx) => (
                                 <DashboardActivity p="4"
-                                    key={item.sermonID} width="90%" maxWidth="20rem" >
+                                    key={item.sermonID || idx} width="90%" maxWidth="20rem" >
                                     <Heading fontSize="1.5rem" color="#151C4D" >
                                         {item.title}
                                     </Heading>
@@ -646,7 +646,8 @@ const Media = () => {
                         <Wrap>
                             {videoSermon.length > 0 ?
                                 videoSermon.map((item, idx) => (
-                                    <Skeleton isLoaded={isLoaded} onClick={handleCurrentVideoSermon(item)} >
+                                    <Skeleton isLoaded={isLoaded} key={item.sermonID || idx}
+                                     onClick={handleCurrentVideoSermon(item)} >
                                         <MediaCard title={item.title} showShare={true} key={idx} />
                                     </Skeleton>
                                 )) :
@@ -664,7 +665,8 @@ const Media = () => {
                         <Wrap>
                             {audioSermon.length > 0 ?
                                 audioSermon.map((item, idx) => (
-                                    <Skeleton isLoaded={isLoaded} onClick={handleCurrentAudioSermon({
+                                    <Skeleton isLoaded={isLoaded} key={item.sermonID || idx}
+                                    onClick={handleCurrentAudioSermon({
                                         ...item,
                                         next: !(idx >= (audioSermon.length - 1)),
                                         previous: !(idx <= 0),

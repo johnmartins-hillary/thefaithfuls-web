@@ -13,7 +13,6 @@ const baseUrl = `${process.env.REACT_APP_SERVER_URL}/Church`
 
 export const getChurchById = async (churchId:number) : Promise<IResponse<IChurch>> => {
     try{
-        console.log("calling get church detail",churchId)
         const url = `${baseUrl}/getchurchbyId?churchId=${churchId}`
         const response = await axios.get(url)
         return response.data
@@ -37,7 +36,6 @@ export const activateChurch = async (churchId:number):Promise<IResponse<IChurchR
     try{
         const urlBase = new URL(`${baseUrl}/activateChurch`)
         const url = new URLSearchParams(baseUrl).append("churchId",String(churchId))
-        console.log(url,urlBase)
         const config:AxiosRequestConfig = {headers:{"Accept":"application/json"}}
         const response = await axios.put(String(urlBase),{},config)
         return response.data

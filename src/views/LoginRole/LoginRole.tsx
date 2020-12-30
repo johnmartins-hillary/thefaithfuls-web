@@ -23,7 +23,7 @@ const LoginRole = () => {
                 >
                     <Box my={"2"} cursor="pointer" width={["auto", "auto", "50%"]}
                         mx={[0, "3", "5"]} ml={[0, 0, 0]} maxWidth="1xs" >
-                        <a href={`${process.env.REACT_APP_MEMBER}/login` || ""} target="_blank" >
+                        <a href={`${process.env.REACT_APP_MEMBER}/login` || ""}  rel="noopener noreferrer" target="_blank" >
                             <Flex px="8" height="5.625rem"
                                 alignItems="center" shadow="0px 5px 10px #410E501A"
                                 justifyContent={["center", "flex-start"]}>

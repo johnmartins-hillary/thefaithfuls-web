@@ -367,7 +367,7 @@ const Prayer = () => {
                                  <SimpleGrid minChildWidth="17.5rem" alignItems={{base:"center",md:"flex-start"}} gridGap=".5rem"
                                      spacing={3}  className={classes.prayerContainer}>
                                          {prayer.map((item,idx) => (
-                                            <Skeleton isLoaded={Boolean(item.prayerID)}>
+                                            <Skeleton key={item.prayerID || idx} isLoaded={Boolean(item.prayerID)}>
                                                    <DetailCard title={item.prayerName} key={item.prayerID || idx}
                                                 smallText={"JOHN 3:16"}
                                                 body={item.prayerdetail}
@@ -402,7 +402,7 @@ const Prayer = () => {
                                  <SimpleGrid minChildWidth="17.5rem" alignItems={{base:"center",md:"flex-start"}} gridGap=".5rem"
                                      spacing={3}  className={classes.prayerContainer}>
                                          {dailyReading.map((item:any,idx:number) => (
-                                            <Skeleton isLoaded={Boolean(item.verse)}>
+                                            <Skeleton key={idx} isLoaded={Boolean(item.verse)}>
                                                    <DetailCard 
                                                         title={item.name} key={idx}
                                                         smallText={item.verse}

@@ -51,9 +51,9 @@ const Header:React.FC<IProps> = props => {
       padding="1.5rem"
       color="white"
       {...props}
-      pt="10"
+      p={{base:"3",md:"10"}}
     >
-      <Flex display={{base:"none",md:"inline-block"}} flex={2} />
+      <Flex display={{base:"none",md:"inline-block"}} flex={1} />
       <Logo/>
       <Menu>
       <Box display={{md: "none" }}>
