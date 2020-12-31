@@ -37,12 +37,29 @@ import * as Yup from "yup"
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
+        [theme.breakpoints.up("md")]:{
+            marginLeft:theme.spacing(10)
+        },
         "& ul":{
-            height:"30rem",
+            maxHeight:"30rem",
             overflowY:"auto",
             justifyContent:"center",
             [theme.breakpoints.up("sm")]:{
                 justifyContent:"flex-start"
+            }
+        }
+    },
+    buttonContainer:{
+        "& button:first-child":{
+            padding:theme.spacing(2.9,5)
+        },
+        "& button:last-child":{
+            padding:theme.spacing(2,3),
+            marginLeft:theme.spacing(1),
+            "& > div":{
+                alignItems:"flex-end",
+                textTransform:"lowercase",
+                fontWeight:"500"
             }
         }
     }
@@ -552,17 +569,17 @@ const Media = () => {
                 </Flex>
             </Slide>
             <VStack spacing={14} p="4" bgColor="bgColor" className={classes.root}
-                pl={{ md: "12" }} divider={<StackDivider borderColor="gray.200" />}
+            divider={<StackDivider borderColor="gray.200" />}
                 width={["100%", "100%", "93%"]} pt={{ md: "12" }}>
                 <Flex direction="column" mb={{ md: "2rem" }} width="100%">
-                    <Flex mb={[2, 5]} align="center">
+                    <Flex mb={[2, 5]} className={classes.buttonContainer} align="center">
                         <Button px={4}>
                             <Link to={`/church/${params.churchId}/media/create`} >
                                 Create Sermon
                             </Link>
                         </Button>
                         <Flex flex={1} />
-                        <SearchInput setValue={handleInput}
+                        <SearchInput setValue={handleInput} flex={2}
                          display={{ base: "none", md: "inline-block" }} value={inputValue} />
                         <Flex flex={3} flexShrink={4} />
                         <Button variant="outline" borderWidth="3px">
@@ -573,18 +590,18 @@ const Media = () => {
                         </Button>
                     </Flex>
                     <Flex flex={1} />
-                    <SearchInput setValue={handleInput}
+                    <SearchInput setValue={handleInput} flex={2.5} mb={2}
                      display={{ md: "none" }} value={inputValue} />
                     <Wrap spacing="15px">
                         {displaySermons.length > 0 ? displaySermons.map((item, idx) => (
                             <WrapItem key={item.sermonID || idx}>
                                 <DashboardActivity isLoaded={Boolean(item.sermonID)} heading={item.title}
-                                p="4" width="100%" maxWidth="20rem">
-                                <Text as="i" color="#151C4D" fontWeight="600"
+                                p="4" width="100%">
+                                <Text as="i" color="#151C4D" fontFamily="Montserrat" fontWeight="600"
                                     fontSize="1.125rem" opacity={.5} >
-                                    {item.author}
+                                    {`By: ${item.author}`}
                                 </Text>
-                                <Text textAlign="left" color="#151C4D" opacity={.5}
+                                <Text textAlign="left" fontFamily="Montserrat" color="#151C4D" opacity={.5}
                                     maxWidth="sm" dangerouslySetInnerHTML={{ __html: item.sermonContent }} />
                             </DashboardActivity>
                             </WrapItem>
@@ -625,13 +642,13 @@ const Media = () => {
                     </Flex>
                 }
                 <Flex direction="column" width="100%">
-                    <Flex mb={[2, 5]} direction={["column", "row"]}
+                    <Flex mb={[2, 5]} direction={["column", "row"]} className={classes.buttonContainer}
                         align="center">
                         <Button px={4} onClick={handleToggle}>
                             Upload video/audio sermons
                         </Button>
-                        <Flex flex={1} />
-                        <SearchInput setValue={handleVideoInput}
+                        <Flex flex={.5} />
+                        <SearchInput setValue={handleVideoInput} flex={2.3}
                          display={{ base: "none", md: "inline-block" }} value={videoInputValue} />
                         <Flex flex={3} flexShrink={4} />
                         <Button variant="outline" mt={[2, "initial"]} borderWidth="3px" colorScheme="primary" color="primary" >

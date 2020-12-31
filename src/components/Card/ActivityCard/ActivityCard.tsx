@@ -75,7 +75,6 @@ export const DashboardActivity: React.FC<IDashboardActivity> & IActivityCardComp
             <Skeleton isLoaded={isLoaded} >
                 <Flex className={classes.root}
                     minWidth={["auto", heading ? "13.5rem" : ""]}
-                    // pt="2" width={["45vw", "auto"]} {...props}>
                     pt="2" {...props}>
                         <>
                             {heading &&
