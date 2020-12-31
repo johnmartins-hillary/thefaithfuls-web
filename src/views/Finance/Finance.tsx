@@ -32,6 +32,7 @@ import * as Yup from "yup"
 import { useHistory } from "react-router-dom"
 import { useInputTextValue } from "utils/InputValue"
 import {SearchInput} from "components/Input"
+import {primary} from "theme/palette"
 import axios from "axios"
 
 
@@ -60,14 +61,56 @@ const donationStyles = makeStyles((theme:Theme) => createStyles({
 }))
 const useStyles = makeStyles((theme:Theme) => createStyles({
     root:{
+        "& p":{
+            color:"#151C4D"
+        },
+        "& > div":{
+            "& > div":{
+                "& h2":{
+                    margin:theme.spacing(3,0),
+                    fontWeight:500
+                }
+            }
+        },
         "& ul":{
-            height:"30rem",
+            maxHeight:"30rem",
             overflowY:"auto",
             justifyContent:"center",
             [theme.breakpoints.up("sm")]:{
                 justifyContent:"flex-start"
             }
         }
+    },
+    buttonHolder:{
+        "& button:first-child,& button:last-child":{
+            textDecoration:"underline",
+            margin:theme.spacing(2.75,0),
+            fontFamily:"Montserrat",
+            opacity:.9,
+            fontWeight:400
+        },
+        "& button:nth-child(2)":{
+            padding:theme.spacing(3),
+            marginTop:theme.spacing(3)
+        }
+    },
+    buttonContainer:{
+        "& button":{
+            padding:theme.spacing(3)
+        }
+    },
+    walletContainer:{
+        "& h3":{
+            fontFamily:"Bahnschrift",
+            fontSize:"3rem",
+            fontWeight:"700" 
+        }
+    },
+    amountText:{
+        color:`${primary} !important`,
+        fontWeight:600,
+        fontFamily:"Bahnschrift",
+        fontSize:"1.9rem"
     }
 }))
 
@@ -97,13 +140,13 @@ const Transaction:React.FC<ITransaction> = ({withdraw,date,title,amount}) => {
         <HStack color="#151C4D" fontSize="0.875rem" spacing={3} >
             <Icon bgColor={withdraw ? "red.500" : "green.500"} borderRadius="50%"
              color="white" as={withdraw ? BsArrowUpRight : BsArrowDownLeft} />
-            <Text whiteSpace="nowrap">
+            <Text whiteSpace="nowrap" fontFamily="Montserrat" opacity={.8}>
                 {date.toLocaleTimeString()}
             </Text>
-            <Text >
+            <Text fontFamily="Montserrat" opacity={.8}>
                 {title}
             </Text>
-            <Text >
+            <Text fontWeight="700" opacity={.9}>
                 ₦{amount}  
             </Text>
         </HStack>
@@ -499,7 +542,6 @@ const Finance = () => {
         name:"",
         societyId:0
     }
-
     const [open,setOpen] = React.useState(false)
     const [donations,setDonation] = React.useState<IDonation[]>(new Array(4).fill(defaultDonation))
     const [displayDonation,setDisplayDonation] = React.useState<IDonation[]>([])
@@ -603,21 +645,19 @@ const Finance = () => {
         <>
         <Flex bgColor="#F9F5F9" p={{base:"4",md:"0"}} pl={{ md: "12" }} className={classes.root}
              direction={{base:"column",md:"row"}}>
-                <Stack flex={7} py={{ md: "12" }} spacing={16}
+                <Stack flex={7} spacing={16}
                  divider={<StackDivider borderColor="gray.200" />}>
                     <Stack width="100%">
                         <Heading fontWeight="400" color="primary" >
                             Accounts
                         </Heading>
-                        <Flex>
-                            <Button onClick={handleDonation("Bank")}  bgColor="primary" color="white" >
+                        <Flex my={3} className={classes.buttonContainer}>
+                            <Button onClick={handleDonation("Bank")}>
                                 Add Bank Account
-                        </Button>
-                        <Flex>
-                            <SearchInput value={accountInput} setValue={setAccountInput}
-                             ml="5" 
+                            </Button>
+                            <SearchInput maxW="22.5rem" flex={1} value={accountInput} setValue={setAccountInput}
+                                ml="5" 
                             />
-                        </Flex>
                         </Flex>
                         <Wrap>
                         {displayChurchAccount.length > 0 ?
@@ -641,14 +681,12 @@ const Finance = () => {
                         <Heading fontWeight="400" color="primary" >
                             Donations
                         </Heading>
-                        <Flex>
-                            <Button onClick={handleDonation("Donation")} bgColor="primary" color="white" >
+                        <Flex my={3} className={classes.buttonContainer}>
+                            <Button onClick={handleDonation("Donation")}>
                                 Set up Donations
                             </Button>
-                            <Flex>
-                                <SearchInput ml="5" value={donationInput} setValue={setDonationInput}
-                                />
-                            </Flex>
+                            <SearchInput maxW="22.5rem" flex={1}  ml="5" value={donationInput} setValue={setDonationInput}
+                            />
                         </Flex>
                         <Wrap>
                         {
@@ -671,26 +709,28 @@ const Finance = () => {
                         </Wrap>
                     </Stack>
                 </Stack>
-                <Stack zIndex={1000} pt={10} maxWidth={{md:"24rem"}} width="100%" minHeight={{md:"100vh"}}
+                <Stack zIndex={1000} pt={10} maxWidth={{md:"24rem"}} width="100%"
                  pl={10} flex={3} ml={{md:4}} align="center" bgColor="white" mt={{base:"3",md:"0"}}
                     borderRadius="10px" shadow=" 0px 5px 20px #0000001A"
                     divider={<StackDivider borderColor="gray.200" />}>
-                    <Stack width="100%" align="center">
+                    <Stack width="100%" align="center" className={classes.walletContainer}>
                         <Image w="9.63rem" src={FinanceSVG} />
-                        <Heading color="primary" as="h2" > 
+                        <Heading color="primary" as="h3" > 
                             Wallet
                         </Heading>
                         <Stack alignSelf="flex-start">
                             <Text fontWeight="600" fontSize="1.125rem" >
                                 Amount
                             </Text>
-                            <Text color="primary" fontWeight="600" fontSize="1.9rem">
+                            <Text className={classes.amountText}>
                                 ₦20,000
                             </Text>
                         </Stack>
                     </Stack>
                     <Stack flex={1} width="100%" maxHeight="23rem">
-                        <Heading as="h6" fontSize="1.125rem" >
+                        <Heading as="h6" fontSize="1.125rem"
+                        color="tertiary"
+                        >
                             Recent Transactions
                         </Heading>
                         <Stack maxHeight="18rem" overflowY="scroll" >
@@ -714,16 +754,16 @@ const Finance = () => {
                              date={new Date()} withdraw={false} />
                         </Stack>
                     </Stack>
-                        <Flex direction="column" my="5" >
-                            <Button fontWeight="400" variant="link" my="7"
-                            onClick={goToReport}
-                             textDecoration="underline" >
+                        <Flex direction="column" my="5" className={classes.buttonHolder} >
+                            <Button variant="link"
+                            onClick={goToReport} color="tertiary">
                                 View Transaction History
                             </Button>
                             <Button onClick={handleDonation("Withdraw")}>
                                 Withdraw
                             </Button>
-                            <Button fontWeight="400" my="5" variant="link" textDecoration="underline" >
+                            <Button variant="link"
+                            color="tertiary">
                                 Withdraw settings
                             </Button>
                         </Flex>

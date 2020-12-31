@@ -4,7 +4,7 @@ import { RiDeleteBinLine } from "react-icons/ri"
 import { BiEdit } from "react-icons/bi"
 import { Dot } from "assets/images"
 import { makeStyles, createStyles } from "@material-ui/core/styles"
-
+import {primary} from "theme/palette"
 
 const dashboardStyles = makeStyles(() => createStyles({
     root: {
@@ -36,8 +36,23 @@ const activityStyles = makeStyles(() => createStyles({
         backgroundColor: "white",
         flexDirection: "column",
         shadow: " 0px 5px 10px #0000000D",
-        borderTop: "3px solid purple",
+        borderTop: `3px solid  ${primary}`,
         borderRadius: "0 0 0.625rem"
+    }
+}))
+
+const financeStyles = makeStyles(() => createStyles({
+    root:{
+        "& button":{
+            backgroundColor:"transparent"
+        },
+        "& h3":{
+            fontWeight:"500"
+        },
+        "& p":{
+            opacity:".9",
+            fontWeight:"600"
+        }
     }
 }))
 
@@ -93,8 +108,9 @@ export const DashboardActivity: React.FC<IDashboardActivity> & IActivityCardComp
     }
 
 export const FinanceActivity: React.FC<IFinanceActivity> = ({ heading,isLoaded, subHeading, moreHeading, text }) => {
+    const classes = financeStyles()
     return (
-        <Skeleton isLoaded={isLoaded}>
+        <Skeleton isLoaded={isLoaded} className={classes.root} >
             <Flex width="100%" direction="column">
                 <HStack spacing={2} width="100%"
                     justify="flex-end" flex={1}>
@@ -104,23 +120,23 @@ export const FinanceActivity: React.FC<IFinanceActivity> = ({ heading,isLoaded, 
                         icon={<RiDeleteBinLine />} />
                 </HStack>
                 <Stack spacing={4} direction="column" mx={5} mb={10} >
-                    <Heading fontWeight={400} fontSize="1.5rem">
+                    <Heading as="h3" color="tertiary" fontSize="1.5rem">
                         {heading}
                     </Heading>
                     <Stack fontSize="1.125rem"
                         color="#151C4D" opacity={.5} >
                         {subHeading &&
-                            <Text>
+                            <Text color="tertiary">
                                 {subHeading}
                             </Text>
                         }
                         {moreHeading &&
-                            <Text>
+                            <Text  color="tertiary">
                                 {moreHeading}
                             </Text>
                         }
                         {text &&
-                            <Text fontSize="0.875rem" maxWidth="md" >
+                            <Text color="tertiary" fontSize="0.875rem" maxWidth="md" >
                                 {text}
                             </Text>
                         }

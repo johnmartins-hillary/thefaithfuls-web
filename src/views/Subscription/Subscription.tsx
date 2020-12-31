@@ -1,7 +1,6 @@
 import React from "react";
 import {
-  Box,StackDivider,Text,
-  Flex,Heading,
+  Box,StackDivider,Text,Flex,Heading,
   Stack,Icon,Image, FormControl, FormLabel, Switch
 } from "@chakra-ui/react";
 import {Button} from "components/Button"
@@ -14,17 +13,19 @@ import {Growth,CreditCard} from "assets/images"
 
 const useStyles = makeStyles((theme:Theme) => createStyles({
   root:{
-
+    maxWidth:"175rem",
+    [theme.breakpoints.up("sm")]:{
+      padding:theme.spacing(5)
+    },
+    [theme.breakpoints.up("md")]:{
+      padding:theme.spacing(10),
+    },
   },
   toggleContainer:{
     display:"flex",
     alignItems:"center",
     justifyContent:"space-evenly",
     flexDirection:"row",
-    // width:"75%",
-    // [theme.breakpoints.up("sm")]:{
-    //   width:"63%",
-    // },
     "& label":{
       marginBottom:"0 !important",
       opacity:.5,
@@ -75,9 +76,9 @@ const Subscription = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
   return (
-    <Flex direction="column" bgColor="#F9F5F9" py={{md:"12"}} px={{md:"12"}}>
+    <Flex direction="column" className={classes.root}>
         <Flex direction={{base:"column",lg:"row"}}>
-          <Flex flex={7} direction="column" mr={3} alignItems="center">
+          <Flex flex={10} direction="column" mr={3} alignItems="center">
             <Flex py="7" px="3" className={classes.subscriptionDetail}>
               <Stack flex={[4,3,1]} spacing={7} m={4}>
                 <Heading fontWeight="400" fontSize="1.5rem">
@@ -163,7 +164,7 @@ const Subscription = () => {
                 </Stack>
             </Box>
           </Flex>
-            <Flex height={{md:"100vh"}} mt={{base:"4",md:"auto"}}
+            <Flex mt={{base:"4",md:"0"}}
              flex={3} align="center" width={{base:"100%",sm:"auto"}}
               color="white" justify="center"
             >
@@ -206,7 +207,8 @@ const Subscription = () => {
                   </Box>
                 </Text>
                 <Stack spacing={3}>
-                  <Box>
+                  {[1,2,3,4,5,6,7,8,9,10].map((item,idx) => (
+                    <Box key={idx} >
                     <Icon
                       boxSize="1.01rem"
                       borderRadius="50%"
@@ -219,57 +221,10 @@ const Subscription = () => {
                       fontSize={["0.8rem", "0.875rem"]}
                       color="#151C4D"
                     >
-                      Unlimited Advert
+                      Unlimited Adverts
                     </Box>
                   </Box>
-                  <Box>
-                    <Icon
-                      boxSize="1.01rem"
-                      borderRadius="50%"
-                      mr="3"
-                      color="primary"
-                      as={AiFillCheckCircle}
-                    />
-                    <Box
-                      as="span"
-                      fontSize={["0.8rem", "0.875rem"]}
-                      color="#151C4D"
-                    >
-                      Unlimited Advert
-                    </Box>
-                  </Box>
-                  <Box>
-                    <Icon
-                      boxSize="1.01rem"
-                      borderRadius="50%"
-                      mr="3"
-                      color="primary"
-                      as={AiFillCheckCircle}
-                    />
-                    <Box
-                      as="span"
-                      fontSize={["0.8rem", "0.875rem"]}
-                      color="#151C4D"
-                    >
-                      Unlimited Advert
-                    </Box>
-                  </Box>
-                  <Box>
-                    <Icon
-                      boxSize="1.01rem"
-                      borderRadius="50%"
-                      mr="3"
-                      color="primary"
-                      as={AiFillCheckCircle}
-                    />
-                    <Box
-                      as="span"
-                      fontSize={["0.8rem", "0.875rem"]}
-                      color="#151C4D"
-                    >
-                      Unlimited Advert
-                    </Box>
-                  </Box>
+                  ))}
                 </Stack>
                 <Button
                   bgColor="primary"

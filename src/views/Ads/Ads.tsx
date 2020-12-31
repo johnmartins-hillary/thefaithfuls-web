@@ -19,13 +19,22 @@ import axios from "axios"
 
 const useStyles = makeStyles((theme:Theme) => createStyles({
     root:{
+        [theme.breakpoints.up("md")]:{
+            marginLeft:theme.spacing(10)
+        },
         "& ul":{
-            height:"30rem",
+            maxHeight:"30rem",
             overflowY:"auto",
             justifyContent:"center",
             [theme.breakpoints.up("sm")]:{
                 justifyContent:"flex-start"
             }
+        },
+        "& > div:nth-child(2)":{
+            margin:theme.spacing(3,0)
+        },
+        "& button":{
+            padding:theme.spacing(2.9,5)
         }
     }
 }))
@@ -146,11 +155,9 @@ const Ads = () => {
                             Post a new Ad
                         </Button>
                     </Link>
-                    <Flex>
                     <SearchInput ml={{ base: "1rem", md: "3rem" }} value={inputValue}
-                     setValue={setInputValue}  width="auto" maxW="20rem"
+                     setValue={setInputValue}  width="auto" maxW="23rem" flex={3}
                     />
-                    </Flex>
                 </Flex>
                 <VStack width="100%">
                     <Stack direction={"column"} mb={[2, 5]} align={["center", "flex-start"]}
