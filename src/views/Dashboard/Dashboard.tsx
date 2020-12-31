@@ -30,15 +30,17 @@ import { Icon as DotIcon } from "components/Icon"
 import axios from "axios"
 
 
+
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        "& ul":{
-            height:"30rem",
-            overflowY:"auto",
-            justifyContent:"center",
-            [theme.breakpoints.up("sm")]:{
-                justifyContent:"flex-start"
-            }
+        display:"flex",
+        flexDirection:"column",
+        alignItems:"center",
+        "& > div:nth-child(2)":{
+            display:"flex",
+            width:"100%",
+            flexDirection:"column",
+            maxWidth:"115rem"
         }
     },
     verificationContainer: {
@@ -50,16 +52,21 @@ const useStyles = makeStyles((theme) => createStyles({
         "& > div": {
             "& button": {
                 marginTop: "auto !important",
-                padding: "initial 1.6rem"
+                padding: "1.5rem .5rem",
+                // paddingLeft:"initial",
+                // paddingRight:"initial"
             },
         },
         "& img": {
             alignSelf: "center"
+        },
+        "& button":{
+            marginBottom:"2rem"
         }
     },
     link: {
-        color: "whitesmoke !important",
-        opacity: .5,
+        color: "white !important",
+        opacity: .8,
         fontSize: "0.875rem"
     },
     routerLink:{
@@ -69,7 +76,23 @@ const useStyles = makeStyles((theme) => createStyles({
         marginBottom:"auto"
     },
     mediaContainer: {
-
+        "& ul":{
+            maxHeight:"30rem",
+            overflowY:"auto",
+            justifyContent:"center",
+            [theme.breakpoints.up("sm")]:{
+                justifyContent:"flex-start"
+            },
+            "& li":{
+                width:"80%",
+                "& > div":{
+                    width:"100%"
+                },
+                [theme.breakpoints.up("sm")]:{
+                    width:"initial"
+                }
+            }
+        }
     },
     imageContainer: {
         backgroundRepeat: "no-repeat",
@@ -84,6 +107,11 @@ const useStyles = makeStyles((theme) => createStyles({
         borderRadius: "10px",
         alignItems: "flex-start !important",
         flex: 3
+    },
+    boxShadownContainer:{
+        boxShadow:"0px 5px 20px #0000001A",
+        borderRadius:"10px",
+        backgroundColor:"white"
     }
 }))
 
@@ -160,22 +188,26 @@ const Dashboard = () => {
                     })
                 }))
             }).catch(err => {
-                toast({
-                    title: "Unable to get Church Activity",
-                    subtitle: `Error : ${err}`,
-                    messageType: MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title: "Unable to get Church Activity",
+                        subtitle: `Error : ${err}`,
+                        messageType: MessageType.ERROR
+                    })
+                }
             })
         }
         const getChurchEvent = async () => {
             activityService.getChurchEvent(params.churchId,source).then(payload => {
                 setChurchEvent(payload.data)
             }).catch(err => {
-                toast({
-                    title: "Unable to get Church Event",
-                    subtitle: `Error : ${err}`,
-                    messageType: MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title: "Unable to get Church Event",
+                        subtitle: `Error : ${err}`,
+                        messageType: MessageType.ERROR
+                    })
+                }
             })
         }
         getChurchActivity()
@@ -187,15 +219,16 @@ const Dashboard = () => {
     }, [])
 
 
+
     if (!currentChurch) {
         return <div>loading...</div>
     } else {
         return (
-            <>
+            <Box className={classes.root}>
                 <Box width="100%">
                     <Box backgroundImage={`url(${currentChurch.churchLogo || DefaultChurchLogo})`} position="relative"
                         backgroundRepeat="no-repeat"
-                        backgroundPosition="center" height={["17rem", "13rem"]}
+                        backgroundPosition="center" height="17.5rem"
                         width="100%" backgroundSize="cover"
                     >
                         <Box position="absolute" width="100%"
@@ -211,45 +244,47 @@ const Dashboard = () => {
                         </Flex>
                     </Box>
                 </Box>
-                <Box pt={["1", "20"]} pl={["1", "5", "10"]} bgColor="#F9F5F9">
+                <Box pt={["1", "12"]} px={["1", "5", "10"]} >
                     {true &&
-                        <Flex direction={{ base: "column-reverse", md: "row" }} pr={{ md: "16" }}
-                            my={10} height={["auto", "auto", "25vh"]} width="100%">
-                            <Flex p={4}
-                                className={classes.verificationContainer}>
+                        <Flex direction={{ base: "column-reverse", md: "row" }}
+                            my={16}  minHeight="13rem" width="100%">
+                            <Flex p={6} className={`${classes.verificationContainer} ${classes.boxShadownContainer}`}>
                                 <VStack align="flex-start" >
                                     <Heading textStyle="h5" >
                                         Complete your church profile
                                     </Heading>
                                     <Link to={`/church/${params.churchId}/update`}
-                                        className={classes.routerLink}
+                                        className={classes.routerLink} opacity={.5}
                                         color="tertiary">
                                         Click here to complete church profile
                                     </Link>
-                                    <Button width="84%" >
+                                    <Button width="84%" py="5" >
                                         <RouterLink to={`/church/${params.churchId}/verify`} >
                                             Verify your Church
                                         </RouterLink>
                                     </Button>
                                 </VStack>
-                                <Image src={VerifyImg} boxSize={["5rem", "7.5rem", "16rem"]} />
+                                <Image src={VerifyImg} boxSize={["9rem","15rem"]} />
                             </Flex>
-                            <VStack p={4} ml={3} mb={[3, 3, 0]} bg="primary" className={classes.upgradeContainer}>
+                            <VStack p={6} ml={3} mb={[3, 3, 0]}
+                             bg="primary" className={classes.upgradeContainer}>
                                 <Image src={Free} />
-                                <Heading fontSize={["1rem", "1.5rem"]} color="white" >
+                                <Heading fontSize={["1rem","1.75rem","2.3rem"]}
+                                 color="white" maxW="md" >
                                     You are on currently on the free plan Kindly upgrade
                                 </Heading>
-                                <Link to={`/church/${params.churchId}/verify`} className={classes.link}>
+                                <Link to={`/church/${params.churchId}/verify`} 
+                                className={classes.link}>
                                     Click here to upgrade
                                 </Link>
                             </VStack>
                         </Flex>
                     }
-                    <Flex flexDirection={["column-reverse", "column-reverse", "row"]} 
-                    pr={{ md: "16" }} minHeight={{ base: "auto", md: "25vh" }}>
-                        <Flex flex={5} flexShrink={3} borderRadius="0.63rem"
-                            pt="3" pl="2" bgColor="white" direction="column"
-                            shadow="0px 5px 10px #0000001A" >
+
+                    <Flex flexDirection={["column-reverse", "column-reverse", "row"]}
+                        minHeight={{ base: "auto", md: "25vh" }}>
+                        <Flex flex={5} flexShrink={3} className={classes.boxShadownContainer}
+                            pt="3" pl="2" direction="column">
                             <Text color="#707070" fontSize=".9rem" >
                                 Church Activities
                             </Text>
@@ -289,7 +324,7 @@ const Dashboard = () => {
                             </VStack>
                         </Stack>
                     </Flex>
-                    <Stack my="10" spacing="6" >
+                    <Stack my="10" spacing="6" className={classes.mediaContainer} >
                         <Text fontSize="1.88rem" textAlign={["center", "left"]} color="#4C1C51" >
                             Weekly Activites
                         </Text>
@@ -302,13 +337,10 @@ const Dashboard = () => {
                                         <Flex pb={{ md: 12 }} mr={{ md: 16 }} direction="column"  >
                                             <DashboardActivity.Activity
                                                 title={item.title} dotColor="#B603C9"
+                                                subtitle={item.schedule.recurrence || ""}
                                                 date={`${(item.schedule.time.startDate as Date).toLocaleTimeString()} - 
                                                 ${(item.schedule.time.endDate as Date ).toLocaleTimeString()}
                                                 `}
-                                            />
-                                            <DashboardActivity.Activity
-                                                title={"Recurring Event"} dotColor="#B603C9"
-                                                date={item.schedule.recurrence || ""}
                                             />
                                         </Flex>
                                     </DashboardActivity>
@@ -320,7 +352,7 @@ const Dashboard = () => {
                             }
                         </Wrap>
                     </Stack>
-                    <Box mb="16">
+                    <Box mb="16" className={classes.mediaContainer}>
                         <Text fontSize="1.5rem" mb="5" textAlign={["center", "left"]}
                             color="#4C1C51" >
                             upcoming events
@@ -347,7 +379,7 @@ const Dashboard = () => {
                 <Dialog open={open} size="3xl" close={handleToggle} >
                     <Subscription />
                 </Dialog>
-            </>
+            </Box>
         )
     }
 }

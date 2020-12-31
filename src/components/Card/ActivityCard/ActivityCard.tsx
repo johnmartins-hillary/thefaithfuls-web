@@ -42,7 +42,8 @@ const activityStyles = makeStyles(() => createStyles({
 }))
 
 interface IActivityProps {
-    title: string;
+    title?: string;
+    subtitle?:string;
     date: string;
     dotColor: string;
 }
@@ -134,27 +135,34 @@ export const FinanceActivity: React.FC<IFinanceActivity> = ({ heading,isLoaded, 
 const ActivityCard: React.FC<IProps> = ({ children, ...props }) => {
     const classes = activityStyles()
     return (
-        // <Flex align="center" bgColor="white" direction="column" shadow=" 0px 5px 10px #0000000D"
-        //  borderTop="3px solid purple" borderRadius="0 0 0.625rem 0.625rem" {...props} >
         <Flex className={classes.root} {...props} >
             {children}
         </Flex>
     )
 }
 
-const Activity: React.FC<IActivityProps> = ({ title, date, dotColor }) => {
+const Activity: React.FC<IActivityProps> = ({ title, date,subtitle, dotColor }) => {
     return (
-        <Stack my="3" direction="row" color="#4C1C51" >
+        <Stack my="3" spacing={5} direction="row" color="#4C1C51" >
             <Dot color={dotColor} />
             <VStack>
-                <Text letterSpacing="0.28px" fontSize="0.875rem"
+                {
+                    title &&
+                <Text letterSpacing="0.28px" maxW="md" fontSize="0.875rem"
                     fontWeight="600">
                     {title}
                 </Text>
-                <Text color="#4C1C51" opacity={.8} fontSize="13.28px"
+                }
+                <Text color="#4C1C51" opacity={.8} maxW="md" fontSize="13.28px"
                     letterSpacing="0.24px" >
                     {date}
                 </Text>
+                {subtitle && 
+                <Text color="#4C1C51" opacity={.8} maxW="md" fontSize="13.28px"
+                    letterSpacing="0.24px" >
+                    {subtitle}
+                </Text>
+                }
             </VStack>
         </Stack>
     )
