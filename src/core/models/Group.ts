@@ -31,6 +31,7 @@ export interface IGroupMember {
     positionName:string;
     leaderId:number;
     leadersPosition:ILeaderPosition;
+    fullname:string;
     church:IChurch;
     person:IPerson;
     society:IGroup;

@@ -85,11 +85,13 @@ const Create = () => {
             await getStaffByChurch(Number(params.churchId),cancelToken).then(payload => {
                 setInitialGroupMember(payload.data)
             }).catch(err => {
-                toast({
-                    title:"Unable to load Church Member",
-                    subtitle:`Error:${err}`,
-                    messageType:MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title:"Unable to load Church Member",
+                        subtitle:`Error:${err}`,
+                        messageType:MessageType.ERROR
+                    })
+                }
             })
         }
         apiStaffCall()
@@ -200,7 +202,7 @@ const Create = () => {
                                                 </Box>  
                                                 {
                                                     image.base64 &&
-                                                    <Avatar src={image.base64} size="xl" />                    
+                                                    <Avatar src={image.base64} size="2xl" />                    
                                                 }
                                             </HStack>
                                             <NormalInput width="100%" name="group" placeholder="Group Name" />

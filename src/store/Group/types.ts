@@ -38,7 +38,7 @@ export interface CreateGroupAction {
 }
 export interface CreateGroupMemberAction {
     type:ActionTypes.CREATE_GROUP_MEMBER,
-    payload:IGroupMember
+    payload:IGroupMember[]
 }
 export interface DeleteGroupAction {
     type:ActionTypes.DELETE_GROUP,
