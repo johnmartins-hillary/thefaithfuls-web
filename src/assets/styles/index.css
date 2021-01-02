@@ -1,48 +1,26 @@
+/* Montserrat */
 @font-face{
   font-family: "Montserrat";
-  src:local("MontserratThin"),
-  url(../../fonts/Montserrat/Montserrat-Thin.ttf) format("truetype");
-  font-weight: 100;
+  src:local("Montserrat"),
+  url(../../fonts/Montserrat/Montserrat-ExtraLight.ttf) format("truetype");
+  font-weight: lighter;
+  font-style: normal;
 }
 @font-face{
   font-family: "Montserrat";
-  src:local("MontserratLight"),
-  url(../../fonts/Montserrat/Montserrat-Light.ttf) format("truetype");
-  font-weight: 200;
-}
-@font-face{
-  font-family: "Montserrat";
-  src:local("MontserratMedium"),
-  url(../../fonts/Montserrat/Montserrat-Medium.ttf) format("truetype");
-  font-weight: 400;
-}
-
-@font-face{
-  font-family: "Montserrat";
-  src:local("MontserratRegular"),
+  src:local("Montserrat"),
   url(../../fonts/Montserrat/Montserrat-Regular.ttf) format("truetype");
-  font-weight: 500;
+  font-weight: normal;
+  font-style: normal;
 }
-
 @font-face{
   font-family: "Montserrat";
-  src:local("MontserratSemiBold"),
-  url(../../fonts/Montserrat/Montserrat-SemiBold.ttf) format("truetype");
-  font-weight: 600;
-}
-
-@font-face{
-  font-family: "Montserrat";
-  src:local("MontserratBold"),
+  src:local("Montserrat"),
   url(../../fonts/Montserrat/Montserrat-Bold.ttf) format("truetype");
-  font-weight: 700;
+  font-weight:bold;
+  font-style: normal;
 }
-@font-face{
-  font-family: "Montserrat";
-  src:local("MontserratExtraBold"),
-  url(../../fonts/Montserrat/Montserrat-ExtraBold.ttf) format("truetype");
-  font-weight:800;
-}
+
 
 @font-face{
   font-family: "Bahnschrift";
@@ -52,47 +30,32 @@
 
 /* Mulish */
 @font-face{
-  font-family: "Mulish";
-  src:local("Mulish"),
-  url(../../fonts/Mulish/Mulish-ExtraLight.ttf) format("truetype");
-  font-weight: 100;
-}
-@font-face{
-  font-family: "Mulish";
+  font-family: "MulishLight";
   src:local("Mulish"),
   url(../../fonts/Mulish/Mulish-Light.ttf) format("truetype");
-  font-weight: 200;
+  font-weight: lighter;
+  font-style: normal;
 }
 @font-face{
-  font-family: "Mulish";
+  font-family: "MulishRegular";
   src:local("Mulish"),
   url(../../fonts/Mulish/Mulish-Regular.ttf) format("truetype");
   font-weight:normal;
-}
-@font-face{
-  font-family: "Mulish";
-  src:local("MulishItalic"),
-  url(../../fonts/Mulish/Mulish-BlackItalic.ttf) format("truetype");
-  font-style: italic;
-  font-weight: normal;
-}
-@font-face{
-  font-family: "Mulish";
-  src:local("MulishSemiBold"),
-  url(../../fonts/Mulish/Mulish-SemiBold.ttf) format("truetype");
-  font-weight: 500;
+  font-style: normal;
 }
 @font-face{
   font-family: "MulishBold";
-  src:local("MulishBold"),
+  src:local("Mulish"),
   url(../../fonts/Mulish/Mulish-Bold.ttf) format("truetype");
-  font-weight: 600;
+  font-weight: bold;
+  font-style: normal;
 }
 @font-face{
-  font-family: "Mulish";
-  src:local("MulishExtraBold"),
+  font-family: "MulishExtraBold";
+  src:local("Mulish"),
   url(../../fonts/Mulish/Mulish-ExtraBold.ttf) format("truetype");
-  font-weight: 700;
+  font-weight:bolder;
+  font-style: normal;
 }
 
 body {

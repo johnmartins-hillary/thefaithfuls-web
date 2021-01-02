@@ -61,20 +61,13 @@ const theme:DefaultTheme & any =  {
       body: 'Mulish',
       mono: 'Bahnschrift',
     },
-    fontWeights:{
-      ...initialTheme.fontWeights,
-      light:300,
-      normal:400,
-      medium:500,
-      bold:700
-    },
-    lineHeights:{
-      ...initialTheme.lineHeights,
-      base:'19px',
-      normal:'22px',
-      tall:"26px",
-      taller:"42px"
-    },
+    // lineHeights:{
+    //   ...initialTheme.lineHeights,
+    //   base:'19px',
+    //   normal:'22px',
+    //   tall:"26px",
+    //   taller:"42px"
+    // },
     space:{
       ...initialTheme.space,
       "1":"0.10rem",
@@ -100,28 +93,62 @@ const theme:DefaultTheme & any =  {
       "6xl": "4rem",
     },
     textStyles:{
-      h3:{
-        fontWeight:400,
-        whiteSpace:["normal","nowrap"],
-        textAlign:["center","left"]
-      },
-      h4:{
-        fontSize:"1.875rem",
-        color:primary,
+      MulishRegular:{
         fontFamily:"Mulish",
-        fontWeight:400
+        fontStyle:"normal",
+        fontWeight:"normal",
       },
-      h5:{
-        fontSize:"1.5rem",
-        color:"tertiary"
+      style1:{
+        fontSize:"0.9375rem",
+        lineHeight:"29px",
+        letterSpacing:"0px"
       },
-      h6:{
-        fontSize:"1.125rem",
-        color:"#383838",
-        opacity:.8,
-        textAlign:["center", "left"],
-        fontWeight:400
-      }
+      style2:{
+        fontFamily:"Mulish",
+        fontStyle:"normal",
+        fontWeight:"normal",
+        fontSize:"1.1875rem",
+        lineHeight:"24px",
+        letterSpacing:"0px"
+      },
+      style3:{
+        fontFamily:"Mulish",
+        fontStyle:"normal",
+        fontWeight:"normal",
+        fontSize:"0.9375rem",
+        lineHeight:"19px",
+        letterSpacing:"0px"
+      },
+      style4:{
+        fontFamily:"Mulish",
+        fontStyle:"normal",
+        fontWeight:"normal",
+        fontSize:"0.9375rem",
+        lineHeight:"21px",
+        letterSpacing:"0px"
+      },
+      // h3:{
+      //   fontWeight:400,
+      //   whiteSpace:["normal","nowrap"],
+      //   textAlign:["center","left"]
+      // },
+      // h4:{
+      //   fontSize:"1.875rem",
+      //   color:primary,
+      //   fontFamily:"Mulish",
+      //   fontWeight:400
+      // },
+      // h5:{
+      //   fontSize:"1.5rem",
+      //   color:"tertiary"
+      // },
+      // h6:{
+      //   fontSize:"1.125rem",
+      //   color:"#383838",
+      //   opacity:.8,
+      //   textAlign:["center", "left"],
+      //   fontWeight:400
+      // }
     },
     components:{
       drawer:drawerStyle,
@@ -144,12 +171,12 @@ const theme:DefaultTheme & any =  {
         }
       }
     },
-    global:{
-      "button":{
-        backgroundColor:"#B603C9",
-        color:"white"
-      }
-    }
+    // global:{
+    //   "button":{
+    //     backgroundColor:"#B603C9",
+    //     color:"white"
+    //   }
+    // }
   };
 
 export default extendTheme(theme)

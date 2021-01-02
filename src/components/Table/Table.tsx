@@ -19,6 +19,12 @@ const useStyles = makeStyles({
         boxShadow:" 0px 5px 10px #20A2A01A",
         border:"0.5px solid #01C09233",
         borderTopWidth:"0",
+        "& thead":{
+            backgroundColor:"#F9F5F9"
+        },
+        "& td:last-child":{
+            display:"none"
+        },
         "& > *:nth-child(2)":{
             backgroundColor:"white"
         }
