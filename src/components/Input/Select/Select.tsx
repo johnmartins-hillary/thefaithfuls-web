@@ -34,14 +34,14 @@ const InputComponent:React.FC<IProps> = ({placeholder,className,label,val = 0,na
             isInvalid={Boolean(form.touched[name]) && Boolean(form.errors[name])} {...props} >
               { label  && <FormLabel htmlFor={name} fontWeight="500" color="primary">{label}</FormLabel>}
               
-              <Select size="md" alignSelf="center" id={name} mx="auto" {...field}
+              <Select size="md" fontFamily="MulishRegular" alignSelf="center" id={name} mx="auto" {...field}
                 width={["100%","auto"]} placeholder={placeholder}>
                   {children}
               </Select>
               {
                 form.touched[name]  && 
               form.errors[name] &&
-                <FormErrorMessage>{form.errors[name]}</FormErrorMessage>
+                <FormErrorMessage fontFamily="MulishRegular">{form.errors[name]}</FormErrorMessage>
                }
             </FormControl>
           )

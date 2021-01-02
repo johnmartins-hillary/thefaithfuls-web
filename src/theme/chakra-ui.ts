@@ -22,7 +22,8 @@ const Input = {
   // The styles all Input have in common
   baseStyle: {
     fontWeight: "bold",
-    fontSize:"1.3rem"
+    fontSize:"1.3rem",
+    fontFamily:"MulishRegular"
   },
   // Two sizes: sm and md
   sizes: {
@@ -33,7 +34,7 @@ const Input = {
   variants: {
     solid: {
       border:"1px solid rgba(0, 0, 0, .3)",
-      opacity:.85,
+      // opacity:.9,
       bgColor:"white",
       borderRadius:"4px",
       color:"#00000099",
@@ -41,6 +42,7 @@ const Input = {
       letterSpacing:".15px",
       _placeholder:{
         color:"grey",
+        opacity:.74
       }
     }
   },
