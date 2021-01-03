@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
         "& > div:nth-child(2)":{
             margin:theme.spacing(3,0)
         },
+        "& h2":{
+            fontFamily:"MulishRegular"
+        },
         "& button":{
             padding:theme.spacing(2.9,5)
         }

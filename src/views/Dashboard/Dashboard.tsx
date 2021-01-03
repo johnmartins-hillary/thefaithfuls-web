@@ -27,6 +27,7 @@ import { setPageTitle } from "store/System/actions"
 import { rrulestr } from "rrule"
 import { Free } from "assets/images"
 import { Icon as DotIcon } from "components/Icon"
+import {tertiary} from "theme/palette"
 import axios from "axios"
 
 
@@ -36,6 +37,10 @@ const useStyles = makeStyles((theme) => createStyles({
         display:"flex",
         flexDirection:"column",
         alignItems:"center",
+        "& h6":{
+            fontStyle:"italic",
+            opacity:".75"
+        },
         "& > div:nth-child(2)":{
             display:"flex",
             width:"100%",
@@ -45,6 +50,7 @@ const useStyles = makeStyles((theme) => createStyles({
     },
     verificationContainer: {
         shadow: "0px 5px 20px #0000001A",
+        overflow:"'hidden",
         flex:5,
         backgroundColor: "white",
         borderRadius: "10px",
@@ -62,6 +68,17 @@ const useStyles = makeStyles((theme) => createStyles({
         },
         "& button":{
             marginBottom:"2rem"
+        },
+        "& p":{
+            color:tertiary
+        }
+    },
+    chartContainer:{
+        "& p,tspan":{
+            fontFamily:"MontserratMedium !important"
+        },
+        "& span":{
+            fontFamily:"MontserratRegular !important"
         }
     },
     link: {
@@ -76,6 +93,9 @@ const useStyles = makeStyles((theme) => createStyles({
         marginBottom:"auto"
     },
     mediaContainer: {
+        "& h3":{
+            fontFamily:"Bahnschrift"
+        },
         "& ul":{
             maxHeight:"30rem",
             overflowY:"auto",
@@ -250,7 +270,7 @@ const Dashboard = () => {
                             my={16}  minHeight="13rem" width="100%">
                             <Flex p={6} className={`${classes.verificationContainer} ${classes.boxShadownContainer}`}>
                                 <VStack align="flex-start" >
-                                    <Heading textStyle="h5" >
+                                    <Heading textStyle="h6" fontSize="1.5rem">
                                         Complete your church profile
                                     </Heading>
                                     <Link to={`/church/${params.churchId}/update`}
@@ -264,7 +284,7 @@ const Dashboard = () => {
                                         </RouterLink>
                                     </Button>
                                 </VStack>
-                                <Image src={VerifyImg} boxSize={["9rem","15rem"]} />
+                                <Image src={VerifyImg} mr={{md:4}} boxSize={["9rem","15rem"]} />
                             </Flex>
                             <VStack p={6} ml={3} mb={[3, 3, 0]}
                              bg="primary" className={classes.upgradeContainer}>
@@ -275,7 +295,9 @@ const Dashboard = () => {
                                 </Heading>
                                 <Link to={`/church/${params.churchId}/verify`} 
                                 className={classes.link}>
-                                    Click here to upgrade
+                                    <Text as="h6" >
+                                        Click here to upgrade
+                                    </Text>
                                 </Link>
                             </VStack>
                         </Flex>
@@ -283,7 +305,7 @@ const Dashboard = () => {
 
                     <Flex flexDirection={["column-reverse", "column-reverse", "row"]}
                         minHeight={{ base: "auto", md: "25vh" }}>
-                        <Flex flex={5} flexShrink={3} className={classes.boxShadownContainer}
+                        <Flex flex={5} flexShrink={3} className={`${classes.chartContainer} ${classes.boxShadownContainer}`}
                             pt="3" pl="2" direction="column">
                             <Text color="#707070" fontSize=".9rem" >
                                 Church Activities
@@ -325,7 +347,7 @@ const Dashboard = () => {
                         </Stack>
                     </Flex>
                     <Stack my="10" spacing="6" className={classes.mediaContainer} >
-                        <Text fontSize="1.88rem" textAlign={["center", "left"]} color="#4C1C51" >
+                        <Text fontSize="1.88rem" as="h3" textAlign={["center", "left"]} color="activityColor" >
                             Weekly Activites
                         </Text>
                         <Wrap>
@@ -353,7 +375,7 @@ const Dashboard = () => {
                         </Wrap>
                     </Stack>
                     <Box mb="16" className={classes.mediaContainer}>
-                        <Text fontSize="1.5rem" mb="5" textAlign={["center", "left"]}
+                        <Text fontSize="1.5rem" as="h3" mb="5" textAlign={["center", "left"]}
                             color="#4C1C51" >
                             upcoming events
                         </Text>
@@ -383,6 +405,7 @@ const Dashboard = () => {
         )
     }
 }
+
 
 
 export default Dashboard

@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
         border:`1px solid rgb(21, 28, 77,.5)`,
         borderRadius:"4px",
         "& input":{
+            fontFamily:"MontserratRegular !important",
             backgroundColor:"transparent"
         }
     }

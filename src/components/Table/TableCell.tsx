@@ -8,7 +8,7 @@ const StyledTableCell = withStyles((theme: Theme) =>
     head: {
       backgroundColor: bgColor,
       color: tertiary,
-      fontFamily:"Mulish ,Roboto, Helvetica,Arial, sans-serif",
+      fontFamily:"MulishBold ,Roboto, Helvetica,Arial, sans-serif",
       fontWeight:600,
       opacity:.5,
       fontSize:15,
@@ -17,7 +17,7 @@ const StyledTableCell = withStyles((theme: Theme) =>
       }
     },
     body: {
-      fontFamily:"Mulish ,Roboto, Helvetica,Arial, sans-serif",
+      fontFamily:"MulishRegular ,Roboto, Helvetica,Arial, sans-serif",
       fontWeight:600,
       fontSize: 15,
       opacity:.65,

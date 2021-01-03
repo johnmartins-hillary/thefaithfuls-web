@@ -46,6 +46,15 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
             [theme.breakpoints.down("sm")]:{
                 alignItems:"center"
             },
+            "& p,span,h2":{
+                fontFamily:"MulishRegular"
+            },
+            // "& h3,h5":{
+            //     fontFamily:"Bahnschrift"
+            // },
+            // "& h6":{
+            //     fontFamily:"MontserratBold",
+            // },
             "& > button":{
                 margin:theme.spacing(3),
                 padding:theme.spacing(3,2)
@@ -57,6 +66,30 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
                 marginLeft:theme.spacing(3),
                 fontWeight:"400"
             }
+        },
+        "& > div:nth-child(2)":{
+            "& > div:first-child":{
+                "& h2,p":{
+                    fontFamily:"MontserratBold"
+                }
+            }
+        }
+    },
+    descriptionContainer:{
+        "& p":{
+            letterSpacing:"0.02rem",
+            fontFamily:"MontserratRegular !important",
+            color:"secondary",
+            maxWidth:"2xl",
+            fontSize:'1rem'
+        }
+    },
+    groupMemberContainer:{
+        "& h6":{
+            fontFamily:"Bahnschrift !important"
+        },
+        "& p":{
+            fontFamily:"MontserratRegular !important"
         }
     },
     select:{
@@ -66,6 +99,7 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
         }
     }
 }))
+
 
 
 
@@ -255,7 +289,7 @@ const Group = (props:any) => {
                 <Flex flex={5} flexShrink={5} pt="10" pl={{base:0,md:5}} bgColor="#F9F5F9">
                     <Stack spacing={5} width={[ "95%","75%"]} maxWidth={{md:"3xl"}}
                         divider={<StackDivider borderColor="gray.200" />}>
-                        <Flex justify="space-between">
+                        <Flex className={classes.groupMemberContainer} justify="space-between">
                             <Box>
                                 <Text fontSize="1rem" opacity={.4} color="secondary" >
                                     Group Name
@@ -285,16 +319,15 @@ const Group = (props:any) => {
                                 </Menu>
                             }
                         </Flex>
-                        <Box>
+                        <Box className={classes.descriptionContainer}>
                             <Heading as="h6" fontSize="1rem" opacity={0.4} color="secondary" >
                                 Group Description
                             </Heading>
-                        <Text letterSpacing={"0.02rem"} color="secondary" fontFamily="Montserrat"
-                         maxWidth="2xl" fontSize='1rem' >
-                            {currentGroup.description}
-                        </Text>
+                            <Text>
+                                {currentGroup.description}
+                            </Text>
                         </Box>
-                        <Box width={{base:"90vw",md:"65vw"}}>
+                        <Box className={classes.groupMemberContainer} width={{base:"90vw",md:"65vw"}}>
                             <Heading as="h6" fontSize="1rem" opacity={.4}
                              color="secondary" my="2" >
                                 Group Members

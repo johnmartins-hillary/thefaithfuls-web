@@ -17,6 +17,7 @@ const activityLogo = "#38383880"
 const secondary = "#383838"
 const white = "#ffffff"
 const outlinePrimary = "rgba(181, 3, 201, 0.1)"
+const activityColor = "#4C1C51"
 
 export default {
   ...colors,
@@ -27,6 +28,7 @@ export default {
   bgColor2,
   chipBackgroundColor,
   activityLogo,
+  activityColor,
   activityHeader,
   primary,
   secondary,

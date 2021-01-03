@@ -71,7 +71,9 @@ const reportCardStyles = makeStyles((theme) => createStyles({
     },
     monthContainer:{
         position:"absolute",
-        top:"10%"
+        top:"10%",
+        fontSize:".5rem",
+        alignItems:"center" 
         // [theme.breakpoints.up("sm")]:{
         // },
         // [theme.breakpoints.down("sm")]:{
@@ -98,9 +100,8 @@ const ReportCard: React.FC<IReportCard> = ({ heading,showMonth, number, bgColor,
             <Icon as={icon} p={{md:1}} boxSize={['3rem',"4rem","5rem"]} display={{base:"none",sm:"block"}} />
             <VStack align={["center","flex-end"]} ml="2"  >
                 {showMonth &&
-                <HStack className={classes.monthContainer} spacing={1}
-                    fontSize={[".5rem"]} 
-                    color="tertiary" align="center" >
+                <HStack className={classes.monthContainer} spacing={1} 
+                    color="tertiary">
                     <Text letterSpacing="0.26px"
                      fontWeight="600">
                          Last Month
@@ -108,7 +109,7 @@ const ReportCard: React.FC<IReportCard> = ({ heading,showMonth, number, bgColor,
                     <Icon as={IoIosArrowDown} />
                 </HStack>
                 }
-                <Heading as="h6" textAlign={["center","right"]} fontFamily="Montserrat"
+                <Heading as="h6" textAlign={["center","right"]} fontFamily="MontserratBold"
                  fontSize={[".6rem","1rem"]} color="tertiary">
                     {heading}
                 </Heading>
@@ -196,7 +197,7 @@ const Reports = () => {
                                         />
                                     </Flex>
                                     <Button variant="link" color="tertiary" fontWeight="800"
-                                        fontFamily="Montserrat"
+                                        fontFamily="MontserratBold"
                                         textDecoration="underline" fontSize="0.875rem" >
                                         Download Excel File
                                         </Button>

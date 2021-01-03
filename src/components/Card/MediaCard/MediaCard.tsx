@@ -15,6 +15,9 @@ const mediaStyles = makeStyles(theme => createStyles({
         "& > img":{
             borderRadius:"10px"
         },
+        "& p":{
+            fontFamily:"MontserratRegular"
+        },
         "& > svg":{
             position:"absolute",
             borderRadius:"50%",

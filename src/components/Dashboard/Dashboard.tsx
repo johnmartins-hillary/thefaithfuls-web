@@ -79,7 +79,7 @@ return (
                 <Avatar border="2px solid #B603C9"
                     size="xl" name={currentChurch.name}
                     src={currentChurch.churchLogo || "https://bit.ly/ryan-florence"} />
-                <Heading color="primary" fontSize="1.7rem" fontWeight="400" >
+                <Heading as="h2" color="primary" fontSize="1.7rem" fontWeight="400" >
                     {currentChurch.name}
                 </Heading>
             </DrawerHeader>
@@ -88,7 +88,7 @@ return (
                 <Stack className={classes.optionContainer} spacing={8}>
                     {dashboardMenu.map((item,idx) => (
                         <Link key={idx} to={`/church/${params.churchId}${item.link}`} >
-                            <Flex
+                            <Flex align="center"
                             className={activeLink.includes(item.link) ? classes.activeLink : classes.link} >
                                 <Icon boxSize="1rem" as={item.icon}/>
                                 <Text ml="4" fontSize="1.13rem" >{item.name}</Text>

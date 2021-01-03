@@ -47,7 +47,16 @@ const VerseCreate = loadable(() => import("views/Prayer/CreateVerse/CreateVerse"
 const useStyles = makeStyles((theme) => createStyles({
     rootContainer: {
         maxWidth: "100vw",
-        overflow: "hidden"
+        overflow: "hidden",
+        // "& p,span,h2":{
+        //     fontFamily:"MulishRegular"
+        // },
+        // "& h3,h5":{
+        //     fontFamily:"Bahnschrift"
+        // },
+        // "& h6":{
+        //     fontFamily:"MontserratBold",
+        // }
     },
     root: {
         marginLeft: "auto",

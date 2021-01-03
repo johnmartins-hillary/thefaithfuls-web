@@ -9,7 +9,7 @@ import { Link } from "react-router-dom"
 import { Button } from "components/Button"
 import { getStaffByChurch, createStaff,deleteStaff,editStaff } from "core/services/account.service"
 import { getAllClaims, getAllRoleByChurchId,assignClaimToUser,
-    removeClaimFromUser, removeRoleFromUser, assignRoleClaimToUser } from "core/services/user.service"
+        removeClaimFromUser, removeRoleFromUser, assignRoleClaimToUser } from "core/services/user.service"
 import { IChurchMember } from "core/models/ChurchMember"
 import { useSelector } from "react-redux"
 import { AppState } from "store"
@@ -782,7 +782,7 @@ const UserManager = () => {
                     <Button mr=".5rem" disabled={submitting} px={6} onClick={showAddStaff}>
                         Add A User
                         </Button>
-                    <Button variant="outline" px={6} fontFamily="Mulish" disabled={submitting}>
+                    <Button variant="outline" px={6} fontFamily="Bahnschrift" disabled={submitting}>
                         <Link to={`/church/${params.churchId}/manager/role`} >
                             Manage Roles
                             </Link>

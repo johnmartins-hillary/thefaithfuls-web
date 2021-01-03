@@ -36,29 +36,35 @@ const useStyles = makeStyles((theme) => createStyles({
         paddingBottom:"2rem",
         alignItems:"flex-start !important"
     },
-    imageContainer:{
-        border:"1px dashed rgba(0, 0, 0, .5)",
-        borderRadius:"4px",
-        width:"25vh",
-        height:"25vh",
-        flexDirection:"column",
-        justifyContent:"center",
-        alignItems:"center",
-        "& svg":{
-            color:"#151C4D",
-        },
-        "& h4,p":{
-            color:"#151C4D",
-            whiteSpace:"nowrap"
-        }
-    },
+    // imageContainer:{
+    //     border:"1px dashed rgba(0, 0, 0, .5)",
+    //     borderRadius:"4px",
+    //     width:"25vh",
+    //     height:"25vh",
+    //     flexDirection:"column",
+    //     justifyContent:"center",
+    //     alignItems:"center",
+    //     "& svg":{
+    //         color:"#151C4D",
+    //     },
+    //     "& h4,p":{
+    //         color:"#151C4D",
+    //         whiteSpace:"nowrap"
+    //     }
+    // },
     inputContainer:{
         width:"inherit",
         alignItems:"flex-start",
         "& > *:first-child":{
             width:"inherit",
             cursor:"pointer",
-            justifyContent:"space-between"
+            justifyContent:"space-between",
+            "& button":{
+                fontFamily:"Bahnschrift"
+            },
+            "& p":{
+                fontFamily:"MontserratRegular"
+            }
         }
     },
     input:{

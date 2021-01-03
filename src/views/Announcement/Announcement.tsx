@@ -21,11 +21,17 @@ import axios from "axios"
 const useStyles = makeStyles(theme => createStyles({
     root:{
         "& ul":{
-            height:"30rem",
-            overflowY:"auto",
-            justifyContent:"center",
             [theme.breakpoints.up("sm")]:{
                 justifyContent:"flex-start"
+            }
+        },
+        "& li":{
+            width:"80%",
+            "& > div":{
+                width:"100%"
+            },
+            [theme.breakpoints.up("sm")]:{
+                width:"initial"
             }
         }
     }
@@ -50,8 +56,9 @@ const cardStyles = makeStyles(theme => createStyles({
         textAlign:"left",
         fontSize:"1.125rem",
         opacity:.5,
-        maxHeight:"10rem",
-        overflowY:"auto"
+        // maxHeight:"10rem",
+        // overflowY:"auto",
+        fontFamily:"MontserratRegular"
     }
 }))
 
@@ -66,14 +73,13 @@ interface IAnnouncementCard {
 const AnnouncementCard:React.FC<IAnnouncementCard> = ({heading,handleEdit,handleDelete,subheading,text}) => {
     const classes = cardStyles()
     return(
-        <DashboardActivity px={2} pb="5" maxWidth="20rem" 
-         >
-            <HStack width="100%" align="flex-start" >
+        <DashboardActivity px={6} pb="5" maxWidth="30rem">
+            <HStack width="100%" align="flex-start" height="100%" >
                 <VStack className={classes.headingContainer}>
                     <Heading textStyle="h5" >
                         {heading}
                     </Heading>
-                    <Text color="tertiary" textAlign="left" as="i" opacity={.5}
+                    <Text color="tertiary" fontFamily="MontserratBold" textAlign="left" as="i" opacity={.5}
                         fontSize="1.125rem" >
                         {subheading}
                     </Text>
@@ -168,8 +174,8 @@ const Announcement = () => {
                     <Wrap>
                          { announcement && announcement.length > 0 ? 
                             announcement?.map((item,idx:number) => (
-                                <WrapItem>
-                                <AnnouncementCard key={idx}  subheading={item.category}
+                                <WrapItem  key={item.announcementID || idx}>
+                                <AnnouncementCard subheading={`to all:${item.category}`}
                                     heading={item.title} 
                         handleDelete={handleDelete((item.announcementID as string),idx)}
                                     text={item.description} handleEdit={handleEdit(item)}

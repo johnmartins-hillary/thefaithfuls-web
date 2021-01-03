@@ -85,12 +85,13 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
         "& button:first-child,& button:last-child":{
             textDecoration:"underline",
             margin:theme.spacing(2.75,0),
-            fontFamily:"Montserrat",
+            fontFamily:"MontserratRegular",
             opacity:.9,
             fontWeight:400
         },
         "& button:nth-child(2)":{
             padding:theme.spacing(3),
+            fontFamily:"MulishRegular",
             marginTop:theme.spacing(3)
         }
     },
@@ -111,6 +112,13 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
         fontWeight:600,
         fontFamily:"Bahnschrift",
         fontSize:"1.9rem"
+    },
+    transactionContainer:{
+        maxHeight:"18rem",
+        overflowY:"scroll",
+        "& p":{
+            fontFamily:"MontserratRegular"
+        }
     }
 }))
 
@@ -696,8 +704,8 @@ const Finance = () => {
                                     <ActivityCard>
                                     <FinanceActivity isLoaded={Boolean(item.donationID)}
                                         text={item.donationDescription} 
-                                        subHeading={item.donationType}
-                                        moreHeading={(new Date(item.expirationDate)).toLocaleDateString()}
+                                        subHeading={`Account:${item.donationName}`}
+                                        moreHeading={`Target Amount:₦${(new Date(item.expirationDate)).toLocaleDateString()}`}
                                         heading={item.donationName} />
                                 </ActivityCard>
                                 </WrapItem>
@@ -733,7 +741,7 @@ const Finance = () => {
                         >
                             Recent Transactions
                         </Heading>
-                        <Stack maxHeight="18rem" overflowY="scroll" >
+                        <Stack className={classes.transactionContainer} >
                             <Transaction title="Offering" amount={2000}
                              date={new Date()} withdraw={false} />
                             <Transaction title="Offering" amount={2000}

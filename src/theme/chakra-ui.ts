@@ -59,8 +59,8 @@ const theme:DefaultTheme & any =  {
       ...colors
     },
     fonts: {
-      heading: 'Mulish',
-      body: 'Mulish',
+      heading: 'MulishRegular',
+      body: 'MulishRegular',
       mono: 'Bahnschrift',
     },
     // lineHeights:{
@@ -95,8 +95,8 @@ const theme:DefaultTheme & any =  {
       "6xl": "4rem",
     },
     textStyles:{
-      MulishRegular:{
-        fontFamily:"Mulish",
+      MulishRegularRegular:{
+        fontFamily:"MulishRegular",
         fontStyle:"normal",
         fontWeight:"normal",
       },
@@ -106,7 +106,7 @@ const theme:DefaultTheme & any =  {
         letterSpacing:"0px"
       },
       style2:{
-        fontFamily:"Mulish",
+        fontFamily:"MulishRegular",
         fontStyle:"normal",
         fontWeight:"normal",
         fontSize:"1.1875rem",
@@ -114,7 +114,7 @@ const theme:DefaultTheme & any =  {
         letterSpacing:"0px"
       },
       style3:{
-        fontFamily:"Mulish",
+        fontFamily:"MulishRegular",
         fontStyle:"normal",
         fontWeight:"normal",
         fontSize:"0.9375rem",
@@ -122,7 +122,7 @@ const theme:DefaultTheme & any =  {
         letterSpacing:"0px"
       },
       style4:{
-        fontFamily:"Mulish",
+        fontFamily:"MulishRegular",
         fontStyle:"normal",
         fontWeight:"normal",
         fontSize:"0.9375rem",
@@ -134,23 +134,23 @@ const theme:DefaultTheme & any =  {
       //   whiteSpace:["normal","nowrap"],
       //   textAlign:["center","left"]
       // },
-      // h4:{
-      //   fontSize:"1.875rem",
-      //   color:primary,
-      //   fontFamily:"Mulish",
-      //   fontWeight:400
-      // },
+      h4:{
+        fontSize:"1.875rem",
+        color:primary,
+        fontFamily:"MulishRegular",
+        fontWeight:400
+      },
       // h5:{
       //   fontSize:"1.5rem",
       //   color:"tertiary"
       // },
-      // h6:{
-      //   fontSize:"1.125rem",
-      //   color:"#383838",
-      //   opacity:.8,
-      //   textAlign:["center", "left"],
-      //   fontWeight:400
-      // }
+      h6:{
+        // fontSize:"1.125rem",
+        // color:"#383838",
+        // opacity:.8,
+        // textAlign:["center", "left"],
+        // fontWeight:400
+      }
     },
     components:{
       drawer:drawerStyle,

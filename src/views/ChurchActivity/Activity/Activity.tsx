@@ -17,6 +17,9 @@ import axios from "axios"
 
 const useStyles = makeStyles((theme:Theme) => createStyles({
     root:{
+        "& p,h2":{
+            fontFamily:"Bahnschrift !important",
+        },
         "& button":{
             fontSize:".9rem",
             [theme.breakpoints.up("sm")]:{

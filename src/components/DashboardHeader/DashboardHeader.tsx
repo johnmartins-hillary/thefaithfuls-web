@@ -30,7 +30,7 @@ const DashboardHeader:React.FC<IProps> = ({handleToggle,...props}) => {
         <Logo white={false} />
     </Flex>
     <Flex flex={4} justify="flex-end">
-      <Heading textStyle="h5" color="primary" whiteSpace="nowrap" display={["none","initial"]}>
+      <Heading color="primary" fontFamily="MulishRegular" fontSize="1.875rem" whiteSpace="nowrap" display={["none","initial"]}>
         {pageTitle}
       </Heading>
     </Flex>

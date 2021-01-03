@@ -47,6 +47,9 @@ const useStyles = makeStyles((theme) => createStyles({
             [theme.breakpoints.up("sm")]:{
                 justifyContent:"flex-start"
             }
+        },
+        "& h2":{
+            fontFamily:"MulishRegular"
         }
     },
     buttonContainer:{
@@ -57,9 +60,12 @@ const useStyles = makeStyles((theme) => createStyles({
             padding:theme.spacing(2,3),
             marginLeft:theme.spacing(1),
             "& > div":{
-                alignItems:"flex-end",
+                alignItems:"center",
                 textTransform:"lowercase",
                 fontWeight:"500"
+            },
+            "& p":{
+                fontFamily:'Bahnschrift'
             }
         }
     }
@@ -597,11 +603,11 @@ const Media = () => {
                             <WrapItem key={item.sermonID || idx}>
                                 <DashboardActivity isLoaded={Boolean(item.sermonID)} heading={item.title}
                                 p="4" width="100%">
-                                <Text as="i" color="#151C4D" fontFamily="Montserrat" fontWeight="600"
+                                <Text as="i" color="#151C4D" fontFamily="MontserratBold" fontWeight="600"
                                     fontSize="1.125rem" opacity={.5} >
                                     {`By: ${item.author}`}
                                 </Text>
-                                <Text textAlign="left" fontFamily="Montserrat" color="#151C4D" opacity={.5}
+                                <Text textAlign="left" fontFamily="MontserratRegular" color="#151C4D" opacity={.5}
                                     maxWidth="sm" dangerouslySetInnerHTML={{ __html: item.sermonContent }} />
                             </DashboardActivity>
                             </WrapItem>

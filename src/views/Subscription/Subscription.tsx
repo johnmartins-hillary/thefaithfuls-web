@@ -9,11 +9,16 @@ import {setPageTitle} from "store/System/actions"
 import { AiFillCheckCircle } from "react-icons/ai";
 import {createStyles,makeStyles,Theme} from "@material-ui/core/styles"
 import {Growth,CreditCard} from "assets/images"
-
+import {tertiary} from "theme/palette"
 
 const useStyles = makeStyles((theme:Theme) => createStyles({
   root:{
     maxWidth:"175rem",
+    "& h3":{
+      fontFamily:"MulishBold",
+      opacity:.85,
+      fontSize:"1.5rem"
+    },
     [theme.breakpoints.up("sm")]:{
       padding:theme.spacing(5)
     },
@@ -33,30 +38,95 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
       fontWeight:700
     }
   },
-  subscriptionDetail:{
-    boxShadow:"0px 5px 20px #0000001A",
-    alignItems:"flex-end",
-    minHeight:"17.7rem",
-    height:"auto",
-    width:"95%",
-    borderRadius:"10px",
-    backgroundColor:"white",
+  subscriptionContainer:{
     "& > div:first-child":{
-      flexDirection:"column",
-      justifyContent:"flex-start"
+        boxShadow:"0px 5px 20px #0000001A",
+        alignItems:"flex-end",
+        minHeight:"17.7rem",
+        height:"auto",
+        width:"95%",
+        borderRadius:"10px",
+        backgroundColor:"white",
+        "& > div:first-child":{
+          flexDirection:"column",
+          justifyContent:"flex-start",
+          "& h3,h4,h5":{
+            color:tertiary,
+          },
+          "& h2":{
+            fontSize:"2.6875rem",
+            fontFamily:"MulishBold"
+          },
+          "& h4":{
+            fontSize:"0.875rem",
+            fontFamily:"MontserratBold",
+            fontWeight:"600",
+            fontStyle:"italic",
+            opacity:0.5
+          },
+          "& h5":{
+            fontSize:"3.25rem",
+            fontFamily:"MontserratBold",
+            fontStyle:"italic",
+            opacity:0.5
+          },
+          "& h6":{
+            fontSize:"0.875rem",
+            fontFamily:"MontserratRegular",
+            color:"#151C4D",
+            opacity:0.5,
+            fontWeight:"600"
+          }
+        },
+        "& > div:nth-child(2)":{
+          height:"100%",
+          flexShrink:1,
+          flexDirection:"column-reverse", 
+          alignItems:"flex-end" ,
+          flex:2,
+          "& img":{
+            minWidth:"15rem"
+          },
+          [theme.breakpoints.up("md")]:{
+            flexDirection:"row"
+          }
+      }
     },
     "& > div:nth-child(2)":{
-      height:"100%",
-      flexShrink:1,
-      flexDirection:"column-reverse", 
-      alignItems:"flex-end" ,
-      flex:2,
-      "& img":{
-        minWidth:"15rem"
-      },
-      [theme.breakpoints.up("md")]:{
-        flexDirection:"row"
+      boxShadow:"0px 5px 20px #0000001A",
+      marginTop:theme.spacing(7.5),
+      paddingTop:theme.spacing(3.5),
+      paddingLeft:theme.spacing(3),
+      backgroundColor:"white",
+      borderRadius:"10px",
+      minHeight:"17.7rem",
+      height:"auto",
+      width:"95%",
+      "& > div":{
+        fontFamily:"MontserratBold",
+        "& > div:nth-child(even)":{
+          margin:theme.spacing(1)
+        },
+        "& > div":{
+          marginLeft:"0"
+        }
       }
+    }
+  },
+  upgradeContainer:{
+    borderRadius:"10px", 
+    height:"100%",
+    justifyContent:"center",
+    backgroundColor:"white",
+    flexDirection:"column",
+    alignItems:"center",
+    boxShadow:"0px 5px 20px #0000001A",
+    "& h4":{
+      fontFamily:"MulishBold"
+    },
+    "& label,h2":{
+      fontFamily:"MontserratBold",
+      fontStyle:"italic"
     }
   }
 }))
@@ -78,40 +148,37 @@ const Subscription = () => {
   return (
     <Flex direction="column" className={classes.root}>
         <Flex direction={{base:"column",lg:"row"}}>
-          <Flex flex={10} direction="column" mr={3} alignItems="center">
-            <Flex py="7" px="3" className={classes.subscriptionDetail}>
+          <Flex flex={7}  className={classes.subscriptionContainer} direction="column" mr={3} alignItems="center">
+            <Flex py="7" px="3">
               <Stack flex={[4,3,1]} spacing={7} m={4}>
-                <Heading fontWeight="400" fontSize="1.5rem">
+                <Heading as="h3">
                     Your yearly subscription
                 </Heading>
-                    <Text fontSize="0.875rem" fontWeight="600" as="i" opacity={0.5} color="#151C4D">
+                    <Text as="h4">
                         Renew date: 3 october, 2020
                     </Text>
                 <Flex direction="column">
-                  <Text fontSize="0.875rem" color="#151C4D"
-                   opacity={0.5} fontWeight="600">
+                  <Text as="h6">
                     Your Current Plan
                   </Text>
-                  <Heading mt="-.6rem" fontSize="2.6875rem" fontWeight="600" color="primary">
+                  <Heading as="h2" mt="-.6rem" color="primary">
                     Free Plan
                   </Heading>
                 </Flex>
-                <Text fontSize="3.25rem" as="i" color="#151C4D" opacity={0.5}>
+                <Text as="h5" color="tertiary">
                   ₦0
                 </Text>
               </Stack>
               <Flex justify={{md:"space-around"}}
                 direction={{base:"column-reverse",lg:"row"}}>
-                <Button mt="3">Renew Plan</Button>
+                <Button mb={{md:"7"}} mt="3">Renew Plan</Button>
                 <Image boxSize={{base:"90%",md:"75%"}}
                      maxWidth="18rem"
                     src={CreditCard}
                     />
               </Flex>
             </Flex>
-            <Box bgColor="white" mt="20" pt="7" pl="4"
-            shadow="0px 5px 20px #0000001A" borderRadius="10px"
-            minHeight="17.7rem" height="auto" width="95%">
+            <Box>
                 <Heading as="h3" fontSize="1.5rem" >
                     Last Payment
                 </Heading>
@@ -119,48 +186,15 @@ const Subscription = () => {
                   spacing={5} maxHeight="30vh" overflow="auto"
                   divider={<StackDivider borderColor="gray.200" />}
                 >
-                  <Stack color="#151C4D" fontSize="0.875rem"
-                   mx="3" direction="row">
-                    <Box opacity={.5} >Basic Plan</Box>
-                    <Box opacity={.5} mx="5" >1st September 2020</Box>
-                    <Box color="primary" fontWeight="600"
-                    fontSize="1.5rem" >₦20,000</Box>
-                  </Stack>
-                  <Stack color="#151C4D" fontSize="0.875rem"
-                   mx="3" direction="row">
-                    <Box opacity={.5} >Basic Plan</Box>
-                    <Box opacity={.5} mx="5" >1st September 2020</Box>
-                    <Box color="primary" fontWeight="600"
-                    fontSize="1.5rem" >₦20,000</Box>
-                  </Stack>
-                  <Stack color="#151C4D" fontSize="0.875rem"
-                   mx="3" direction="row">
-                    <Box opacity={.5} >Basic Plan</Box>
-                    <Box opacity={.5} mx="5" >1st September 2020</Box>
-                    <Box color="primary" fontWeight="600"
-                    fontSize="1.5rem" >₦20,000</Box>
-                  </Stack>
-                  <Stack color="#151C4D" fontSize="0.875rem"
-                   mx="3" direction="row">
-                    <Box opacity={.5} >Basic Plan</Box>
-                    <Box opacity={.5} mx="5" >1st September 2020</Box>
-                    <Box color="primary" fontWeight="600"
-                    fontSize="1.5rem" >₦20,000</Box>
-                  </Stack>
-                  <Stack color="#151C4D" fontSize="0.875rem"
-                   mx="3" direction="row">
-                    <Box opacity={.5} >Basic Plan</Box>
-                    <Box opacity={.5} mx="5" >1st September 2020</Box>
-                    <Box color="primary" fontWeight="600"
-                    fontSize="1.5rem" >₦20,000</Box>
-                  </Stack>
-                  <Stack color="#151C4D" fontSize="0.875rem"
-                   mx="3" direction="row">
-                    <Box opacity={.5} >Basic Plan</Box>
-                    <Box opacity={.5} mx="5" >1st September 2020</Box>
-                    <Box color="primary" fontWeight="600"
-                    fontSize="1.5rem" >₦20,000</Box>
-                  </Stack>
+                  {[1,2,3,4,5,6].map((item,idx) => (
+                    <Stack color="tertiary" fontSize="0.875rem" key={idx}
+                      mx="3" direction="row" align="center" >
+                     <Box opacity={.5} >Basic Plan</Box>
+                     <Box opacity={.5} mx="5" >1st September 2020</Box>
+                     <Box color="primary" fontWeight="600"
+                     fontSize="1.5rem" >₦20,000</Box>
+                   </Stack>
+                  ))}
                 </Stack>
             </Box>
           </Flex>
@@ -168,22 +202,16 @@ const Subscription = () => {
              flex={3} align="center" width={{base:"100%",sm:"auto"}}
               color="white" justify="center"
             >
-              <Stack borderRadius="10px" 
-                spacing="6" height="100%"
-                justifyContent="center"
-                bgColor="white"
-                direction="column"
-                align="center"
-                py="2"
+              <Stack className={classes.upgradeContainer}
                 width={["90vw","100%"]}
-                shadow="0px 5px 20px #0000001A"
+                py="2" spacing="6"
               >
                 <Image
                   boxSize={["9rem", "11.37rem"]}
                   src={Growth}
                   my="2"
                 />
-                <Heading
+                <Heading as="h4"
                   color="primary"
                   maxWidth="xs"
                   textAlign="center"
@@ -216,7 +244,7 @@ const Subscription = () => {
                       color="primary"
                       as={AiFillCheckCircle}
                     />
-                    <Box
+                    <Box fontFamily="MontserratBold !important" opacity={.5}
                       as="span"
                       fontSize={["0.8rem", "0.875rem"]}
                       color="#151C4D"

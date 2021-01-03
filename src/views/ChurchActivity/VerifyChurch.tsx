@@ -1,5 +1,5 @@
 import React from "react"
-import {Link} from "react-router-dom"
+import {useHistory} from "react-router-dom"
 import {Flex,Icon,Stack,Heading} from "@chakra-ui/react"
 // eslint-disable-next-line
 import {Verification as VerificationForm } from "components/Forms"
@@ -29,6 +29,10 @@ const useStyles = makeStyles((theme) => (createStyles({
 
 const VerifyChurch = () => {
     const classes = useStyles()
+    const history = useHistory()
+    const goBack = () => {
+        history.goBack()
+    }
     
     return (
         <Flex className={classes.root} pl={{md:16}}>
@@ -44,10 +48,9 @@ const VerifyChurch = () => {
                                 fontSize="1.5rem" >
                                 Please confirm the information you provided
                             </Heading>
-                            <Link to="/dashboard" >
                                 <Icon as={CgCloseO} color="#383838"
-                                opacity={.5} boxSize="2rem"  />
-                            </Link>  
+                                onClick={goBack}
+                                opacity={.5} boxSize="2rem"  />  
                         </Stack>
                     <Flex flexDirection="column" width={[ "100%","60vw"]}
                         maxWidth="52.38rem" align={"center"} >

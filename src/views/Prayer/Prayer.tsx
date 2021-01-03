@@ -74,6 +74,11 @@ const useStyles = makeStyles((theme) => {
                     alignItems:"flex-start !important"
                 }
             },
+            testimonyContainer:{
+                "& button":{
+                    fontFamily:"MulishBold"
+                }
+            },
             prayerMainContainer:{
                 paddingTop:"4rem !important",
                 "& > button":{
@@ -343,13 +348,13 @@ const Prayer = () => {
                                     }
                         </SimpleGrid>
                         </TabPanel>
-                        <TabPanel mt="3">
+                        <TabPanel mt="3" className={classes.testimonyContainer}>
                                  <SimpleGrid minChildWidth="17.5rem" alignItems={{base:"center",md:"flex-start"}} gridGap=".5rem"
                                      spacing={3}  className={classes.prayerContainer}>
                                          {churchTestimony.length > 0 ? churchTestimony.map((item,idx) => (
                                             <DetailCard title="Bismark Achodo" key={item.testimonyID || idx} timing="2d"
                                                 image="https://bit.ly/ryan-florence" isLoaded={Boolean(item.testimonyID)}
-                                                smallText={(item.dateEntered).toLocaleDateString()}
+                                                smallText={(new Date(item.dateEntered)).toLocaleDateString()}
                                                 body={item.testimonyDetail}
                                             >
                                                 <HStack width="100%">

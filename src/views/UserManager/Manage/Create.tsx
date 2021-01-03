@@ -1,6 +1,6 @@
 import React from "react"
 import { useHistory } from "react-router-dom"
-import { Heading, HStack, VStack } from "@chakra-ui/react"
+import { Heading, HStack, IconButton, VStack } from "@chakra-ui/react"
 import { Button } from "components/Button"
 import { TextInput } from "components/Input"
 import { Formik, FormikProps } from "formik"
@@ -16,6 +16,7 @@ import { IClaim } from "core/models/Claim"
 import { assignRoleClaimToUser, createRole, createRoleClaim, getAllClaims } from "core/services/user.service"
 import { CreateLayout } from "layouts"
 import axios from "axios"
+import { BiLeftArrowAlt } from "react-icons/bi"
 
 interface IForm {
     name: string;
@@ -24,10 +25,14 @@ interface IForm {
 }
 
 
-
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        alignItems: "flex-start !important"
+        alignItems: "flex-start !important",
+        "& > div:first-child":{
+            "& svg":{
+                fontSize:"2rem"
+            }
+        }
     },
     inputContainer: {
         backgroundColor: "#F3F3F3",
@@ -235,10 +240,15 @@ const CreateRole = () => {
     return (
         <VStack pl={{ base: 2, md: 12 }} pt={{ md: 6 }}
             className={classes.root} >
-            <Heading textStyle="h4" >
-                Create a Role
-                </Heading>
-            <CreateLayout>
+                <HStack>
+                    <IconButton aria-label="go-back button" bgColor="transparent"
+                    boxSize="2.5rem" onClick={goBack}
+                    icon={<BiLeftArrowAlt />} />
+                    <Heading textStyle="h4" >
+                        Create a Role
+                    </Heading>
+                </HStack>
+            <CreateLayout showCancel={false}>
                 <Formik initialValues={initialValues}
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}

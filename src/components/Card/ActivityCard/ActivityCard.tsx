@@ -35,7 +35,7 @@ const activityStyles = makeStyles(() => createStyles({
         align: "center",
         backgroundColor: "white",
         flexDirection: "column",
-        shadow: " 0px 5px 10px #0000000D",
+        boxShadow: " 0px 5px 10px #0000000D",
         borderTop: `3px solid  ${primary}`,
         borderRadius: "0 0 0.625rem"
     }
@@ -136,7 +136,7 @@ export const FinanceActivity: React.FC<IFinanceActivity> = ({ heading,isLoaded, 
                             </Text>
                         }
                         {text &&
-                            <Text color="tertiary" fontSize="0.875rem" maxWidth="md" >
+                            <Text color="tertiary" fontFamily='MontserratRegular' fontSize="0.875rem" maxWidth="md" >
                                 {text}
                             </Text>
                         }
@@ -164,12 +164,12 @@ const Activity: React.FC<IActivityProps> = ({ title, date,subtitle, dotColor }) 
                 {
                     title &&
                 <Text letterSpacing="0.28px" maxW="md" fontSize="0.875rem"
-                    fontWeight="600">
+                    fontWeight="600" fontFamily="MontserratBold !important" >
                     {title}
                 </Text>
                 }
                 <Text color="#4C1C51" opacity={.8} maxW="md" fontSize="13.28px"
-                    letterSpacing="0.24px" >
+                    letterSpacing="0.24px" fontFamily="MontserratMedium !important" >
                     {date}
                 </Text>
                 {subtitle && 

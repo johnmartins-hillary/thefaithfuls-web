@@ -51,6 +51,12 @@ const useStyles = makeStyles((theme) => createStyles({
         "& svg": {
             color: "#151C4D",
         },
+        "& h4":{
+            fontFamily:"Bahnschrift"
+        },
+        "& p":{
+            fontFamily:"MontserratRegular"
+        },
         "& h4,p": {
             color: "#151C4D",
             whiteSpace: "nowrap"

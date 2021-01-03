@@ -16,8 +16,8 @@ const DashboardCard:React.FC<IProps> = ({color,heading,...props}) => {
             <Divider height="100%" borderRadius=".2em 0 0 .2em"
              width=".3em" bgColor={color}
              orientation="vertical"/>
-             <Stack>
-                <Text color="#151C4D" fontWeight={600} fontSize="1.15rem">
+             <Stack fontFamily="MontserratRegular !important">
+                <Text color="#151C4D" fontFamily="Bahnschrift !important" fontWeight={600} fontSize="1.15rem">
                     {heading}
                 </Text>
                 {props.children}
