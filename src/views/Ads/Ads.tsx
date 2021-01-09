@@ -66,11 +66,13 @@ const Ads = () => {
             await advertService.getAdverts(churchId,cancelToken).then(payload => {
                 setAdverts(payload.data)
             }).catch(err => {
-                toast({
-                    title:"Unable to load advert of church",
-                    subtitle:`Error: ${err}`,
-                    messageType:MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title: "Unable to get Church Event",
+                        subtitle: `Error : ${err}`,
+                        messageType: MessageType.ERROR
+                    })
+                }
             })
         }
         apiCall(Number(params.churchId))

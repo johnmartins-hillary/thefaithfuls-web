@@ -590,22 +590,25 @@ const Finance = () => {
                     setChurchAccount([...newBankAccountDetail])
                 })
             }).catch(err => {
-                toast({
-                    title:"Unable To Get Church Account",
-                    subtitle:`Error:${err}`,
-                    messageType:MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title:"Unable To Get Church Account",
+                        subtitle:`Error:${err}`,
+                        messageType:MessageType.ERROR
+                    })}
             })
         }
         const getChurchDonationApi = () => {
             donationService.GetDonationByChurch(Number(params.churchId),cancelToken).then(payload =>{ 
                 setDonation(payload.data)
             }).catch(err => {
-                toast({
-                    title:"Unable to Load church donation",
-                    subtitle:`Error:${err}`,
-                    messageType:"error"
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title:"Unable to Load church donation",
+                        subtitle:`Error:${err}`,
+                        messageType:"error"
+                    })
+                }
             })
         }
         getChurchBankAccountApi()

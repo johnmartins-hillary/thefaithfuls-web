@@ -9,15 +9,20 @@ interface IPaymentButton {
     form:any;
     onSuccess:any;
     onClose:any;
-    onFailure?:any
+    onFailure?:any;
+    paymentCode:{
+        reference:string
+        publicKey:string
+    };
+    amount:number
 }
 
-const PaymentButton:React.FC<IPaymentButton> = ({form,onSuccess,onClose,onFailure}) => {
+const PaymentButton:React.FC<IPaymentButton> = ({form,onSuccess,onClose,paymentCode,amount,onFailure}) => {
     const config = {
-        reference: (new Date()).getTime().toString(),
+        reference: paymentCode.reference,
         email: form.values.email,
-        amount: 200_000,
-        publicKey: process.env.PAYSTACK_PUBLIC_KEY || "",
+        amount,
+        publicKey: paymentCode.publicKey,
         metadata:{
             custom_field:([form.values.name,
                 form.values.phoneNumber,form.values.email] as unknown as Record<string, string>[])
@@ -26,18 +31,17 @@ const PaymentButton:React.FC<IPaymentButton> = ({form,onSuccess,onClose,onFailur
     
     const initializePayment = usePaystackPayment(config);
     
-    const handleSubmit = (handleSubmit:any) => () => {
-        initializePayment(handleSubmit, onPaymentClose)
+    const handleSubmit = () => {
+        initializePayment(onSuccess, onClose)
     }
-    const onPaymentClose = () => {
-        onClose()
-        // implementation for  whatever you want to do when the Paystack dialog closed.
-        console.log('closed')
-    } 
+    // const onPaymentClose = () => {
+    //     onClose()
+    //     // implementation for  whatever you want to do when the Paystack dialog closed.
+    // } 
     return (
         <Button disabled={!form.validateForm}
             width={{base:"90vw",md:"35%"}} backgroundColor="primary" my="6" 
-            onClick={handleSubmit(form.handleSubmit)} maxWidth="sm">
+            onClick={handleSubmit} maxWidth="sm">
             {form.isValid ? "Proceed To Pay":"Please Correct Form"}
         </Button>                            
     );

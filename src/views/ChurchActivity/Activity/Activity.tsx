@@ -49,22 +49,26 @@ const Activity = () => {
                 }))
                 setChurchActivity(newChurchActivity)
             }).catch(err => {
-                toast({
-                    title: "Unable to get Church Activity",
-                    subtitle: `Error : ${err}`,
-                    messageType: MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title: "Unable to get Church Activity",
+                        subtitle: `Error : ${err}`,
+                        messageType: MessageType.ERROR
+                    })
+                }
             })
         }
         const getChurchEvent = async () => {
             activityService.getChurchEvent(params.churchId,cancelToken).then(payload => {
                 setChurchEvent(payload.data)
             }).catch(err => {
-                toast({
-                    title: "Unable to get Church Event",
-                    subtitle: `Error : ${err}`,
-                    messageType: MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title: "Unable to get Church Event",
+                        subtitle: `Error : ${err}`,
+                        messageType: MessageType.ERROR
+                    })
+                }
             })
         }
         getChurchActivity()

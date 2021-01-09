@@ -3,3 +3,11 @@ export enum Payment {
     PAYSTACK = "Paystack",
     MONNIFY = "Monnify"
 }
+
+export enum Purpose {
+    WITHDRAW = "WITHDRAW",
+    VERIFYYME = "VERIFYME",
+    SUBSCRIPTION = "SUBSCRIPTION",
+    ADVERT = "ADVERT",
+    SERMON = "SERMON",
+}

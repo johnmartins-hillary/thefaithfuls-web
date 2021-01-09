@@ -39,7 +39,6 @@ const initialState: SystemState = {
         role: []
     },
     currentChurch:{
-        churchID: 0,
         name: "",
         address: "",
         churchLogo:"",

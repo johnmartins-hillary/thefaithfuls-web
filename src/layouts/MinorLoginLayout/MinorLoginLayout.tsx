@@ -40,7 +40,7 @@ const MinorLoginLayout:React.FC<IProps> = ({children,showLogo}) => {
             } />
                 {
                     showLogo && 
-                <Box position="absolute" display={["none","block"]} left="0" top={["2rem","10rem"]} >
+                <Box position="absolute" display={["none","block"]} left="0" top={["2rem","10rem"]}>
                     <Logo white={false} />
                 </Box>
                 }

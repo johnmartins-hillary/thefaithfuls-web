@@ -11,10 +11,12 @@ import {IChurchBankDetail} from "core/models/BankAccount"
 const baseUrl = `${process.env.REACT_APP_SERVER_URL}/Church`
 
 
-export const getChurchById = async (churchId:number) : Promise<IResponse<IChurch>> => {
+export const getChurchById = async (churchId:number,cancelToken?:CancelTokenSource) : Promise<IResponse<IChurch>> => {
     try{
         const url = `${baseUrl}/getchurchbyId?churchId=${churchId}`
-        const response = await axios.get(url)
+        const response = await axios.get(url,{
+            ...(cancelToken && {cancelToken:cancelToken.token})
+        })
         return response.data
     }catch(err){
         throw err
