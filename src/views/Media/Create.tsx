@@ -13,13 +13,19 @@ import DatePicker from "react-date-picker"
 import { createStyles, makeStyles } from "@material-ui/styles"
 import * as sermonDraftHelper from "./sermonUtil"
 import * as Yup from "yup"
+import {generateReference,verifyTransaction} from "core/services/payment.service"
 import { buttonBackground } from "theme/palette"
 import { BiRightArrowAlt } from "react-icons/bi"
 import useToast from "utils/Toast"
 import useParams from "utils/params"
 import { Editor } from "@tinymce/tinymce-react"
 import {CreateLayout} from "layouts"
-
+import axios from "axios"
+import {useSelector} from "react-redux"
+import {AppState} from "store"
+import {Purpose,Payment} from "core/enums/Payment"
+import {MessageType} from "core/enums/MessageType"
+import {PaymentButton} from "components/PaymentButton"
 
 interface IForm {
     title: string;
@@ -83,6 +89,7 @@ const useStyles = makeStyles((theme) => createStyles({
 const Content = () => {
     const apiKey = process.env.REACT_APP_TINYMCE_API_KEY
     const classes = useStyles()
+    const currentChurch = useSelector((state:AppState) => state.system.currentChurch)
     const currentDate = new Date()
     const [initialValues, setInitialValues] = React.useState({
         title: "",
@@ -93,17 +100,45 @@ const Content = () => {
         authorDesignation: "",
     })
     const [showForm,setShowForm] = React.useState(false)
+    const [submitting,setSubmitting] = React.useState(false)
     const history = useHistory()
     const location = useLocation()
+    const [transactRef,setTransactRef] = React.useState({
+        reference:"",
+        publicKey:""
+    })
     const params = useParams()
     const toast = useToast()
-
+    const toggleSubmitting = () => {
+        setSubmitting(!submitting)
+    }
     const [image, setImage] = React.useState({
         name: "",
         base64: ""
     })
 
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
+        generateReference({
+            amount:2000,
+            organizationId:currentChurch.churchID as number,
+            organizationType:"church",
+            paymentGatewayType:Payment.PAYSTACK,
+            purpose:Purpose.SERMON,
+        },cancelToken).then(payload => {
+            setTransactRef({
+                ...transactRef,
+                reference:payload.data.reference,
+                publicKey:payload.data.publicKey
+            })
+        }).catch(err => {
+            toast({
+                title: "Unable to Get Church detail",
+                messageType: MessageType.ERROR,
+                subtitle: `Error: ${err}`
+            })
+        })
+        
         if (location.search) {
             const decodedTitle = decodeURI(location.search)
             const defaultSermon = sermonDraftHelper.getSermonFromLocalStorage(decodedTitle.split("=")[1])
@@ -174,6 +209,7 @@ const Content = () => {
         
         await createSermon(sermonData).then(payload => {
             actions.setSubmitting(false)
+            toggleSubmitting()
             toast({
                 title: "New Sermon",
                 subtitle: "New Sermon has been successfully created",
@@ -186,6 +222,7 @@ const Content = () => {
             }
             history.push(`/church/${params.churchId}/media`)
         }).catch(err => {
+            toggleSubmitting()
             actions.setSubmitting(false)
             toast({
                 title: "Unable to create new sermon",
@@ -193,6 +230,35 @@ const Content = () => {
                 messageType: "error"
             })
         })
+    }
+    const handlePaymentAndSubmission = (func:any) => (refCode:any) => {
+        toggleSubmitting()
+        verifyTransaction(Payment.PAYSTACK,refCode.reference).then(payload => {
+            toast({
+                title:"Sermon Payment Successful",
+                subtitle:"",
+                messageType:MessageType.SUCCESS
+            })
+            func()
+        }).catch(err => {
+            toast({
+                title:"Unable to complete Sermon Payment",
+                subtitle:`Error:${err}`,
+                messageType:MessageType.ERROR
+            })
+        })
+    }
+
+    const handleFailure = (error: any) => {
+        toast({
+            title: "Something Went Wrong during payment",
+            subtitle: `Error:err`,
+            messageType: MessageType.ERROR
+        })
+    }
+
+    const handlePaymentClose = () => {
+        history.goBack()
     }
     
     return (
@@ -299,11 +365,16 @@ const Content = () => {
                                     </VStack>
                                     <Stack direction={["column", "row"]} spacing={2}
                                         width="100%">
-                                        <Button px={5} py={2}
-                                            disabled={formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}
-                                            onClick={(formikProps.handleSubmit as any)}>
-                                            {formikProps.isSubmitting ? "Creating a New Sermon..." : "Pay to Publish"}
-                                        </Button>
+                                        <PaymentButton
+                                            paymentCode={transactRef}
+                                            onSuccess={handlePaymentAndSubmission(formikProps.handleSubmit)} amount={200_000}
+                                            onClose={handlePaymentClose} onFailure={handleFailure}
+                                        >
+                                            <Button px={5} py={2}
+                                                disabled={formikProps.isSubmitting || submitting || !formikProps.dirty || !formikProps.isValid}>
+                                                {formikProps.isSubmitting ? "Creating a New Sermon..." : "Pay to Publish"}
+                                            </Button>
+                                        </PaymentButton>
                                         <Button variant="outline" onClick={saveSermonToDraft(formikProps.values)}
                                             disabled={formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}>
                                             Save To draft

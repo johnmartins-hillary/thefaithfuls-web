@@ -1,31 +1,32 @@
 import React from "react"
-import {Button} from "components/Button"
 import {usePaystackPayment} from 'react-paystack';
 // eslint-disable-next-line
-import {FormikProps } from "formik"
+import {Flex} from "@chakra-ui/react"
+import {useSelector} from "react-redux"
+import {AppState} from "store"
 
 
 interface IPaymentButton {
-    form:any;
     onSuccess:any;
     onClose:any;
     onFailure?:any;
     paymentCode:{
-        reference:string
-        publicKey:string
+        reference:string;
+        publicKey:string;
     };
     amount:number
 }
 
-const PaymentButton:React.FC<IPaymentButton> = ({form,onSuccess,onClose,paymentCode,amount,onFailure}) => {
+const PaymentButton:React.FC<IPaymentButton> = ({onSuccess,onClose,paymentCode,amount,onFailure,children}) => {
+    const currentUser = useSelector((state:AppState) => state.system.currentUser)
     const config = {
         reference: paymentCode.reference,
-        email: form.values.email,
+        email: currentUser.email,
         amount,
         publicKey: paymentCode.publicKey,
         metadata:{
-            custom_field:([form.values.name,
-                form.values.phoneNumber,form.values.email] as unknown as Record<string, string>[])
+            custom_field:([currentUser.fullname,
+                currentUser.phoneNumber,currentUser.email] as unknown as Record<string, string>[])
         }
     };
     
@@ -39,11 +40,9 @@ const PaymentButton:React.FC<IPaymentButton> = ({form,onSuccess,onClose,paymentC
     //     // implementation for  whatever you want to do when the Paystack dialog closed.
     // } 
     return (
-        <Button disabled={!form.validateForm}
-            width={{base:"90vw",md:"35%"}} backgroundColor="primary" my="6" 
-            onClick={handleSubmit} maxWidth="sm">
-            {form.isValid ? "Proceed To Pay":"Please Correct Form"}
-        </Button>                            
+        <Flex onClick={handleSubmit}>
+            {children}
+        </Flex>    
     );
 };
 

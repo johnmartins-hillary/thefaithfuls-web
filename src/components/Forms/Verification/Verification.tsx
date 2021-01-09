@@ -129,7 +129,7 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
                     organizationType:"church",
                     paymentGatewayType:Payment.PAYSTACK,
                     purpose:Purpose.VERIFYYME,
-                }).then(payload => {
+                },cancelToken).then(payload => {
                     setTransactRef({
                         reference:payload.data.reference,
                         publicKey:payload.data.publicKey
@@ -271,9 +271,15 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
                                         To verify your church location with a fee of ₦2000
                                     </Text>
                                 }
-                                <PaymentButton form={formikProps} paymentCode={transactRef}
+                                <PaymentButton paymentCode={transactRef}
                                     onSuccess={handlePaymentAndSubmission} amount={200_000}
-                                    onClose={handlePaymentClose} onFailure={handleFailure}/>
+                                    onClose={handlePaymentClose} onFailure={handleFailure}>
+                                        <Button disabled={!formikProps.validateForm}
+                                            width={{base:"90vw",md:"35%"}} backgroundColor="primary" my="6" 
+                                            maxWidth="sm">
+                                            {formikProps.isValid ? "Proceed To Pay":"Please Correct Form"}
+                                        </Button>                        
+                                    </PaymentButton>
                             </VStack>
                         </Stack>
                     )
