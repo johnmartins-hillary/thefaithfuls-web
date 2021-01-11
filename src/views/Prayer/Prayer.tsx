@@ -132,7 +132,15 @@ const Prayer = () => {
         prayerDetail:"",
         churchId:0,
         dateEntered:new Date(),
-        personId:""
+        personId:"",
+        prayedPrayerRequests:[{
+            fullName:"",
+            personPrayedId:"",
+            personPrayedPictureUrl:"",
+            pictureUrl:"",
+            prayedPrayerRequestID:0,
+            prayerRequestID:0
+        }]
     }
     const defaultReading = {
         name:"",
@@ -220,7 +228,11 @@ const Prayer = () => {
         }
         const getChurchPrayerRequest = () => {
             getPrayerRequest(params.churchId,cancelToken).then(payload => {
-               setPrayerRequest(payload.data) 
+               const newPrayerRequest = payload.data.map(item => ({
+                   ...item,
+                   hasPrayed:Boolean(item.prayedPrayerRequests!.find(item => item.fullName === currentUser.fullname ))
+               }))
+                setPrayerRequest(newPrayerRequest) 
             }).catch(err => {
                 if(!axios.isCancel(err)){
                     toast({
@@ -268,6 +280,14 @@ const Prayer = () => {
     }
 
     const addToPrayer = (prayerRequestId:number) => () => {
+        const foundIndex = prayerRequest.findIndex(item => item.prayerRequestID === prayerRequestId)
+        const newFoundPrayerRequest = {
+            ...prayerRequest[foundIndex],
+            hasPrayed:true
+        }
+        const filteredPrayerRquest = [...prayerRequest]
+        filteredPrayerRquest.splice(foundIndex,1,newFoundPrayerRequest)
+        setPrayerRequest(filteredPrayerRquest)
         const addToPrayerQuery = `prayerRequetId=${prayerRequestId}&personId=${currentUser.id}`
         prayPrayerRequest(addToPrayerQuery).then(payload => {
             toast({
@@ -328,16 +348,14 @@ const Prayer = () => {
                                     >
                                         <HStack width="100%" justify="space-between">
                                             <AvatarGroup size="sm" max={3}>
-                                                <Avatar name="Ryan Florence" src="https://bit.ly/ryan-florence" />
-                                                <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
-                                                <Avatar name="Kent Dodds" src="https://bit.ly/kent-c-dodds" />
-                                                <Avatar name="Prosper Otemuyiwa" src="https://bit.ly/prosper-baba" />
-                                                <Avatar name="Christian Nwamba" src="https://bit.ly/code-beast" />
+                                            {item.prayedPrayerRequests!.map((item) => (
+                                                    <Avatar name={item.fullName} key={item.prayedPrayerRequestID} src={item.personPrayedPictureUrl} />
+                                            ))}
                                             </AvatarGroup>
                                             <Text mr="auto">
-                                                <Text as="b">14 People</Text> Prayed
+                                                <Text as="b">{item.prayedPrayerRequests!.length}</Text> has Prayed
                                             </Text>
-                                            <IconButton onClick={addToPrayer(item.prayerRequestID as number)} aria-label="Add to Prayer"
+                                            <IconButton disabled={item.hasPrayed || false} onClick={addToPrayer(item.prayerRequestID as number)} aria-label="Add to Prayer"
                                              boxSize="1rem" icon={<FaPrayingHands/>} />
                                         </HStack>
                                     </DetailCard>
