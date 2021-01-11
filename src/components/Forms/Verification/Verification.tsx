@@ -190,18 +190,18 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
     } = currentChurch
     
     const initialValues:IUpdateChurchForm = {
+        ...currentChurch,
         address,
-        churchDenom: String(denominationId),
+        denominationId: denominationId,
         email: currentUser.email as string,
         landmark: "",
-        state: stateName || "",
+        stateName,
         churchMotto: "",
-        churchName,
+        name:churchName,
         country: String(countryID),
-        phoneNumber: 0,
         priestName: "",
         priestRole: "",
-        churchID: churchID,
+        churchID,
         countryID,
         stateID,
         cityID
@@ -238,7 +238,7 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
                                     </option>
                                 ))}
                             </Select>
-                            <Select name="churchDenom" placeholder="" 
+                            <Select name="denominationId" placeholder="" 
                             label="Church Denomination"
                             className={classes.selectContainer} >
                                 {denomination.map((item, idx) => (
@@ -275,7 +275,7 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
                                     onSuccess={handlePaymentAndSubmission} amount={200_000}
                                     onClose={handlePaymentClose} onFailure={handleFailure}>
                                         <Button disabled={!formikProps.validateForm}
-                                            width={{base:"90vw",md:"35%"}} backgroundColor="primary" my="6" 
+                                         backgroundColor="primary" my="6" 
                                             maxWidth="sm">
                                             {formikProps.isValid ? "Proceed To Pay":"Please Correct Form"}
                                         </Button>                        

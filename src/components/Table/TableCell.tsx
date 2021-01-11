@@ -22,8 +22,11 @@ const StyledTableCell = withStyles((theme: Theme) =>
       fontSize: 15,
       opacity:.65,
       [theme.breakpoints.up("sm")]:{
+        fontSize: 16.5
+      },
+      [theme.breakpoints.up("md")]:{
         fontSize: 20
-      }
+      },
     }
   }),
 )(TableCell);

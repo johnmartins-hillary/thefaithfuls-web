@@ -1,7 +1,9 @@
 import React from "react"
 import { Link} from "react-router-dom"
-import { Flex, Icon, Stack, VStack,HStack, Heading, AspectRatio, Image, Avatar, Text, Select } from "@chakra-ui/react"
-import { OutlinedInput, TextInput } from "components/Input"
+import { 
+    Flex, Icon, Stack, VStack,HStack,
+     Heading, AspectRatio, Image, Avatar, Text} from "@chakra-ui/react"
+import { OutlinedInput, TextInput,Select } from "components/Input"
 // eslint-disable-next-line
 import { Formik,FormikProps } from "formik"
 import { createStyles, makeStyles } from "@material-ui/styles"
@@ -14,9 +16,12 @@ import * as Yup from "yup"
 import { MessageType } from "core/enums/MessageType"
 import { IChurchResponse } from "core/models/ChurchResponse"
 import {IUpdateChurchForm} from "core/models/Church"
-import {getCity,getState } from "core/services/utility.service"
-import { IState,ICity } from "core/models/Location"
+import {getCity,getState,getCountry } from "core/services/utility.service"
+import { IState,ICity,ICountry } from "core/models/Location"
 import { IDenomination } from "core/models/Denomination"
+import {useSelector} from "react-redux"
+import {AppState} from "store"
+import axios from "axios"
 
 
 const useStyles = makeStyles((theme) => (createStyles({
@@ -82,117 +87,104 @@ const useStyles = makeStyles((theme) => (createStyles({
 
 
 const VerifyChurch = () => {
-    const defaultChurch = {
-        churchName: "",
-        churchDenom: "",
-        email: "",
-        address: "",
-        landmark: "",
-        state: "",
-        country: "",
-        phoneNumber: 0,
-        churchMotto: "",
-        priestName: "",
-        priestRole: "",
-        countryID:0,
-        stateID:0,
-        cityID:0
-    }
     const defaultImageUpload = {
         banner: {
             base64: "",
-            name: ""
+            name: "",
+            link:""
         },
         logo: {
             base64: "",
-            name: ""
+            name: "",
+            link:""
         }
     }
     const classes = useStyles()
     const toast = useToast()
     const params = useParams()
-    const [churchForm, setChurchForm] = React.useState<IUpdateChurchForm>({ ...defaultChurch })
     const [state,setState] = React.useState<IState[]>([])
     const [denomination,setDenomination] = React.useState<IDenomination[]>([])
     const [city,setCity] = React.useState<ICity[]>([])
+    const [country,setCountry] = React.useState<ICountry[]>([])
     const [image, setImage] = React.useState({ ...defaultImageUpload })
-    
+    const currentChurch = useSelector((state:AppState) => state.system.currentChurch)
+    const currentUser = useSelector((state:AppState) => state.system.currentUser)
+
     React.useEffect(() => {
-        const apiCall = (churchId: number) => {
-            getChurchById(churchId).then(payload => {
-                const { address, name, email, denominationId, stateName,countryID,cityID,stateID, country } = payload.data
-                const newChurchDetail: IUpdateChurchForm = {
-                    address,
-                    churchDenom: String(denominationId),
-                    email: email || "",
-                    landmark: "",
-                    state: stateName || "",
-                    churchMotto: "",
-                    churchName: name,
-                    country: country || "",
-                    phoneNumber: 0,
-                    priestName: "",
-                    priestRole: "",
-                    churchID: payload.data.churchID,
-                    countryID,
-                    stateID,
-                    cityID
-                }
-                setChurchForm({ ...newChurchDetail })
+        setImage({
+            ...image,
+            banner:{
+                ...image.banner,
+                link:currentChurch.churchBarner
+            },
+            logo:{
+                ...image.logo,
+                link:currentChurch.churchLogo || ""
+            }
+        })
+        const cancelToken = axios.CancelToken.source()
+        if(currentChurch.churchID){
+            const getCountryApi = () => { 
+                getCountry().then(payload => {
+                    const foundCountry = payload.data.find(item => item.countryID === currentChurch.countryID)
+                    setCountry([foundCountry as ICountry,...payload.data.filter(item => item.countryID !== currentChurch.countryID)])
+                }).catch(err => {
+                    toast({
+                        title:"Unable to Get Country",
+                        subtitle:`Error:${err}`,
+                        messageType:MessageType.ERROR
+                    })
+                })
+            }
+            const getDenominationApi = () => {
                 getChurchDenomination().then(payload => {
-                    const foundDenomination = payload.data.find(item => item.denominationID === Number(newChurchDetail.churchDenom)) 
-                    setDenomination([foundDenomination as IDenomination,...payload.data.filter(item => item.denominationID !== Number(newChurchDetail.churchDenom))])
+                    const foundDenomination = payload.data.find(item => item.denominationID === Number(currentChurch.denominationId))
+                    setDenomination([foundDenomination as IDenomination, ...payload.data.filter(item => item.denominationID !== Number(currentChurch.denominationId))])
+                }).catch(err => {
+                    toast({
+                        title:"Unable to Get Denomination",
+                        subtitle:`Error:${err}`,
+                        messageType:MessageType.ERROR
+                    })
                 })
-                return newChurchDetail
-            }).catch(err => {
-                toast({
-                    title: "Unable to Get Church detail",
-                    messageType: MessageType.ERROR,
-                    subtitle: `Error: ${err}`
-                })
-            }).then((result:IUpdateChurchForm | void) => {
-                if(result){
-                    getState(result.countryID).then(statePayload => {
-                        const foundState = statePayload.data.find(item => item.stateID === result.stateID)
-                        setState([foundState as IState,...statePayload.data.filter(item => item.stateID !== result.stateID)])
-                        return result
+            }
+            const getStateApi = () => {
+                getState(currentChurch.countryID).then(statePayload => {
+                    const foundState = statePayload.data.find(item => item.stateID === currentChurch.stateID)
+                    setState([foundState as IState, ...statePayload.data.filter(item => item.stateID !== currentChurch.stateID)])
+                }).then(() => {
+                    getCity(currentChurch.stateID).then(cityPayload => {
+                        const foundCity = cityPayload.data.find(item => item.cityID === currentChurch.cityID)
+                        setCity([foundCity as ICity, ...cityPayload.data.filter(item => item.cityID !== currentChurch.cityID)])
                     }).catch(err => {
                         toast({
-                            title:"Unable to Get State Detail",
-                            subtitle:`Error:${err}`,
-                            messageType:MessageType.ERROR
+                            title: "Unable to get city detail",
+                            subtitle: `Error:${err}`,
+                            messageType: MessageType.ERROR
                         })
-                    }).then((result:IUpdateChurchForm | void) => {
-                        if(result){
-                            getCity(result.stateID).then(cityPayload => {
-                            const foundCity = cityPayload.data.find(item => item.cityID === result.cityID) 
-                            setCity([foundCity as ICity,...cityPayload.data.filter(item => item.cityID !== result.cityID)])
-                            }).catch(err => {
-                                toast({
-                                    title:"Unable to get city detail",
-                                    subtitle:`Error:${err}`,
-                                    messageType:MessageType.ERROR
-                                })
-                            })
-                        }
                     })
-                }
-            })
+                }).catch(err => {
+                    toast({
+                        title: "Unable to Get State Detail",
+                        subtitle: `Error:${err}`,
+                        messageType: MessageType.ERROR
+                    })
+                })
+            }
+            getCountryApi()
+            getDenominationApi()
+            getStateApi()
         }
-
-        apiCall(Number(params.churchId))
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [currentChurch])
 
-    const initialValues = { ...churchForm }
     const validationScheme = Yup.object({
-        churchName: Yup.string().min(3, "Church Denomination Should be longer")
+        name: Yup.string().min(3, "Church Denomination Should be longer")
             .required("A Church Name is required"),
-        email: Yup.string().email("Invalid Email Address").required("A Church Name is required"),
         address: Yup.string().required("An address is required").required("Address is required"),
-        landmark: Yup.string().min(3, "Landmark Should be longer").required("Landmark is required"),
-        state: Yup.string().min(3, "State Should be longer").required("State is required"),
-        phoneNumber: Yup.number().moreThan(1000000000, "Phone Number is not valid").required("Phone Number is required"),
         churchMotto: Yup.string().min(3, "Church Denomination Should be longer"),
         priestName: Yup.string().min(3, "Church Denomination Should be longer"),
         priestRole: Yup.string().min(3, "Church Denomination Should be longer")
@@ -207,7 +199,8 @@ const VerifyChurch = () => {
                 setImage({
                     ...image, [name]: {
                         base64: (reader.result as string),
-                        name: file.name
+                        name: file.name,
+                        link:""
                     }
                 })
             }
@@ -217,16 +210,19 @@ const VerifyChurch = () => {
 
     const handleSubmit = (values: IUpdateChurchForm, { ...actions }: any) => {
         actions.setSubmitting(true)
-        const newChurch:IChurchResponse = {
-            name:values.churchName,
+        const newChurch = {
+            name:values.name,
             stateID:Number(values.stateID),
             cityID:Number(values.cityID),
-            countryID:Number(churchForm.countryID),
+            countryID:Number(values.countryID),
             address:values.address,
-            denominationId:Number(values.churchDenom),
+            denominationId:Number(values.denominationId),
+            priestName:values.priestName,
+            priestRole:values.priestRole,
             ...(image.logo.base64 && {churchLogo:image.logo.base64}),
             ...(image.banner.base64 && {churchBarner:image.banner.base64})
         }
+        console.log(newChurch)
         updateChurch(newChurch).then(paylaod => {
             actions.setSubmitting(false)
             toast({
@@ -244,6 +240,24 @@ const VerifyChurch = () => {
         })
     }
 
+    const {address,denominationId,stateName,name:churchName,countryID,churchID,stateID,cityID} = currentChurch
+    const initialValues:IUpdateChurchForm = {
+        ...currentChurch,
+        address,
+        denominationId,
+        email: currentUser.email as string,
+        landmark: "",
+        stateName,
+        churchMotto: "",
+        name:churchName,
+        country: String(countryID),
+        priestName: "",
+        priestRole: "",
+        churchID: churchID,
+        countryID,
+        stateID,
+        cityID
+    }
 
     return (
         <Flex className={classes.root} pl={{ md: 16 }}>
@@ -260,7 +274,7 @@ const VerifyChurch = () => {
                 <Flex flexDirection="column" width={["100%", "60vw"]}
                     maxWidth="52.38rem" align={"center"}>
                     {
-                        churchForm.churchID &&
+                        currentChurch.churchID &&
                         <Formik
                             initialValues={initialValues}
                             validationSchema={validationScheme}
@@ -271,10 +285,10 @@ const VerifyChurch = () => {
                                     <>
                                         <HStack w="100%">
                                             {
-                                                image.banner.base64 &&
+                                                (image.banner.link || image.banner.base64) &&
                                                 <VStack w="50%">
                                                     <AspectRatio w="100%" ratio={21 / 9}>
-                                                        <Image src={image.banner.base64} objectFit="cover" />
+                                                        <Image src={image.banner.base64 || image.banner.link} objectFit="cover" />
                                                     </AspectRatio>
                                                     <Text color="primary">
                                                         Church Banner
@@ -282,9 +296,9 @@ const VerifyChurch = () => {
                                                 </VStack>
                                             }
                                             {
-                                                image.logo.base64 &&
+                                                (image.logo.link || image.logo.base64) &&
                                                 <VStack w="50%">
-                                                    <Avatar size="2xl" src={image.logo.base64} />
+                                                    <Avatar size="2xl" src={image.logo.base64 || image.logo.link} />
                                                     <Text color="primary">
                                                         Church Logo
                                                     </Text>
@@ -298,9 +312,9 @@ const VerifyChurch = () => {
                                             borderRadius="0.25rem" px={["1"]}>
                                             <VStack spacing={5} flex={1} mr={{ md: 5 }} width={{ base: "100%", md: "auto" }} >
                                             <Flex className={classes.imageContainer}>
-                                                    <input id="image-banner" type="file" name="banner" onChange={handleImageTransformation}
+                                                    <input id="banner" type="file" name="banner" onChange={handleImageTransformation}
                                                         accept="image/jpeg, image/png" style={{ display: "none" }} />
-                                                    <label htmlFor="image-banner" >
+                                                    <label htmlFor="banner" >
                                                         <Button color="white" as="span"
                                                             bgColor="rgba(0,0,0,.6)">
                                                             Church Banner
@@ -308,46 +322,44 @@ const VerifyChurch = () => {
                                                     </label>
                                                 </Flex>
                                                 <Flex className={classes.imageContainer}>
-                                                    <input id="image-logo" type="file" name="logo" onChange={handleImageTransformation}
+                                                    <input id="logo" type="file" name="logo" onChange={handleImageTransformation}
                                                         accept="image/jpeg, image/png" style={{ display: "none" }} />
-                                                    <label htmlFor="image-logo" >
+                                                    <label htmlFor="logo" >
                                                         <Button color="white" as="span"
                                                             bgColor="rgba(0,0,0,.6)">
                                                             Church Logo
                                                     </Button>
                                                     </label>
                                                 </Flex>
-                                                <OutlinedInput name="churchName" width="100%" label="Church Name" />
-                                                <TextInput name="email" placeholder="Church Email" />
-                                                <TextInput name="address" placeholder="Church Address" />
-                                                <TextInput name="landmark" placeholder="Closest Landmark" />
-                                                <Select name="churchDenom" placeholder="" >
+                                                <OutlinedInput name="name" width="100%" label="Church Name" />
+                                                <OutlinedInput label="address"  name="address" placeholder="Church Address" />
+                                                <OutlinedInput label="landmark" name="landmark" placeholder="Closest Landmark" />
+                                                <Select label="Select Denomination" name="denominationId" placeholder="" >
                                                     {denomination.map((item,idx) => (
                                                         <option key={item.denominationID} value={item.denominationID} >
                                                             {item.denominationName}
                                                         </option>
                                                     ))}
                                                 </Select>                 
-                                                <Select name="stateID" placeholder="" >
+                                                <Select label="Select State" name="stateID" placeholder="" >
                                                     {state.map((item,idx) => (
                                                         <option key={item.stateID} value={item.stateID} >
                                                             {item.name}
                                                         </option>
                                                     ))}
                                                 </Select>
-                                                <Select name="cityID" placeholder="" >
+                                                <Select label="Select City" name="cityID" placeholder="" >
                                                     {city.map((item,idx) => (
                                                         <option key={item.cityID} value={item.cityID} >
                                                             {item.name}
                                                         </option>
                                                     ))}
                                                 </Select>
-                                                <TextInput name="phoneNumber" placeholder="Church Phone Number" />
                                             </VStack>
                                             <VStack spacing={5} ml={{ md: 5 }} flex={1} width={{ base: "100%", md: "auto" }}>
-                                                <TextInput name="churchMotto" placeholder="Church Motto" />
-                                                <TextInput name="priestName" placeholder="Name of Clergy/Priests" />
-                                                <TextInput name="priestRole" placeholder="Role of Clergy/Priests" />
+                                                <OutlinedInput label="churchMotto" name="churchMotto" placeholder="Church Motto" />
+                                                <OutlinedInput label="priestName"  name="priestName" placeholder="Name of Clergy/Priests" />
+                                                <OutlinedInput label="priestRole"  name="priestRole" placeholder="Role of Clergy/Priests" />
                                                 <Button width={["100%", "auto"]} color="primary" alignSelf={{ md: "flex-start" }}
                                                     colorScheme="primary" variant="outline" >
                                                     Add Clergy/Priests
@@ -357,7 +369,7 @@ const VerifyChurch = () => {
                                         <Button alignSelf={{ md: "flex-start" }} 
                                             disabled={formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}
                                             isLoading={formikProps.isSubmitting}
-                                            loadingText={`Updating ${formikProps.values.churchName} details`}
+                                            loadingText={`Updating ${currentChurch.name} details`}
                                             onClick={(formikProps.handleSubmit as any)}
                                          >
                                             Save

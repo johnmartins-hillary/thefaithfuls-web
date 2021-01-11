@@ -8,6 +8,7 @@ import { BsCardImage } from "react-icons/bs"
 import { Button } from "components/Button"
 import NormalInput from "components/Input/Normal"
 import { createAdvert } from "core/services/ads.service"
+import {generateReference,verifyTransaction} from "core/services/payment.service"
 import { Formik,FormikProps } from "formik"
 import { createStyles, makeStyles } from "@material-ui/styles"
 import { BiRightArrowAlt } from "react-icons/bi"
@@ -18,7 +19,12 @@ import { buttonBackground } from "theme/palette"
 import DatePicker from "react-date-picker"
 import { MessageType } from "core/enums/MessageType"
 import { GoBackButton } from "components/GoBackButton"
+import {Purpose,Payment} from "core/enums/Payment"
 import {CreateLayout} from "layouts"
+import {useSelector} from "react-redux"
+import {AppState} from "store"
+import {PaymentButton} from "components/PaymentButton"
+import axios from "axios"
 
 
 interface IForm {
@@ -82,10 +88,42 @@ const Create = () => {
     const classes = useStyles()
     const currentDate = new Date()
     const [difference, setDifference] = React.useState<number>(1)
+    const currentChurch = useSelector((state:AppState) => state.system.currentChurch)
+    const [submitting,setSubmitting] = React.useState(false)
     const [image, setImage] = React.useState({
         base64: "",
         name: ""
     })
+    const [transactRef,setTransactRef] = React.useState({
+        reference:"",
+        publicKey:""
+    })
+    
+    React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
+        generateReference({
+            amount:1000,
+            organizationId:currentChurch.churchID as number,
+            organizationType:"church",
+            paymentGatewayType:Payment.PAYSTACK,
+            purpose:Purpose.SERMON,
+        },cancelToken).then(payload => {
+            setTransactRef({
+                reference:payload.data.reference,
+                publicKey:payload.data.publicKey
+            })
+        }).catch(err => {
+            toast({
+                title: "Unable to Get Church detail",
+                messageType: MessageType.ERROR,
+                subtitle: `Error: ${err}`
+            })
+        })
+        return () => {
+            cancelToken.cancel()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const initialValues = {
         title: "",
@@ -94,8 +132,10 @@ const Create = () => {
         dateTo: new Date((new Date()).setDate(currentDate.getDate() + 1)),
         advertUrl: ""
     }
-
-
+    const toggleSubmitting = () => {
+        setSubmitting(!submitting)
+    }
+    
     const validationScheme = Yup.object({
         title: Yup.string().min(3, "Title of Advert is too short").required(),
     })
@@ -117,6 +157,7 @@ const Create = () => {
             }
             createAdvert(newAdvert).then(payload => {
                 action.setSubmitting(false)
+                toggleSubmitting()
                 toast({
                     title: "Success",
                     subtitle: `New Advert ${payload.data.title} Created`,
@@ -124,6 +165,7 @@ const Create = () => {
                 })
                 history.push(`/church/${params.churchId}/ads`)
             }).catch(err => {
+                toggleSubmitting()
                 action.setSubmitting(false)
                 toast({
                     title: "Unable to create new advert",
@@ -134,6 +176,37 @@ const Create = () => {
             })
         }
     }
+    
+    const handlePaymentAndSubmission = (func:any) => (refCode:any) => {
+        toggleSubmitting()
+        verifyTransaction(Payment.PAYSTACK,refCode.reference).then(payload => {
+            toast({
+                title:"Sermon Payment Successful",
+                subtitle:"",
+                messageType:MessageType.SUCCESS
+            })
+            func()
+        }).catch(err => {
+            toast({
+                title:"Unable to complete Sermon Payment",
+                subtitle:`Error:${err}`,
+                messageType:MessageType.ERROR
+            })
+        })
+    }
+
+    const handleFailure = (error: any) => {
+        toast({
+            title: "Something Went Wrong during payment",
+            subtitle: `Error:err`,
+            messageType: MessageType.ERROR
+        })
+    }
+
+    const handlePaymentClose = () => {
+        history.goBack()
+    }
+    
 
     return (
         <VStack pl={{ base: 2, md: 12 }} pt={{ md: 6 }}
@@ -213,35 +286,50 @@ const Create = () => {
                                     </FormControl>
                                         
                                 </VStack>
-                                <VStack width="100%" maxW="md">
+                                <VStack width="100%" >
                                     <VStack width="inherit" align="flex-start" >
                                         <NormalInput width="100%" name="title" placeholder="Input title" />
                                         <NormalInput width="100%" name="link" placeholder="Input Link for Advert" />
-                                        <VStack align="flex-start" >
-                                            <Heading textStyle="h6" >Set Advert duration</Heading>
-                                            <Stack my={5} direction={["column", "row"]} align="center">
-                                                <HStack>
-                                                    <DatePicker format="MMM dd,y" calendarIcon={null} clearIcon={null}
-                                                        onChange={onChange("dateFrom")} value={formikProps.values.dateFrom}
-                                                        className={classes.dateContainer} minDate={currentDate}
-                                                    />
-                                                    <Icon as={BiRightArrowAlt} />
-                                                    <DatePicker format="MMM dd,y" calendarIcon={null} clearIcon={null}
-                                                        onChange={onChange("dateTo")} value={formikProps.values.dateTo}
-                                                        className={classes.dateContainer} minDate={formikProps.values.dateFrom}
-                                                    />
-                                                </HStack>
-                                                <Text color="inputColor" mr={["43px", "initial"]} >{`${difference}d`}</Text>
+                                        <VStack align="flex-start" w="100%">
+                                            <Stack my={5} w="100%" justify="space-between" direction={["column", "row"]} align="center">
+                                                <VStack align="flex-start">
+                                                    <Heading fontSize="1.125rem" color="tertiary" >Set Advert duration</Heading>
+                                                    <HStack>
+                                                        <DatePicker format="MMM dd,y" calendarIcon={null} clearIcon={null}
+                                                            onChange={onChange("dateFrom")} value={formikProps.values.dateFrom}
+                                                            className={classes.dateContainer} minDate={currentDate}
+                                                        />
+                                                        <Icon as={BiRightArrowAlt} />
+                                                        <DatePicker format="MMM dd,y" calendarIcon={null} clearIcon={null}
+                                                            onChange={onChange("dateTo")} value={formikProps.values.dateTo}
+                                                            className={classes.dateContainer} minDate={formikProps.values.dateFrom}
+                                                        />
+                                                    <Text color="inputColor" mr={["43px", "initial"]} >{`${difference}d`}</Text>
+                                                    </HStack>
+                                                </VStack>
+                                                <VStack ml="auto">
+                                                    <Text fontSize="1.125rem" color="tertiary" whiteSpace="nowrap">
+                                                        Amount Due
+                                                    </Text>
+                                                    <Text color="tertiary" fontSize="1.75rem" fontWeight={600}>
+                                                        ₦1000
+                                                    </Text>
+                                                </VStack>
                                             </Stack>
                                         </VStack>
                                     </VStack>
                                     <Stack direction={["column", "row"]} spacing={2}
                                         width="100%">
-                                        <Button px={5} py={2} disabled={formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}
-                                            isLoading={formikProps.isSubmitting} loadingText="Creating New Advert"
-                                            onClick={(formikProps.handleSubmit as any)}>
-                                            Pay to publish
-                                        </Button>
+                                        <PaymentButton
+                                            paymentCode={transactRef}
+                                            onSuccess={handlePaymentAndSubmission(formikProps.handleSubmit)} amount={100_000}
+                                            onClose={handlePaymentClose} onFailure={handleFailure}
+                                        >
+                                            <Button px={5} py={2} disabled={formikProps.isSubmitting || submitting || !formikProps.dirty || !formikProps.isValid}
+                                                isLoading={formikProps.isSubmitting} loadingText="Creating New Advert">
+                                                Pay to publish
+                                            </Button>
+                                        </PaymentButton>
                                         <Button variant="outline" >
                                             Save To draft
                                             </Button>
@@ -256,7 +344,6 @@ const Create = () => {
                         )
                     }}
                 </Formik>
-            
             </CreateLayout>
         </VStack>
     )

@@ -68,7 +68,7 @@ const Ads = () => {
             }).catch(err => {
                 if(!axios.isCancel(err)){
                     toast({
-                        title: "Unable to get Church Event",
+                        title: "Unable to get Church Advert",
                         subtitle: `Error : ${err}`,
                         messageType: MessageType.ERROR
                     })

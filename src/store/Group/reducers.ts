@@ -13,7 +13,8 @@ const initialState:GroupState = {
         churchId:0,
         isDeleted:false,
         denominationId:0,
-        groupMember:[] 
+        groupMember:[],
+        
     }
 }
 

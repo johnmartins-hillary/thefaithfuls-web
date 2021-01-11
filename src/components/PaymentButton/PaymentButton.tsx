@@ -13,6 +13,7 @@ interface IPaymentButton {
     paymentCode:{
         reference:string;
         publicKey:string;
+        amount?:string
     };
     amount:number
 }
@@ -29,7 +30,6 @@ const PaymentButton:React.FC<IPaymentButton> = ({onSuccess,onClose,paymentCode,a
                 currentUser.phoneNumber,currentUser.email] as unknown as Record<string, string>[])
         }
     };
-    
     const initializePayment = usePaystackPayment(config);
     
     const handleSubmit = () => {
@@ -39,8 +39,9 @@ const PaymentButton:React.FC<IPaymentButton> = ({onSuccess,onClose,paymentCode,a
     //     onClose()
     //     // implementation for  whatever you want to do when the Paystack dialog closed.
     // } 
+    const doNothing = () => {}
     return (
-        <Flex onClick={handleSubmit}>
+        <Flex onClick={currentUser.id ? handleSubmit : doNothing}>
             {children}
         </Flex>    
     );

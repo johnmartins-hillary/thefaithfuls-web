@@ -6,8 +6,9 @@ import {Payment as PaymentEnum} from "core/enums/Payment"
 const baseUrl = `${process.env.REACT_APP_SERVER_URL}/Payment`;
 
 export const generateReference = async (arg:Payment,cancelToken:CancelTokenSource):Promise<IResponse<PaymentResponse>> => {
+    console.log(arg.purpose)
     try{
-        const url = `${baseUrl}/generateReference?paymentGatewayType=${arg.paymentGatewayType}&amount=${arg.amount}&organizationType=${arg.organizationType}${arg.societyId ? `&societyId=${arg.societyId}` : ""}`
+        const url = `${baseUrl}/generateReference?paymentGatewayType=${arg.paymentGatewayType}&organizationId=${arg.organizationId}&amount=${arg.amount}&purpose=${arg.purpose}&organizationType=${arg.organizationType}${arg.societyId ? `&societyId=${arg.societyId}` : ""}`
         const response = await axios.get(url,{
             cancelToken:cancelToken.token
         })

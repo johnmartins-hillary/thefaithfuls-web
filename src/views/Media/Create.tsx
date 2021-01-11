@@ -154,6 +154,9 @@ const Content = () => {
             }
         }
         setShowForm(true)
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -200,13 +203,10 @@ const Content = () => {
             churchId:params.churchId,
             ...(image.base64 && { featureImage: image.base64 })
         }
-
         const sermonData = new FormData()
         Object.entries(newSermon).map((item,idx) => (
             sermonData.append(item[0],String(item[1]))
         ))
-
-        
         await createSermon(sermonData).then(payload => {
             actions.setSubmitting(false)
             toggleSubmitting()

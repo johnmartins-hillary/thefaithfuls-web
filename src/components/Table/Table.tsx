@@ -11,7 +11,7 @@ import {TableRow } from "."
 const useStyles = makeStyles({
     root:{
         backgroundColor:"transparent",
-        maxHeight:440
+        maxHeight:840
     },
     table: {
         minWidth: 200,
@@ -22,9 +22,6 @@ const useStyles = makeStyles({
         "& thead":{
             backgroundColor:"#F9F5F9"
         },
-        // "& td:last-child":{
-        //     display:"none"
-        // },
         "& ":{
             fontFamily:"MontserratBold"
         },

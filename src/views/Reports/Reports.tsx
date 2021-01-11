@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme) => {
 
                 margin:theme.spacing(2),
                 [theme.breakpoints.up("md")]:{
-                    margin:theme.spacing(10),
-                    marginLeft:theme.spacing(13),
+                    margin:theme.spacing(7),
+                    marginLeft:theme.spacing(10),
                 }
             },
             reportCard: {
@@ -73,12 +73,7 @@ const reportCardStyles = makeStyles((theme) => createStyles({
         position:"absolute",
         top:"10%",
         fontSize:".5rem",
-        alignItems:"center" 
-        // [theme.breakpoints.up("sm")]:{
-        // },
-        // [theme.breakpoints.down("sm")]:{
-        //     display:"none"
-        // }
+        alignItems:"center"
     }
 }))
 
@@ -99,7 +94,7 @@ const ReportCard: React.FC<IReportCard> = ({ heading,showMonth, number, bgColor,
          py={{ base: "2", md: "7" }} bgColor={bgColor} >
             <Icon as={icon} p={{md:1}} boxSize={['3rem',"4rem","5rem"]} display={{base:"none",sm:"block"}} />
             <VStack align={["center","flex-end"]} ml="2"  >
-                {showMonth &&
+                {/* {showMonth &&
                 <HStack className={classes.monthContainer} spacing={1} 
                     color="tertiary">
                     <Text letterSpacing="0.26px"
@@ -108,7 +103,7 @@ const ReportCard: React.FC<IReportCard> = ({ heading,showMonth, number, bgColor,
                     </Text>
                     <Icon as={IoIosArrowDown} />
                 </HStack>
-                }
+                } */}
                 <Heading as="h6" textAlign={["center","right"]} fontFamily="MontserratBold"
                  fontSize={[".6rem","1rem"]} color="tertiary">
                     {heading}
@@ -173,7 +168,7 @@ const Reports = () => {
                     <TabPanels mb={{ base: "5rem", md: "10rem" }}
                      className={classes.tabContainer}>
                         <TabPanel mt={{ sm: "3", md: "10" }} ml={{ md: "3" }}
-                             width={[ "100%","95%"]}>
+                             width={{base:"100%",md:"95%"}}>
                             <HStack>
                                 <ReportCard number={"₦3454"} bgColor="rgba(182, 3, 201, 0.3)"
                                     heading="Total Amount in Wallet" icon={IoMdWallet}
@@ -202,7 +197,8 @@ const Reports = () => {
                                         Download Excel File
                                         </Button>
                                 </HStack>
-                                <Table rowLength={demoFinancialReport.length} heading={[null,null,"Name","Type","Transaction ID","Date","Amount"]} >
+                                <Table rowLength={demoFinancialReport.length}
+                                 heading={[null,null,"Name","Type","Transaction ID","Date","Amount"]} >
                                     {
                                         demoFinancialReport.map((item,idx) => (
                                             <TableRow key={idx} isLoaded={true} fields={item} />

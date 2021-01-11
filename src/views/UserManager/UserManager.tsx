@@ -775,7 +775,7 @@ const UserManager = () => {
     return (
         <>
             <Stack spacing={5} p={{ base: "4", md: "0" }} pl={{ md: "12" }}
-                width={["100%", "90%"]} pr={{ md: "5" }} pt={{ md: "12" }}
+                width={{base:"100%",md:"90%"}} pr={{ md: "5" }} pt={{ md: "12" }}
                 divider={<StackDivider borderColor="gray.200" />}
             >
                 <Flex mb="-.5rem">
@@ -795,7 +795,7 @@ const UserManager = () => {
                 <SearchInput flex={4} display={{ md: "none" }}
                     value={inputValue} setValue={setInputValue}
                 />
-                <Stack spacing={5} mt={[7, 10]} width="90%" overflow="auto"
+                <Stack spacing={5} mt={[7, 10]} width={{base:"100%",md:"90%"}} overflow="auto"
                     divider={<StackDivider borderColor="gray.200" />}>
                     <Box>
                         <Text>

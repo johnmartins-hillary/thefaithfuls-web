@@ -1,29 +1,17 @@
-import axios,{AxiosRequestConfig} from "axios"
-import {IAdvert} from "core/models/Advert"
+import axios,{CancelTokenSource} from "axios"
 import {IResponse} from "core/models/Response"
 import {ISubscription} from "core/models/subscription"
 
 
-const baseUrl = `${process.env.SERVER_URL}/Subscription`
+const baseUrl = `${process.env.REACT_APP_SERVER_URL}/Subscription`
 
 
-
-export const createSubscription = async (newSubscription:ISubscription):Promise<IResponse<ISubscription>> => {
-    try{
-        const url = `${baseUrl}/createSubscriptionPlan`
-        const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
-        const response = await axios.post(url,newSubscription,config)
-        return response.data
-    }catch(err){
-        throw err
-    }
-
-}
-
-export const getSubscription = async():Promise<IResponse<ISubscription>> => {
+export const getSubscription = async(cancelToken:CancelTokenSource):Promise<IResponse<ISubscription[]>> => {
     try{
         const url = `${baseUrl}/getSubscriptionPlan`
-        const response = await axios.get(url)
+        const response = await axios.get(url,{
+            cancelToken:cancelToken.token
+        })
         return response.data
     }catch(err){
         throw err

@@ -5,9 +5,9 @@ export enum Payment {
 }
 
 export enum Purpose {
-    WITHDRAW = "WITHDRAW",
-    VERIFYYME = "VERIFYME",
-    SUBSCRIPTION = "SUBSCRIPTION",
-    ADVERT = "ADVERT",
-    SERMON = "SERMON",
+    WITHDRAW = "Withdraw",
+    VERIFYYME = "VerifyMe",
+    SUBSCRIPTION = "Subscription",
+    ADVERT = "Advert",
+    SERMON = "Sermon",
 }

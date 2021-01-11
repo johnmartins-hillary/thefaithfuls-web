@@ -238,15 +238,13 @@ const Dashboard = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-
-
     if (!currentChurch) {
         return <div>loading...</div>
     } else {
         return (
             <Box className={classes.root}>
                 <Box width="100%">
-                    <Box backgroundImage={`url(${currentChurch.churchLogo || DefaultChurchLogo})`} position="relative"
+                    <Box backgroundImage={`url(${currentChurch.churchBarner || DefaultChurchLogo})`} position="relative"
                         backgroundRepeat="no-repeat"
                         backgroundPosition="center" height="17.5rem"
                         width="100%" backgroundSize="cover"
@@ -265,7 +263,7 @@ const Dashboard = () => {
                     </Box>
                 </Box>
                 <Box pt={["1", "12"]} px={["1", "5", "10"]} >
-                    {true &&
+                    {currentChurch.status === 2 &&
                         <Flex direction={{ base: "column-reverse", md: "row" }}
                             my={16}  minHeight="13rem" width="100%">
                             <Flex p={6} className={`${classes.verificationContainer} ${classes.boxShadownContainer}`}>
@@ -323,24 +321,23 @@ const Dashboard = () => {
                                 </DashboardCard>
                                 <DashboardCard heading="Head pastor/pariah priest" color="yellow.300">
                                     <Text color="#151C4D" mt="0px !important" fontSize="1rem" >
-                                        {/* {currentChurch.priestName} */}
                                         Bismark Achodo
                                     </Text>
                                 </DashboardCard>
                                 <DashboardCard heading="Church Verification Status" color="green.500">
                                     <HStack>
-                                        <DotIcon />
-                                        <Text color="#151C4D" mt="0px !important" fontSize="1rem" >
-                                            {currentChurch.churchStatus}
+                                        <DotIcon color={currentChurch.status === 1 ? "#68D391" : "#151C4D"} />
+                                        <Text color="tertiary" mt="0px !important" fontSize="1rem" >
+                                            {currentChurch.statusString}
                                         </Text>
                                     </HStack>
                                 </DashboardCard>
                                 <DashboardCard heading="Subscription Status" color="red.500">
                                     <HStack>
-                                        <DotIcon />
+                                        <DotIcon color={currentChurch.status === 1 ? "#68D391" : "#151C4D"} />
                                         <Text color="#151C4D" mt="0px !important" fontSize="1rem" >
                                             78 days left
-                                    </Text>
+                                        </Text>
                                     </HStack>
                                 </DashboardCard>
                             </VStack>
