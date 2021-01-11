@@ -6,11 +6,21 @@ export interface IPrayer {
     denominationID:number;
     denomination?:string
 }
+interface IUserPrayer {
+    fullName:string;
+    personPrayedId:string;
+    personPrayedPictureUrl:string;
+    pictureUrl:string;
+    prayedPrayerRequestID:number;
+    prayerRequestID:number
+}
 export interface IPrayerRequest {
     prayerRequestID?:number;
     prayerTile:string;
     prayerDetail:string;
     personId:string;
     churchId:number;
-    dateEntered:Date
+    dateEntered:Date;
+    hasPrayed?:boolean;
+    prayedPrayerRequests?:IUserPrayer[]
 }

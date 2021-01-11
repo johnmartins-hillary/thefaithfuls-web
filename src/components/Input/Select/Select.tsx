@@ -1,6 +1,6 @@
 import React from "react"
 import {
-    FormControl,
+    FormControl,FormControlProps,
     Select,
     FormLabel,
     FormErrorMessage,
@@ -8,7 +8,7 @@ import {
   import {Field,FieldProps} from "formik"
 
 
-interface IProps {
+interface IProps extends FormControlProps {
     placeholder:string;
     className?:any;
     name:string;
@@ -30,7 +30,7 @@ const InputComponent:React.FC<IProps> = ({placeholder,className,label,val = 0,na
       <Field name={name}>
         {({ field, form }:FieldProps) => {
           return(
-            <FormControl my={["2"]} className={className}
+            <FormControl my={["2"]} className={className} 
             isInvalid={Boolean(form.touched[name]) && Boolean(form.errors[name])} {...props} >
               { label  && <FormLabel htmlFor={name} fontWeight="500" color="primary">{label}</FormLabel>}
               <Select size="md" fontFamily="MulishRegular" alignSelf="center" id={name} mx="auto" {...field}

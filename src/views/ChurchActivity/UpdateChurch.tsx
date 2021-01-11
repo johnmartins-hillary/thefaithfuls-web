@@ -1,20 +1,19 @@
 import React from "react"
-import { Link} from "react-router-dom"
+import { Link,useHistory} from "react-router-dom"
 import { 
     Flex, Icon, Stack, VStack,HStack,
      Heading, AspectRatio, Image, Avatar, Text} from "@chakra-ui/react"
-import { OutlinedInput, TextInput,Select } from "components/Input"
+import { OutlinedInput,Select } from "components/Input"
 // eslint-disable-next-line
 import { Formik,FormikProps } from "formik"
 import { createStyles, makeStyles } from "@material-ui/styles"
 import { Button } from "components/Button"
-import { getChurchById,updateChurch,getChurchDenomination } from "core/services/church.service"
+import { updateChurch,getChurchDenomination } from "core/services/church.service"
 import useParams from "utils/params"
 import useToast from "utils/Toast"
 import { CgCloseO } from "react-icons/cg"
 import * as Yup from "yup"
 import { MessageType } from "core/enums/MessageType"
-import { IChurchResponse } from "core/models/ChurchResponse"
 import {IUpdateChurchForm} from "core/models/Church"
 import {getCity,getState,getCountry } from "core/services/utility.service"
 import { IState,ICity,ICountry } from "core/models/Location"
@@ -109,6 +108,28 @@ const VerifyChurch = () => {
     const [image, setImage] = React.useState({ ...defaultImageUpload })
     const currentChurch = useSelector((state:AppState) => state.system.currentChurch)
     const currentUser = useSelector((state:AppState) => state.system.currentUser)
+    const history = useHistory()
+
+    const getCityAPI = (stateID:number) => {
+        getCity(stateID).then(cityPayload => {
+            if(cityPayload.data.length > 0){
+                const foundCity = cityPayload.data.find(item => item.cityID === currentChurch.cityID)
+                if(foundCity){
+                    setCity([foundCity as ICity, ...cityPayload.data.filter(item => item.cityID !== currentChurch.cityID)])
+                }else{
+                    setCity([...cityPayload.data.filter(item => item.cityID !== currentChurch.cityID)])
+                }
+            }else{
+                setCity([])
+            }
+        }).catch(err => {
+            toast({
+                title: "Unable to get city detail",
+                subtitle: `Error:${err}`,
+                messageType: MessageType.ERROR
+            })
+        })
+    }
 
     React.useEffect(() => {
         setImage({
@@ -123,7 +144,7 @@ const VerifyChurch = () => {
             }
         })
         const cancelToken = axios.CancelToken.source()
-        if(currentChurch.churchID){
+        if(currentChurch.name){
             const getCountryApi = () => { 
                 getCountry().then(payload => {
                     const foundCountry = payload.data.find(item => item.countryID === currentChurch.countryID)
@@ -153,16 +174,7 @@ const VerifyChurch = () => {
                     const foundState = statePayload.data.find(item => item.stateID === currentChurch.stateID)
                     setState([foundState as IState, ...statePayload.data.filter(item => item.stateID !== currentChurch.stateID)])
                 }).then(() => {
-                    getCity(currentChurch.stateID).then(cityPayload => {
-                        const foundCity = cityPayload.data.find(item => item.cityID === currentChurch.cityID)
-                        setCity([foundCity as ICity, ...cityPayload.data.filter(item => item.cityID !== currentChurch.cityID)])
-                    }).catch(err => {
-                        toast({
-                            title: "Unable to get city detail",
-                            subtitle: `Error:${err}`,
-                            messageType: MessageType.ERROR
-                        })
-                    })
+                    getCityAPI(currentChurch.stateID)
                 }).catch(err => {
                     toast({
                         title: "Unable to Get State Detail",
@@ -212,17 +224,17 @@ const VerifyChurch = () => {
         actions.setSubmitting(true)
         const newChurch = {
             name:values.name,
+            churchID:currentChurch.churchID,
             stateID:Number(values.stateID),
             cityID:Number(values.cityID),
             countryID:Number(values.countryID),
             address:values.address,
             denominationId:Number(values.denominationId),
             priestName:values.priestName,
-            priestRole:values.priestRole,
+            churchMotto:values.churchMotto,
             ...(image.logo.base64 && {churchLogo:image.logo.base64}),
             ...(image.banner.base64 && {churchBarner:image.banner.base64})
         }
-        console.log(newChurch)
         updateChurch(newChurch).then(paylaod => {
             actions.setSubmitting(false)
             toast({
@@ -230,6 +242,7 @@ const VerifyChurch = () => {
                 subtitle:"",
                 messageType:MessageType.SUCCESS
             })
+            history.goBack()
         }).catch(err => {
             actions.setSubmitting(false)
             toast({
@@ -240,7 +253,10 @@ const VerifyChurch = () => {
         })
     }
 
-    const {address,denominationId,stateName,name:churchName,countryID,churchID,stateID,cityID} = currentChurch
+    const {
+        address,denominationId,stateName,
+        priestName,churchMotto,
+        name:churchName,countryID,churchID,stateID,cityID} = currentChurch
     const initialValues:IUpdateChurchForm = {
         ...currentChurch,
         address,
@@ -248,11 +264,10 @@ const VerifyChurch = () => {
         email: currentUser.email as string,
         landmark: "",
         stateName,
-        churchMotto: "",
+        churchMotto: churchMotto || "",
         name:churchName,
         country: String(countryID),
-        priestName: "",
-        priestRole: "",
+        priestName: priestName || "" ,
         churchID: churchID,
         countryID,
         stateID,
@@ -341,29 +356,36 @@ const VerifyChurch = () => {
                                                         </option>
                                                     ))}
                                                 </Select>                 
-                                                <Select label="Select State" name="stateID" placeholder="" >
+                                                <Select label="Select State" name="stateID"
+                                                    val={Number(formikProps.values.stateID)} func={getCityAPI}
+                                                    placeholder="" >
                                                     {state.map((item,idx) => (
                                                         <option key={item.stateID} value={item.stateID} >
                                                             {item.name}
                                                         </option>
                                                     ))}
                                                 </Select>
-                                                <Select label="Select City" name="cityID" placeholder="" >
+                                                <Select label="Select City" name="cityID" placeholder="" isDisabled={city.length <= 0} >
                                                     {city.map((item,idx) => (
                                                         <option key={item.cityID} value={item.cityID} >
                                                             {item.name}
                                                         </option>
                                                     ))}
                                                 </Select>
+                                                    {
+                                                        city.length <= 0 &&
+                                                        <Text alignSelf="flex-start" fontFamily="Bahnschrift" color="tertiary" >
+                                                            No available city in this state
+                                                        </Text>
+                                                    }
                                             </VStack>
                                             <VStack spacing={5} ml={{ md: 5 }} flex={1} width={{ base: "100%", md: "auto" }}>
                                                 <OutlinedInput label="churchMotto" name="churchMotto" placeholder="Church Motto" />
                                                 <OutlinedInput label="priestName"  name="priestName" placeholder="Name of Clergy/Priests" />
-                                                <OutlinedInput label="priestRole"  name="priestRole" placeholder="Role of Clergy/Priests" />
                                                 <Button width={["100%", "auto"]} color="primary" alignSelf={{ md: "flex-start" }}
                                                     colorScheme="primary" variant="outline" >
                                                     Add Clergy/Priests
-                                            </Button>
+                                                </Button>
                                             </VStack>
                                         </Stack>
                                         <Button alignSelf={{ md: "flex-start" }} 
