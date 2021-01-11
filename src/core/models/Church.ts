@@ -6,7 +6,9 @@ export interface IChurch extends IChurchResponse {
     churchBarner:string;
     status:number;
     email?:string;
-    country?:string
+    country?:string;
+    priestName?:string;
+    churchMotto?:string
 }
 
 export interface IUpdateChurchForm extends IChurch {
@@ -15,8 +17,6 @@ export interface IUpdateChurchForm extends IChurch {
     // email: string;
     // address: string;
     landmark: string;
-    priestName:string;
-    priestRole:string
     // state: string;
     // country: string;
     // phoneNumber: number;

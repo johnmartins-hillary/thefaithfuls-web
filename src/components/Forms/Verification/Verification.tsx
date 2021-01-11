@@ -156,7 +156,6 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
 
 
     const handlePaymentAndSubmission = (refCode:any) => {
-        console.log("this is the refCode",refCode)
         verifyTransaction(Payment.PAYSTACK,refCode.reference).then(payload => {
             toast({
                 title:"Church Verification Successful",
@@ -200,13 +199,13 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
         name:churchName,
         country: String(countryID),
         priestName: "",
-        priestRole: "",
         churchID,
         countryID,
         stateID,
         cityID
     }
     const handleSubmit = async (values: any, { ...actions }: any) => {
+    
     }
 
     if (!currentChurch.churchID) {
