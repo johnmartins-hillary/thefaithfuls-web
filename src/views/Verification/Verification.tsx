@@ -45,6 +45,9 @@ const useStyles = makeStyles((theme) => (createStyles({
 const Verification = () => {
     const classes = useStyles()
     const history = useHistory()
+    const goBack = () => {
+        history.goBack()
+    }
     return (
         <Flex className={classes.root} >
             <Heading fontWeight={400}
@@ -56,9 +59,9 @@ const Verification = () => {
                  justifyContent="center"
                     alignItems="center" maxWidth="52.38rem" >
                     <Heading alignSelf={"flex-start"} mt={{md:"2.5rem"}} textAlign={["center", "left"]} fontSize="1.5rem" >
-                        Please confirm the information you provided
+                        Please confirm the information yo   u provided
                     </Heading>
-                    <VerificationForm handleClose={() => history.push("/dashboard")} handleSuccess={() => history.push("/dashboard")} />
+                    <VerificationForm handleClose={goBack} handleSuccess={goBack} />
                 </Flex>
             </Flex>
         </Flex>

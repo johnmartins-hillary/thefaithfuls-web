@@ -21,15 +21,15 @@ const GroupMemberCard:React.FC<IProps> = ({name,imgSrc,position}) => {
                     boxSize=".6em" bg="green.300" />
             </Avatar>
             <Flex direction="column" width="75%" >
-                <Heading as="h6" fontSize="1.125rem" >{name}</Heading>
-                <Flex justify="space-between">
+                <Heading as="h6" fontFamily="Bahnschrift" fontSize="1.125rem" >{name}</Heading>
+                <Flex justify="space-between" opacity={.5}>
                     <Flex>
-                        <Icon as={FaUserAlt} mr="2" />
+                        <Icon boxSize="1.3rem" as={FaUserAlt} mr="2" />
                         <Text fontSize=".9rem">{position}</Text>
                     </Flex>
                     <Box>
-                        <Icon as={TiCancel} />
-                        <Icon as={BiEdit} />
+                        <Icon boxSize="1.3rem" as={BiEdit} mr={2} />
+                        <Icon boxSize="1.3rem" as={TiCancel} />
                     </Box>
                 </Flex>
             </Flex>

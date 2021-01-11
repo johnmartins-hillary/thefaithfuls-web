@@ -1,6 +1,6 @@
 import React from "react"
 import {Drawer,DrawerBody,DrawerHeader,Flex,Text,Icon,
-    Avatar,Heading,DrawerContent,Divider,Stack} from "@chakra-ui/react"
+        Avatar,Heading,DrawerContent,Stack} from "@chakra-ui/react"
 import {useLocation,Link} from "react-router-dom"
 import {MdDashboard,MdCastConnected,MdPermMedia,MdAnnouncement} from "react-icons/md"
 import {BsCalendar,BsFillCollectionPlayFill} from "react-icons/bs"
@@ -77,18 +77,18 @@ return (
             display="flex" justifyContent="center"
             >
                 <Avatar border="2px solid #B603C9"
-                    size="lg" name={currentChurch.name}
+                    size="xl" name={currentChurch.name}
                     src={currentChurch.churchLogo || "https://bit.ly/ryan-florence"} />
-                <Heading color="primary" fontSize="1.7rem" fontWeight="400" >
+                <Heading as="h2" color="primary" fontSize="1.7rem" fontWeight="400" >
                     {currentChurch.name}
                 </Heading>
             </DrawerHeader>
-            <Divider orientation="horizontal" bgColor="grey.500" />
-            <DrawerBody pt="10" pl="10" >
-                <Stack className={classes.optionContainer} spacing={5}>
+            {/* <Divider orientation="horizontal" bgColor="grey.500" /> */}
+            <DrawerBody pt="12" pl="10" >
+                <Stack className={classes.optionContainer} spacing={8}>
                     {dashboardMenu.map((item,idx) => (
                         <Link key={idx} to={`/church/${params.churchId}${item.link}`} >
-                            <Flex
+                            <Flex align="center"
                             className={activeLink.includes(item.link) ? classes.activeLink : classes.link} >
                                 <Icon boxSize="1rem" as={item.icon}/>
                                 <Text ml="4" fontSize="1.13rem" >{item.name}</Text>

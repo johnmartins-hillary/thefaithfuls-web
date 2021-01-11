@@ -17,6 +17,7 @@ import useToast from "utils/Toast"
 import useParams from "utils/params"
 import { ISermon } from "core/models/Sermon"
 import * as sermonService from "core/services/sermon.service"
+import {verifyTransaction,generateReference} from "core/services/payment.service"
 import * as sermonDraftHelper from "./sermonUtil"
 import { DashboardActivity } from "components/Card/ActivityCard/ActivityCard"
 import { MessageType } from "core/enums/MessageType"
@@ -29,19 +30,47 @@ import { TextInput, DatePicker,SearchInput } from "components/Input"
 import { FaRegPlayCircle, FaRegPauseCircle } from "react-icons/fa"
 import { BiSkipNextCircle, BiSkipPreviousCircle } from "react-icons/bi"
 import {Media as MediaWrapper,Player} from "react-media-player"
+import {PaymentButton} from 'components/PaymentButton'
 import { GiCancel } from "react-icons/gi"
 import {withMediaProps} from "react-media-player"
+import {useSelector} from "react-redux"
+import {AppState} from "store"
+import {Purpose,Payment} from 'core/enums/Payment'
 import ReactHowler from "react-howler"
+import axios from "axios"
 import * as Yup from "yup"
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
+        [theme.breakpoints.up("md")]:{
+            marginLeft:theme.spacing(10)
+        },
         "& ul":{
-            height:"30rem",
+            maxHeight:"30rem",
             overflowY:"auto",
             justifyContent:"center",
             [theme.breakpoints.up("sm")]:{
                 justifyContent:"flex-start"
+            }
+        },
+        "& h2":{
+            fontFamily:"MulishRegular"
+        }
+    },
+    buttonContainer:{
+        "& button:first-child":{
+            padding:theme.spacing(2.9,5)
+        },
+        "& button:last-child":{
+            padding:theme.spacing(2,3),
+            marginLeft:theme.spacing(1),
+            "& > div":{
+                alignItems:"center",
+                textTransform:"lowercase",
+                fontWeight:"500"
+            },
+            "& p":{
+                fontFamily:'Bahnschrift'
             }
         }
     }
@@ -93,7 +122,40 @@ const MediaDialog: React.FC<IMediaDialogProps> = ({ close, updateSermon }) => {
     const params = useParams()
     const toast = useToast()
     const [file, setFile] = React.useState<IFile>(defaultFile)
-    
+    const currentChurch = useSelector((state:AppState) => state.system.currentChurch)
+    const [submitting,setSubmitting] = React.useState(false)
+    const [transactRef,setTransactRef] = React.useState({
+        reference:"",
+        publicKey:""
+    })
+
+    React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
+        generateReference({
+            amount:2000,
+            organizationId:currentChurch.churchID as number,
+            organizationType:"church",
+            paymentGatewayType:Payment.PAYSTACK,
+            purpose:Purpose.SERMON,
+        },cancelToken).then(payload => {
+            setTransactRef({
+                ...transactRef,
+                reference:payload.data.reference,
+                publicKey:payload.data.publicKey
+            })
+        }).catch(err => {
+            toast({
+                title: "Unable to Get Church detail",
+                messageType: MessageType.ERROR,
+                subtitle: `Error: ${err}`
+            })
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+    const toggleSubmitting = () => {
+        setSubmitting(!submitting)
+    }
+
     const onDrop = (acceptedFile: any, fileRejection: any, e: any) => {
         if (acceptedFile[0].type === "video/mp4") {
             setFile({
@@ -160,6 +222,7 @@ const MediaDialog: React.FC<IMediaDialogProps> = ({ close, updateSermon }) => {
         file.audio.file && sermonData.append("vidaudio", file.audio.file, file.audio.file.name)
 
         await sermonService.createSermon(sermonData).then(payload => {
+            toggleSubmitting()
             actions.setSubmitting(false)
             toast({
                 title: "New Sermon",
@@ -172,6 +235,7 @@ const MediaDialog: React.FC<IMediaDialogProps> = ({ close, updateSermon }) => {
             updateSermon(payload.data)
             close()
         }).catch(err => {
+            toggleSubmitting()
             actions.setSubmitting(false)
             toast({
                 title: "Unable to create new sermon",
@@ -179,6 +243,36 @@ const MediaDialog: React.FC<IMediaDialogProps> = ({ close, updateSermon }) => {
                 messageType: "error"
             })
         })
+    }
+
+    const handlePaymentAndSubmission = (func:any) => (refCode:any) => {
+        toggleSubmitting()
+        verifyTransaction(Payment.PAYSTACK,refCode.reference).then(payload => {
+            toast({
+                title:"Sermon Payment Successful",
+                subtitle:"",
+                messageType:MessageType.SUCCESS
+            })
+            func()
+        }).catch(err => {
+            toast({
+                title:"Unable to complete Sermon Payment",
+                subtitle:`Error:${err}`,
+                messageType:MessageType.ERROR
+            })
+        })
+    }
+
+    const handleFailure = (error: any) => {
+        toast({
+            title: "Something Went Wrong during payment",
+            subtitle: `Error:err`,
+            messageType: MessageType.ERROR
+        })
+    }
+
+    const handlePaymentClose = () => {
+        close()
     }
 
     return (
@@ -237,7 +331,6 @@ const MediaDialog: React.FC<IMediaDialogProps> = ({ close, updateSermon }) => {
                                 formikProps.setValues({ ...formikProps.values, [name]: e })
                             }
                         }
-
                         return (
                             <VStack>
                                 <TextInput name="title" placeholder="Input Sermon Title" />
@@ -247,10 +340,16 @@ const MediaDialog: React.FC<IMediaDialogProps> = ({ close, updateSermon }) => {
                                     <DatePicker value={formikProps.values.featureDateFrom} onChange={onChange("featureDateFrom")} name="featureDateFrom" />
                                     <DatePicker value={formikProps.values.featureDateTo} onChange={onChange("featureDateTo")} name="featureDateTo" />
                                 </HStack>
-                                <Button my={{ base: 2, md: 10 }} disabled={(!noChosenFile) || formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}
-                                    onClick={(formikProps.handleSubmit as any)}>
-                                    {!noChosenFile ? "Please Upload audio/video" : formikProps.isSubmitting ? `Creating a sermon ${formikProps.values.title}` : "Submit"}
-                                </Button>
+                                <PaymentButton
+                                    paymentCode={transactRef}
+                                    onSuccess={handlePaymentAndSubmission(formikProps.handleSubmit)} amount={200_000}
+                                    onClose={handlePaymentClose} onFailure={handleFailure}
+                                >
+                                    <Button my={{ base: 2, md: 10 }} 
+                                        disabled={(!noChosenFile) || submitting || formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}>
+                                        {!noChosenFile ? "Please Upload audio/video" : formikProps.isSubmitting ? `Creating a sermon ${formikProps.values.title}` : "Submit"}
+                                    </Button>
+                                </PaymentButton>
                             </VStack>
                         )
                     }}
@@ -374,7 +473,6 @@ const CustomPause = withMediaProps(({media}:any) => {
     )
 })
 
-
 const VideoPlayer:React.FC<IVideoPlayer> = ({video}) => {
     const classes = videoStyles()
 
@@ -426,22 +524,28 @@ const Media = () => {
     }
 
     React.useEffect(() => {
+        const token = axios.CancelToken.source()
         dispatch(setPageTitle("Media/Content"))
         const getSermonForChurchApi = async () => {
-            await sermonService.getChurchSermon(params.churchId).then(payload => {
+            await sermonService.getChurchSermon(params.churchId,token).then(payload => {
                 setChurchSermon(payload.data)
             }).catch(err => {
-                toast({
-                    title: "Unable to load sermon for church",
-                    subtitle: `Error: ${err}`,
-                    messageType: MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title: "Unable to load sermon for church",
+                        subtitle: `Error: ${err}`,
+                        messageType: MessageType.ERROR
+                    })
+                }
             })
         }
         setTimeout(() => {
             setIsLoaded(true)
         }, 2500)
         getSermonForChurchApi()
+        return () => {
+            token.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -546,17 +650,17 @@ const Media = () => {
                 </Flex>
             </Slide>
             <VStack spacing={14} p="4" bgColor="bgColor" className={classes.root}
-                pl={{ md: "12" }} divider={<StackDivider borderColor="gray.200" />}
+            divider={<StackDivider borderColor="gray.200" />}
                 width={["100%", "100%", "93%"]} pt={{ md: "12" }}>
                 <Flex direction="column" mb={{ md: "2rem" }} width="100%">
-                    <Flex mb={[2, 5]} align="center">
+                    <Flex mb={[2, 5]} className={classes.buttonContainer} align="center">
                         <Button px={4}>
                             <Link to={`/church/${params.churchId}/media/create`} >
                                 Create Sermon
                             </Link>
                         </Button>
                         <Flex flex={1} />
-                        <SearchInput setValue={handleInput}
+                        <SearchInput setValue={handleInput} flex={2}
                          display={{ base: "none", md: "inline-block" }} value={inputValue} />
                         <Flex flex={3} flexShrink={4} />
                         <Button variant="outline" borderWidth="3px">
@@ -567,18 +671,18 @@ const Media = () => {
                         </Button>
                     </Flex>
                     <Flex flex={1} />
-                    <SearchInput setValue={handleInput}
+                    <SearchInput setValue={handleInput} flex={2.5} mb={2}
                      display={{ md: "none" }} value={inputValue} />
                     <Wrap spacing="15px">
                         {displaySermons.length > 0 ? displaySermons.map((item, idx) => (
-                            <WrapItem key={item.sermonID}>
+                            <WrapItem key={item.sermonID || idx}>
                                 <DashboardActivity isLoaded={Boolean(item.sermonID)} heading={item.title}
-                                p="4" width="100%" maxWidth="20rem">
-                                <Text as="i" color="#151C4D" fontWeight="600"
+                                p="4" width="100%">
+                                <Text as="i" color="#151C4D" fontFamily="MontserratBold" fontWeight="600"
                                     fontSize="1.125rem" opacity={.5} >
-                                    {item.author}
+                                    {`By: ${item.author}`}
                                 </Text>
-                                <Text textAlign="left" color="#151C4D" opacity={.5}
+                                <Text textAlign="left" fontFamily="MontserratRegular" color="#151C4D" opacity={.5}
                                     maxWidth="sm" dangerouslySetInnerHTML={{ __html: item.sermonContent }} />
                             </DashboardActivity>
                             </WrapItem>
@@ -596,7 +700,7 @@ const Media = () => {
                         <Wrap>
                             {draftSermon.map((item, idx) => (
                                 <DashboardActivity p="4"
-                                    key={item.sermonID} width="90%" maxWidth="20rem" >
+                                    key={item.sermonID || idx} width="90%" maxWidth="20rem" >
                                     <Heading fontSize="1.5rem" color="#151C4D" >
                                         {item.title}
                                     </Heading>
@@ -619,13 +723,13 @@ const Media = () => {
                     </Flex>
                 }
                 <Flex direction="column" width="100%">
-                    <Flex mb={[2, 5]} direction={["column", "row"]}
+                    <Flex mb={[2, 5]} direction={["column", "row"]} className={classes.buttonContainer}
                         align="center">
                         <Button px={4} onClick={handleToggle}>
                             Upload video/audio sermons
                         </Button>
-                        <Flex flex={1} />
-                        <SearchInput setValue={handleVideoInput}
+                        <Flex flex={.5} />
+                        <SearchInput setValue={handleVideoInput} flex={2.3}
                          display={{ base: "none", md: "inline-block" }} value={videoInputValue} />
                         <Flex flex={3} flexShrink={4} />
                         <Button variant="outline" mt={[2, "initial"]} borderWidth="3px" colorScheme="primary" color="primary" >
@@ -646,7 +750,8 @@ const Media = () => {
                         <Wrap>
                             {videoSermon.length > 0 ?
                                 videoSermon.map((item, idx) => (
-                                    <Skeleton isLoaded={isLoaded} onClick={handleCurrentVideoSermon(item)} >
+                                    <Skeleton isLoaded={isLoaded} key={item.sermonID || idx}
+                                     onClick={handleCurrentVideoSermon(item)} >
                                         <MediaCard title={item.title} showShare={true} key={idx} />
                                     </Skeleton>
                                 )) :
@@ -664,7 +769,8 @@ const Media = () => {
                         <Wrap>
                             {audioSermon.length > 0 ?
                                 audioSermon.map((item, idx) => (
-                                    <Skeleton isLoaded={isLoaded} onClick={handleCurrentAudioSermon({
+                                    <Skeleton isLoaded={isLoaded} key={item.sermonID || idx}
+                                    onClick={handleCurrentAudioSermon({
                                         ...item,
                                         next: !(idx >= (audioSermon.length - 1)),
                                         previous: !(idx <= 0),

@@ -2,28 +2,31 @@ import {IChurchResponse} from "./ChurchResponse"
 import {ChurchStatus} from "core/enums/Church"
 
 export interface IChurch extends IChurchResponse {
-    // churchStatus:ChurchStatus;
-    churchStatus?:string;
+    statusString?:string;
+    churchBarner:string;
+    status:number;
     email?:string;
     country?:string
 }
 
-export interface IUpdateChurchForm {
-    churchName: string;
-    churchDenom: string;
-    email: string;
-    address: string;
+export interface IUpdateChurchForm extends IChurch {
+    // churchName: string;
+    // churchDenom: string;
+    // email: string;
+    // address: string;
     landmark: string;
-    state: string;
-    country: string;
-    phoneNumber: number;
-    churchMotto: string;
-    priestName: string;
-    priestRole: string
-    churchID?: number;
-    countryID:number;
-    stateID:number;
-    cityID:number
+    priestName:string;
+    priestRole:string
+    // state: string;
+    // country: string;
+    // phoneNumber: number;
+    // churchMotto: string;
+    // priestName: string;
+    // priestRole: string
+    // churchID?: number;
+    // countryID:number;
+    // stateID:number;
+    // cityID:number
 }
 
 

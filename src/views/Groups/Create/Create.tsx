@@ -16,6 +16,7 @@ import {createStyles,makeStyles} from "@material-ui/styles"
 import {MessageType} from "core/enums/MessageType"
 import {CreateLayout} from "layouts"
 import {TagContainer} from "components/Input/TagContainer"
+import axios from "axios"
 import * as Yup from "yup"
 
 interface IForm {
@@ -35,29 +36,35 @@ const useStyles = makeStyles((theme) => createStyles({
         paddingBottom:"2rem",
         alignItems:"flex-start !important"
     },
-    imageContainer:{
-        border:"1px dashed rgba(0, 0, 0, .5)",
-        borderRadius:"4px",
-        width:"25vh",
-        height:"25vh",
-        flexDirection:"column",
-        justifyContent:"center",
-        alignItems:"center",
-        "& svg":{
-            color:"#151C4D",
-        },
-        "& h4,p":{
-            color:"#151C4D",
-            whiteSpace:"nowrap"
-        }
-    },
+    // imageContainer:{
+    //     border:"1px dashed rgba(0, 0, 0, .5)",
+    //     borderRadius:"4px",
+    //     width:"25vh",
+    //     height:"25vh",
+    //     flexDirection:"column",
+    //     justifyContent:"center",
+    //     alignItems:"center",
+    //     "& svg":{
+    //         color:"#151C4D",
+    //     },
+    //     "& h4,p":{
+    //         color:"#151C4D",
+    //         whiteSpace:"nowrap"
+    //     }
+    // },
     inputContainer:{
         width:"inherit",
         alignItems:"flex-start",
         "& > *:first-child":{
             width:"inherit",
             cursor:"pointer",
-            justifyContent:"space-between"
+            justifyContent:"space-between",
+            "& button":{
+                fontFamily:"Bahnschrift"
+            },
+            "& p":{
+                fontFamily:"MontserratRegular"
+            }
         }
     },
     input:{
@@ -79,18 +86,24 @@ const Create = () => {
     const [allGroupMember,setAllGroupMember] = React.useState<IStaff[]>([])
 
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
         const apiStaffCall = async () => { 
-            await getStaffByChurch(Number(params.churchId)).then(payload => {
+            await getStaffByChurch(Number(params.churchId),cancelToken).then(payload => {
                 setInitialGroupMember(payload.data)
             }).catch(err => {
-                toast({
-                    title:"Unable to load Church Member",
-                    subtitle:`Error:${err}`,
-                    messageType:MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title:"Unable to load Church Member",
+                        subtitle:`Error:${err}`,
+                        messageType:MessageType.ERROR
+                    })
+                }
             })
         }
         apiStaffCall()
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
     
@@ -195,7 +208,7 @@ const Create = () => {
                                                 </Box>  
                                                 {
                                                     image.base64 &&
-                                                    <Avatar src={image.base64} size="xl" />                    
+                                                    <Avatar src={image.base64} size="2xl" />                    
                                                 }
                                             </HStack>
                                             <NormalInput width="100%" name="group" placeholder="Group Name" />

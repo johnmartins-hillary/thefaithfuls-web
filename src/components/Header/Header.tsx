@@ -12,12 +12,26 @@ import {AppState} from "store"
 const useStyles = makeStyles((theme:any) => (
   createStyles({
     root:{
-
+      fontFamily:"MulishRegular",
+      position:"absolute",
+      top:0,
+      width:"100%",
+      fontWeight:"normal",
+      fontStyle: "normal",
+      zIndex:3,
+      alignItems:"center",
+      justifyContent:"space-between",
+      flexWrap:"nowrap",
+      padding:"1.5rem",
+      "& p,a":{
+        textAlign:"center",
+        color:"white",
+        fontSize:"1.125rem",
+        letterSpacing:"0px",
+        fontWeight:"normal"
+      }
     },
     linkContainer:{
-      "& p":{
-        textAlign:"center"
-      }
     }
   })
 ))
@@ -43,17 +57,12 @@ const Header:React.FC<IProps> = props => {
   const currentUser = useSelector((state:AppState) => state.system.currentUser)
 
   return (
-    <Flex position="relative" zIndex={3}
+    <Flex className={classes.root}
       as="nav"
-      align="center"
-      justify="space-between"
-      wrap="nowrap"
-      padding="1.5rem"
-      color="white"
       {...props}
-      pt="10"
+      p={{base:"3",md:"10"}}
     >
-      <Flex display={{base:"none",md:"inline-block"}} flex={2} />
+      <Flex display={{base:"none",md:"inline-block"}} flex={1} />
       <Logo/>
       <Menu>
       <Box display={{md: "none" }}>
@@ -63,9 +72,6 @@ const Header:React.FC<IProps> = props => {
           transition="all 0.2s"
           rounded="md"
           borderWidth="1px"
-          // _hover={{ bg: "gray.100" }}
-          // _expanded={{ bg: "red.200" }}
-          // _focus={{ outline: 0, boxShadow: "outline" }}
         >
           <svg
           fill="white"

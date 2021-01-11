@@ -13,7 +13,8 @@ const initialState:GroupState = {
         churchId:0,
         isDeleted:false,
         denominationId:0,
-        groupMember:[] 
+        groupMember:[],
+        
     }
 }
 
@@ -47,7 +48,7 @@ export function groupReducer(state = initialState,action:Action):GroupState {
                     ...state.currentGroup,
                     groupMember:[
                         ...(state.currentGroup.groupMember as IGroupMember[] || []),
-                        action.payload
+                        ...action.payload
                     ]
                 }
             };
@@ -60,6 +61,7 @@ export function groupReducer(state = initialState,action:Action):GroupState {
             };
         }
         case ActionTypes.LOAD_CURRENT_GROUP_MEMBER:{
+            console.log(action.payload)
             return{
                 ...state,
                 currentGroup:{

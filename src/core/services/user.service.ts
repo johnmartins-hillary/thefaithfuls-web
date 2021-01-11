@@ -1,4 +1,4 @@
-import axios,{AxiosRequestConfig} from "axios"
+import axios,{AxiosRequestConfig,CancelTokenSource} from "axios"
 import {IResponse} from "core/models/Response"
 import {Login,LoginData} from "core/models/Login"
 import {IClaim} from "core/models/Claim"
@@ -31,10 +31,12 @@ export async function verifyToken(token:string){
     }
 }
 
-export async function getAllClaims():Promise<IResponse<IClaim[]>> {
+export async function getAllClaims(cancelToken:CancelTokenSource):Promise<IResponse<IClaim[]>> {
     const url = `${baseUrl}/GetAllClaims`
     try{
-        const response = await axios.get(url)
+        const response = await axios.get(url,{
+            cancelToken:cancelToken.token
+        })
         return response.data
     }catch(err){
         throw err
@@ -70,10 +72,12 @@ export async function assignRoleClaimToUser(arg:string):Promise<IResponse<any>>{
     }
 }
 
-export async function getAllRoleByChurchId(churchId:number):Promise<IResponse<IRole[]>>{
+export async function getAllRoleByChurchId(churchId:number,cancelToken:CancelTokenSource):Promise<IResponse<IRole[]>>{
     const url = `${baseUrl}/GetAllRoleByChurchId?churchId=${churchId}`
     try{
-        const response = await axios.get(url)
+        const response = await axios.get(url,{
+            cancelToken:cancelToken.token
+        })
         return response.data
     }catch(err){
         throw err

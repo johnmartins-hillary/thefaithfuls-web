@@ -83,7 +83,7 @@ const NormalInput:React.FC<IProps> = ({placeholder,showErrors = true,icon,label,
               }
                 { form.touched[name]  && 
                   form.errors[name] &&
-                  <FormErrorMessage>{form.errors[name]}</FormErrorMessage>
+                  <FormErrorMessage fontFamily="Bahnschrift" >{form.errors[name]}</FormErrorMessage>
                 }
             </FormControl>
           )

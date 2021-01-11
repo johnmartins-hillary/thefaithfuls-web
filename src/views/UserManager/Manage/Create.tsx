@@ -1,6 +1,6 @@
 import React from "react"
 import { useHistory } from "react-router-dom"
-import { Heading, HStack, VStack } from "@chakra-ui/react"
+import { Heading, HStack, IconButton, VStack } from "@chakra-ui/react"
 import { Button } from "components/Button"
 import { TextInput } from "components/Input"
 import { Formik, FormikProps } from "formik"
@@ -15,7 +15,8 @@ import * as Yup from "yup"
 import { IClaim } from "core/models/Claim"
 import { assignRoleClaimToUser, createRole, createRoleClaim, getAllClaims } from "core/services/user.service"
 import { CreateLayout } from "layouts"
-
+import axios from "axios"
+import { BiLeftArrowAlt } from "react-icons/bi"
 
 interface IForm {
     name: string;
@@ -24,10 +25,14 @@ interface IForm {
 }
 
 
-
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        alignItems: "flex-start !important"
+        alignItems: "flex-start !important",
+        "& > div:first-child":{
+            "& svg":{
+                fontSize:"2rem"
+            }
+        }
     },
     inputContainer: {
         backgroundColor: "#F3F3F3",
@@ -62,8 +67,9 @@ const CreateRole = () => {
     const [allClaim, setAllClaim] = React.useState<IClaim[]>([])
 
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
         const getChurchStaffApi = async () => {
-            await getStaffByChurch(Number(params.churchId)).then(payload => {
+            await getStaffByChurch(Number(params.churchId),cancelToken).then(payload => {
                 // setInitialStaff(payload.data)
                 const removeStaffWithRole = payload.data.filter(item => item.role === null)
                 setInitialStaff(removeStaffWithRole)
@@ -77,7 +83,7 @@ const CreateRole = () => {
         }
 
         const getRoleClaimApi = async () => {
-            await getAllClaims().then(payload => {
+            await getAllClaims(cancelToken).then(payload => {
                 setInitialClaim(payload.data)
             }).catch(err => {
                 toast({
@@ -90,6 +96,9 @@ const CreateRole = () => {
 
         getChurchStaffApi()
         getRoleClaimApi()
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -231,10 +240,15 @@ const CreateRole = () => {
     return (
         <VStack pl={{ base: 2, md: 12 }} pt={{ md: 6 }}
             className={classes.root} >
-            <Heading textStyle="h4" >
-                Create a Role
-                </Heading>
-            <CreateLayout>
+                <HStack>
+                    <IconButton aria-label="go-back button" bgColor="transparent"
+                    boxSize="2.5rem" onClick={goBack}
+                    icon={<BiLeftArrowAlt />} />
+                    <Heading textStyle="h4" >
+                        Create a Role
+                    </Heading>
+                </HStack>
+            <CreateLayout showCancel={false}>
                 <Formik initialValues={initialValues}
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}

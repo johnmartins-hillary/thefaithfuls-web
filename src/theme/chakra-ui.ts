@@ -22,7 +22,8 @@ const Input = {
   // The styles all Input have in common
   baseStyle: {
     fontWeight: "bold",
-    fontSize:"1.3rem"
+    fontSize:"1.3rem",
+    fontFamily:"MulishRegular"
   },
   // Two sizes: sm and md
   sizes: {
@@ -32,13 +33,16 @@ const Input = {
   // Two variants: outline and solid
   variants: {
     solid: {
-      border:"1px solid #CBD5E0",
-      opacity:.5,
+      border:"1px solid rgba(0, 0, 0, .3)",
+      // opacity:.9,
       bgColor:"white",
       borderRadius:"4px",
+      color:"#00000099",
+      fontSize:"1.25rem",
+      letterSpacing:".15px",
       _placeholder:{
-        color:"black",
-        fontSize:"1rem"
+        color:"grey",
+        opacity:.74
       }
     }
   },
@@ -55,24 +59,17 @@ const theme:DefaultTheme & any =  {
       ...colors
     },
     fonts: {
-      heading: 'Mulish',
-      body: 'Mulish',
+      heading: 'MulishRegular',
+      body: 'MulishRegular',
       mono: 'Bahnschrift',
     },
-    fontWeights:{
-      ...initialTheme.fontWeights,
-      light:300,
-      normal:400,
-      medium:500,
-      bold:700
-    },
-    lineHeights:{
-      ...initialTheme.lineHeights,
-      base:'19px',
-      normal:'22px',
-      tall:"26px",
-      taller:"42px"
-    },
+    // lineHeights:{
+    //   ...initialTheme.lineHeights,
+    //   base:'19px',
+    //   normal:'22px',
+    //   tall:"26px",
+    //   taller:"42px"
+    // },
     space:{
       ...initialTheme.space,
       "1":"0.10rem",
@@ -98,27 +95,61 @@ const theme:DefaultTheme & any =  {
       "6xl": "4rem",
     },
     textStyles:{
-      h3:{
-        fontWeight:400,
-        whiteSpace:["normal","nowrap"],
-        textAlign:["center","left"]
+      MulishRegularRegular:{
+        fontFamily:"MulishRegular",
+        fontStyle:"normal",
+        fontWeight:"normal",
       },
+      style1:{
+        fontSize:"0.9375rem",
+        lineHeight:"29px",
+        letterSpacing:"0px"
+      },
+      style2:{
+        fontFamily:"MulishRegular",
+        fontStyle:"normal",
+        fontWeight:"normal",
+        fontSize:"1.1875rem",
+        lineHeight:"24px",
+        letterSpacing:"0px"
+      },
+      style3:{
+        fontFamily:"MulishRegular",
+        fontStyle:"normal",
+        fontWeight:"normal",
+        fontSize:"0.9375rem",
+        lineHeight:"19px",
+        letterSpacing:"0px"
+      },
+      style4:{
+        fontFamily:"MulishRegular",
+        fontStyle:"normal",
+        fontWeight:"normal",
+        fontSize:"0.9375rem",
+        lineHeight:"21px",
+        letterSpacing:"0px"
+      },
+      // h3:{
+      //   fontWeight:400,
+      //   whiteSpace:["normal","nowrap"],
+      //   textAlign:["center","left"]
+      // },
       h4:{
         fontSize:"1.875rem",
         color:primary,
-        fontFamily:"Mulish",
+        fontFamily:"MulishRegular",
         fontWeight:400
       },
-      h5:{
-        fontSize:"1.5rem",
-        color:"tertiary"
-      },
+      // h5:{
+      //   fontSize:"1.5rem",
+      //   color:"tertiary"
+      // },
       h6:{
-        fontSize:"1.125rem",
-        color:"#383838",
-        opacity:.8,
-        textAlign:["center", "left"],
-        fontWeight:400
+        // fontSize:"1.125rem",
+        // color:"#383838",
+        // opacity:.8,
+        // textAlign:["center", "left"],
+        // fontWeight:400
       }
     },
     components:{
@@ -142,12 +173,12 @@ const theme:DefaultTheme & any =  {
         }
       }
     },
-    global:{
-      "button":{
-        backgroundColor:"#B603C9",
-        color:"white"
-      }
-    }
+    // global:{
+    //   "button":{
+    //     backgroundColor:"#B603C9",
+    //     color:"white"
+    //   }
+    // }
   };
 
 export default extendTheme(theme)

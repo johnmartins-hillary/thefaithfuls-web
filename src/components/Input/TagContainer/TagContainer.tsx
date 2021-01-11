@@ -33,6 +33,14 @@ const tagStyles = makeStyles((theme) => createStyles({
             top: "-20%",
             left: "5%",
             width: "max-content"
+        },
+        "& > button":{
+            boxShadow:"none !important",
+            backgroundColor:"transparent",
+            "&::active":{
+                backgroundColor:"transparent",
+                boxShadow:"none !important"
+            }
         }
     },
     menuList: {
@@ -43,8 +51,10 @@ const tagStyles = makeStyles((theme) => createStyles({
         // [theme.breakpoints.up("sm")]: {
         //     width: "30vw"
         // }
-    }
+    }    
 }))
+
+
 
 function TagContainer<T, K>({ name, value, add, active, remove, tags, ...props }: Props<T, K extends keyof T ? any : any>) {
     const classes = tagStyles()

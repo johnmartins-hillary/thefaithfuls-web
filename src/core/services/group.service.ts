@@ -34,7 +34,7 @@ export const getGroup = async (groupId:string):Promise<IResponse<IGroup[]>> => {
         throw err
     }
 }
-export const createGroupMember = async (newGroupMember:ICreateGroupMember):Promise<IResponse<IGroupMember>> => {
+export const createGroupMember = async (newGroupMember:ICreateGroupMember):Promise<IResponse<IGroupMember[]>> => {
     try{
         const url = `${baseUrl}/createSocietyMember`
         const config:AxiosRequestConfig = {headers:{Accept:"application/json"}}

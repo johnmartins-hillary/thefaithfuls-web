@@ -16,15 +16,22 @@ import useParams from "utils/params"
 import useToast from "utils/Toast"
 import {useDispatch} from "react-redux"
 import {setPageTitle} from "store/System/actions"
+import axios from "axios"
 
 const useStyles = makeStyles(theme => createStyles({
     root:{
         "& ul":{
-            height:"30rem",
-            overflowY:"auto",
-            justifyContent:"center",
             [theme.breakpoints.up("sm")]:{
                 justifyContent:"flex-start"
+            }
+        },
+        "& li":{
+            width:"80%",
+            "& > div":{
+                width:"100%"
+            },
+            [theme.breakpoints.up("sm")]:{
+                width:"initial"
             }
         }
     }
@@ -49,8 +56,9 @@ const cardStyles = makeStyles(theme => createStyles({
         textAlign:"left",
         fontSize:"1.125rem",
         opacity:.5,
-        maxHeight:"10rem",
-        overflowY:"auto"
+        // maxHeight:"10rem",
+        // overflowY:"auto",
+        fontFamily:"MontserratRegular"
     }
 }))
 
@@ -65,14 +73,13 @@ interface IAnnouncementCard {
 const AnnouncementCard:React.FC<IAnnouncementCard> = ({heading,handleEdit,handleDelete,subheading,text}) => {
     const classes = cardStyles()
     return(
-        <DashboardActivity px={2} pb="5" maxWidth="20rem" 
-         >
-            <HStack width="100%" align="flex-start" >
+        <DashboardActivity px={6} pb="5" maxWidth="30rem">
+            <HStack width="100%" align="flex-start" height="100%" >
                 <VStack className={classes.headingContainer}>
                     <Heading textStyle="h5" >
                         {heading}
                     </Heading>
-                    <Text color="tertiary" textAlign="left" as="i" opacity={.5}
+                    <Text color="tertiary" fontFamily="MontserratBold" textAlign="left" as="i" opacity={.5}
                         fontSize="1.125rem" >
                         {subheading}
                     </Text>
@@ -98,19 +105,25 @@ const Announcement = () => {
     const toast = useToast()
 
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
         dispatch(setPageTitle("Announcement"))
         const apiAnnouncementCall = async () => {
-            await announcementService.getAnnouncementByChurch(params.churchId).then(payload => {
+            await announcementService.getAnnouncementByChurch(params.churchId,cancelToken).then(payload => {
                 setAnnouncement(payload.data)
             }).catch(err => {
-                toast({
-                    title: "Unable to load Announcement",
-                    subtitle:`Error: ${err}`,
-                    messageType:MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title: "Unable to load Announcement",
+                        subtitle:`Error: ${err}`,
+                        messageType:MessageType.ERROR
+                    })
+                }
             })
         }
         apiAnnouncementCall()
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
@@ -153,7 +166,7 @@ const Announcement = () => {
         <VStack spacing={14} p={{ base: "4", md: "0" }} bgColor="bgColor"
                 justify="flex-start" className={classes.root}
                 pl={{ md: "12" }} width={["100%", "100%", "93%"]} pt={{ md: "12" }}>
-                    <Button alignSelf="flex-start" px={4} as={Link}>
+                    <Button alignSelf="flex-start" px={4}>
                         <Link to={`/church/${params.churchId}/announcement/create`} >
                                 Create Announcement
                         </Link>
@@ -161,8 +174,8 @@ const Announcement = () => {
                     <Wrap>
                          { announcement && announcement.length > 0 ? 
                             announcement?.map((item,idx:number) => (
-                                <WrapItem>
-                                <AnnouncementCard key={idx}  subheading={item.category}
+                                <WrapItem  key={item.announcementID || idx}>
+                                <AnnouncementCard subheading={`to all:${item.category}`}
                                     heading={item.title} 
                         handleDelete={handleDelete((item.announcementID as string),idx)}
                                     text={item.description} handleEdit={handleEdit(item)}

@@ -6,6 +6,7 @@ import {
 } from "@chakra-ui/react"
 import { Button } from "components/Button"
 import { createStyles, makeStyles,Theme } from '@material-ui/core/styles'
+import {Divider,Hidden} from "@material-ui/core"
 import { DashboardActivity } from "components/Card/ActivityCard/ActivityCard"
 import useParams from "utils/params"
 import { BiEdit, BiLeftArrowAlt } from "react-icons/bi"
@@ -20,18 +21,30 @@ import { IStaff } from "core/models/Staff"
 import { IRole } from "core/models/Role"
 import { useDispatch } from "react-redux"
 import {SearchInput} from "components/Input"
-
+import axios from "axios"
 
 
 
 const useStyles = makeStyles((theme:Theme) => createStyles({
     root: {
+        "& > button":{
+            backgroundColor:"transparent",
+            "& svg":{
+                fontSize:"2rem"
+            }
+        },
         "& ul":{
             height:"30rem",
             overflowY:"auto",
             justifyContent:"center",
             [theme.breakpoints.up("sm")]:{
                 justifyContent:"flex-start"
+            }
+        },
+        "& hr":{
+            width:"100%",
+            [theme.breakpoints.up("md")]:{
+                width:"90%"
             }
         }
     }
@@ -74,11 +87,10 @@ const ManageCard: React.FC<IManageCard> = ({ heading,isLoaded, memberAmt,role,up
     }
     
     return (
-        <DashboardActivity isLoaded={isLoaded} width={{ base: "90vw", md: "15rem" }} minHeight="19vh">
-            <VStack as="div" alignSelf="flex-start" align="flex-start" flex={1}
-                justify="space-evenly" width="100%" px={3}>
+        <DashboardActivity isLoaded={isLoaded} width={{ base: "90vw", md: "21rem" }} minHeight="10rem">
+            <Flex direction="column" minHeight="10rem" width="100%" px={3} pb={4} >
                 <HStack as="div" width="100%" justify="space-between">
-                    <Text color="tertiary" as="i" >
+                    <Text color="tertiary" fontFamily="MontserratBold" opacity={.5} as="i" >
                         {`${memberAmt} users`}
                     </Text>
                     <AvatarGroup size="xs" max={2}>
@@ -89,20 +101,28 @@ const ManageCard: React.FC<IManageCard> = ({ heading,isLoaded, memberAmt,role,up
                         <Avatar border={`2px solid ${primary}`} name="Christian Nwamba" src="https://bit.ly/code-beast" />
                     </AvatarGroup>
                 </HStack>
-                <Heading textStyle="h5" color="tertiary" >
+                <Heading textStyle="h5" fontSize="1.5rem"
+                  my={5} color="tertiary" >
                     {heading}
                 </Heading>
-                <HStack as="div" color="primary" justify="flex-start" >
-                    <Text mr={3} cursor="pointer" onClick={() => history.push(`/church/${params.churchId}/manager/role/edit/${role.id}`)} >
+                <HStack mt="auto " as="div" color="primary" justify="flex-start" >
+                    <Flex align="center"
+                    >
                         <Icon as={BiEdit} />
-                        Edit
-                    </Text>
-                    <Text  cursor="pointer" onClick={handleDelete} >
+                        <Text cursor="pointer"
+                        onClick={() => history.push(`/church/${params.churchId}/manager/role/edit/${role.id}`)} >
+                            Edit
+                        </Text>
+                    </Flex>
+                    <Flex align="center"
+                    >
                         <Icon as={RiDeleteBin6Line} />
-                        Delete
-                    </Text>
+                        <Text cursor="pointer" onClick={handleDelete} >
+                            Delete
+                        </Text>
+                    </Flex>
                 </HStack>
-            </VStack>
+            </Flex>
         </DashboardActivity>
     )
 }
@@ -124,12 +144,13 @@ const ManageUser = () => {
     const dispatch = useDispatch()
     const [inputText,setInputText] = React.useState("")
     const [roles, setRoles] = React.useState<IRole[]>([])
-    const [rolesForStaff, setRolesForStaff] = React.useState<IRolesForStaff[]>(new Array(10).fill(defaultRolesForStaff))
+    const [rolesForStaff, setRolesForStaff] = React.useState<IRolesForStaff[]>(new Array(5).fill(defaultRolesForStaff))
     const [displayRoleStaff,setDisplayRoleStaff] = React.useState<IRolesForStaff[]>([])
 
     React.useEffect(() => {
-        const getStaff = getStaffByChurch(Number(params.churchId))
-        const getRoles = getAllRoleByChurchId(Number(params.churchId))
+        const cancelToken = axios.CancelToken.source()
+        const getStaff = getStaffByChurch(Number(params.churchId),cancelToken)
+        const getRoles = getAllRoleByChurchId(Number(params.churchId),cancelToken)
         const apiCall = () => {
             const getStaffAndRoles = Promise.all([getStaff,getRoles])
             getStaffAndRoles.then((values) => {
@@ -155,15 +176,20 @@ const ManageUser = () => {
                 })
                 setRolesForStaff(newRolesAndStaff)
             }).catch(err => {
-                toast({
-                    title: "SomeThing Went Wrong",
-                    subtitle: `Error: ${err}`,
-                    messageType: "error"
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title: "SomeThing Went Wrong",
+                        subtitle: `Error: ${err}`,
+                        messageType: "error"
+                    })
+                }
             })
         }
         dispatch(setPageTitle("User Manager"))
         apiCall()
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -193,16 +219,14 @@ const ManageUser = () => {
         setRoles([...newRoles])
         setRolesForStaff([...newRolesForStaff])
     }
-
     
     return (
         <Stack spacing={5} p={{ base: "4", md: "0" }} className={classes.root} pl={{ md: "12" }}
-            width={["100%", "98%"]} pr={{ md: "5" }} pt={{ md: "12" }}
-            divider={<StackDivider width="95%" borderColor="gray.200" />}>
+            width={["100%","90%"]} pr={{ md: "5" }} pt={{ md: "12" }}>
             <IconButton aria-label="go-back button"
                 boxSize="1.5rem" onClick={goBack}
                 icon={<BiLeftArrowAlt />} />
-            <Flex mb="-.5rem" width="95%" >
+            <Flex mb="-.5rem" width="90%">
                 <Button mr=".5rem" px={6}>
                     <Link to={`/church/${params.churchId}/manager/role/create`}>
                         Create a Role
@@ -214,7 +238,8 @@ const ManageUser = () => {
             </Flex>
                 <SearchInput flex={1}  display={{ md: "none" }}
                 value={inputText} setValue={handeleInputChange} />
-            <Stack spacing={5} width="98%">
+                    <Divider variant="middle" />
+            <Stack spacing={5}>
                 <Text color="tertiary" maxWidth="md" fontSize="1rem">
                     A role provides access to predefined menus
                     and features so that depending on the assigned role
@@ -223,7 +248,7 @@ const ManageUser = () => {
                 <Wrap>
                     {displayRoleStaff.length > 0 ? 
                     displayRoleStaff.map((item, idx) => (
-                        <WrapItem>
+                        <WrapItem key={item.id || idx} >
                             <ManageCard updateRole={updateRole} isLoaded={Boolean(item.name.length > 0)} key={item.id || idx} heading={item.name}
                             role={item}    
                             memberAmt={item.staff.length} />

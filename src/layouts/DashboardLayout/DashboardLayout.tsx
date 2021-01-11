@@ -10,7 +10,7 @@ import useToast from "utils/Toast"
 import { Dashboard } from "components/Dashboard"
 import { DashboardHeader } from "components/DashboardHeader"
 import { makeStyles, createStyles } from "@material-ui/styles"
-import { TransitionGroup, Transition } from "react-transition-group"
+import { TransitionGroup, Transition,CSSTransition } from "react-transition-group"
 import { Wrapper } from "components/Wrapper"
 import { exit, play } from "utils/transitionPlay"
 
@@ -47,7 +47,16 @@ const VerseCreate = loadable(() => import("views/Prayer/CreateVerse/CreateVerse"
 const useStyles = makeStyles((theme) => createStyles({
     rootContainer: {
         maxWidth: "100vw",
-        overflow: "hidden"
+        overflow: "hidden",
+        // "& p,span,h2":{
+        //     fontFamily:"MulishRegular"
+        // },
+        // "& h3,h5":{
+        //     fontFamily:"Bahnschrift"
+        // },
+        // "& h6":{
+        //     fontFamily:"MontserratBold",
+        // }
     },
     root: {
         marginLeft: "auto",
@@ -57,12 +66,12 @@ const useStyles = makeStyles((theme) => createStyles({
         backgroundColor: "#F9F5F9"
     },
     drawerOpen: {
-        width: "calc(100vw - 16rem)"
+        width: "calc(100vw - 16.3rem)"
     }
 }))
 
 interface IProps {
-    children: React.ReactNode
+    // children: React.ReactNode
 }
 
 
@@ -84,6 +93,9 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
     const handleToggle = () => {
         setOpen(!open)
     }
+    // if (env === 'production') {
+    //     console.log = function () {};
+    // }
 
     return (
         <Box position="relative" className={classes.rootContainer} >
@@ -91,16 +103,11 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
             <Dashboard open={open} handleToggle={handleToggle} />
             <Flex className={`${classes.root} ${isDesktop && open && classes.drawerOpen}`} flex={1}>
                 <Route render={({ location }) => {
-                    const { pathname, key } = location;
                     return (
-                        <TransitionGroup component={null}>
-                            <Transition
-                                key={key}
-                                appear={true}
-                                onEnter={(node, appears) => play(pathname, node, appears)}
-                                onExit={(node) => exit(node)}
-                                timeout={{ enter: 750, exit: 150 }}
-                            >
+                        // <TransitionGroup>
+                        //     <CSSTransition
+                        //         classNames="wrapper" timeout={350} key={location.key}
+                        //     >
                                 <Switch location={location} >
                                     <ErrorBoundary>
                                         <Suspense fallback={<div>loading...</div>}>
@@ -282,8 +289,8 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
                                         </Suspense>
                                     </ErrorBoundary>
                                 </Switch>
-                            </Transition>
-                        </TransitionGroup>
+                        //    </CSSTransition>
+                        // </TransitionGroup>
                     )
                 }}
                 />

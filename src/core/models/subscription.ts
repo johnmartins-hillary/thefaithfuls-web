@@ -1,9 +1,9 @@
 export interface ISubscription {
-    subscriptionPlanID:number;
+    subscriptionPlanID?:number;
     name:string;
     category:string;
     features:string;
-    cost:string;
+    cost:number;
     createdAt:Date;
     updatedAt:Date;
     createdBy:string;

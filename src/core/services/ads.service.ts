@@ -1,4 +1,4 @@
-import axios,{AxiosRequestConfig} from "axios"
+import axios,{AxiosRequestConfig,CancelTokenSource} from "axios"
 import {IAdvert} from "core/models/Advert"
 import {IResponse} from "core/models/Response"
 
@@ -57,12 +57,14 @@ export const getAdvert = async (churchId:number):Promise<IResponse<IAdvert>> => 
     }
 }
 
-export const getAdverts = async (churchId:number):Promise<IResponse<IAdvert[]>> => {
+export const getAdverts = async (churchId:number,cancelToken:CancelTokenSource):Promise<IResponse<IAdvert[]>> => {
     const url = `${baseUrl}/getAdvert?churchId=${churchId}`
     try{
         const config:AxiosRequestConfig = {headers:{
             "Accept":"text/plain"
-        }}
+        },
+        cancelToken:cancelToken.token
+    }
         const response = await axios.get(url,config)
         return response.data
     }catch(err){

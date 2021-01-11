@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
     height:"75vh",
     "& .fc-toolbar-title":{
         display:"none",
-        [theme.breakpoints.up("sm")]:{
+        [theme.breakpoints.up("md")]:{
           display:"initial"
         }
     },

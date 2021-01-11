@@ -4,7 +4,7 @@ import { RiDeleteBinLine } from "react-icons/ri"
 import { BiEdit } from "react-icons/bi"
 import { Dot } from "assets/images"
 import { makeStyles, createStyles } from "@material-ui/core/styles"
-
+import {primary} from "theme/palette"
 
 const dashboardStyles = makeStyles(() => createStyles({
     root: {
@@ -35,14 +35,30 @@ const activityStyles = makeStyles(() => createStyles({
         align: "center",
         backgroundColor: "white",
         flexDirection: "column",
-        shadow: " 0px 5px 10px #0000000D",
-        borderTop: "3px solid purple",
+        boxShadow: " 0px 5px 10px #0000000D",
+        borderTop: `3px solid  ${primary}`,
         borderRadius: "0 0 0.625rem"
     }
 }))
 
+const financeStyles = makeStyles(() => createStyles({
+    root:{
+        "& button":{
+            backgroundColor:"transparent"
+        },
+        "& h3":{
+            fontWeight:"500"
+        },
+        "& p":{
+            opacity:".9",
+            fontWeight:"600"
+        }
+    }
+}))
+
 interface IActivityProps {
-    title: string;
+    title?: string;
+    subtitle?:string;
     date: string;
     dotColor: string;
 }
@@ -74,7 +90,6 @@ export const DashboardActivity: React.FC<IDashboardActivity> & IActivityCardComp
             <Skeleton isLoaded={isLoaded} >
                 <Flex className={classes.root}
                     minWidth={["auto", heading ? "13.5rem" : ""]}
-                    // pt="2" width={["45vw", "auto"]} {...props}>
                     pt="2" {...props}>
                         <>
                             {heading &&
@@ -93,8 +108,9 @@ export const DashboardActivity: React.FC<IDashboardActivity> & IActivityCardComp
     }
 
 export const FinanceActivity: React.FC<IFinanceActivity> = ({ heading,isLoaded, subHeading, moreHeading, text }) => {
+    const classes = financeStyles()
     return (
-        <Skeleton isLoaded={isLoaded}>
+        <Skeleton isLoaded={isLoaded} className={classes.root} >
             <Flex width="100%" direction="column">
                 <HStack spacing={2} width="100%"
                     justify="flex-end" flex={1}>
@@ -104,23 +120,23 @@ export const FinanceActivity: React.FC<IFinanceActivity> = ({ heading,isLoaded, 
                         icon={<RiDeleteBinLine />} />
                 </HStack>
                 <Stack spacing={4} direction="column" mx={5} mb={10} >
-                    <Heading fontWeight={400} fontSize="1.5rem">
+                    <Heading as="h3" color="tertiary" fontSize="1.5rem">
                         {heading}
                     </Heading>
                     <Stack fontSize="1.125rem"
                         color="#151C4D" opacity={.5} >
                         {subHeading &&
-                            <Text>
+                            <Text color="tertiary">
                                 {subHeading}
                             </Text>
                         }
                         {moreHeading &&
-                            <Text>
+                            <Text  color="tertiary">
                                 {moreHeading}
                             </Text>
                         }
                         {text &&
-                            <Text fontSize="0.875rem" maxWidth="md" >
+                            <Text color="tertiary" fontFamily='MontserratRegular' fontSize="0.875rem" maxWidth="md" >
                                 {text}
                             </Text>
                         }
@@ -134,27 +150,34 @@ export const FinanceActivity: React.FC<IFinanceActivity> = ({ heading,isLoaded, 
 const ActivityCard: React.FC<IProps> = ({ children, ...props }) => {
     const classes = activityStyles()
     return (
-        // <Flex align="center" bgColor="white" direction="column" shadow=" 0px 5px 10px #0000000D"
-        //  borderTop="3px solid purple" borderRadius="0 0 0.625rem 0.625rem" {...props} >
         <Flex className={classes.root} {...props} >
             {children}
         </Flex>
     )
 }
 
-const Activity: React.FC<IActivityProps> = ({ title, date, dotColor }) => {
+const Activity: React.FC<IActivityProps> = ({ title, date,subtitle, dotColor }) => {
     return (
-        <Stack my="3" direction="row" color="#4C1C51" >
+        <Stack my="3" spacing={5} direction="row" color="#4C1C51" >
             <Dot color={dotColor} />
             <VStack>
-                <Text letterSpacing="0.28px" fontSize="0.875rem"
-                    fontWeight="600">
+                {
+                    title &&
+                <Text letterSpacing="0.28px" maxW="md" fontSize="0.875rem"
+                    fontWeight="600" fontFamily="MontserratBold !important" >
                     {title}
                 </Text>
-                <Text color="#4C1C51" opacity={.8} fontSize="13.28px"
-                    letterSpacing="0.24px" >
+                }
+                <Text color="#4C1C51" opacity={.8} maxW="md" fontSize="13.28px"
+                    letterSpacing="0.24px" fontFamily="MontserratMedium !important" >
                     {date}
                 </Text>
+                {subtitle && 
+                <Text color="#4C1C51" opacity={.8} maxW="md" fontSize="13.28px"
+                    letterSpacing="0.24px" >
+                    {subtitle}
+                </Text>
+                }
             </VStack>
         </Stack>
     )

@@ -3,7 +3,7 @@ import {Link} from "react-router-dom"
 import { Box, Heading, Flex,ModalContent,ModalHeader,
         Menu,MenuButton,MenuList,MenuItem,
         ModalFooter, ModalBody,ModalCloseButton,
-        Icon, Stack, StackDivider, Text,} from "@chakra-ui/react"
+        Icon, Stack, StackDivider, Text} from "@chakra-ui/react"
 import {Button} from "components/Button"
 import { GroupCard } from "components/Card/GroupCard"
 import { GroupMemberCard } from "components/Card/GroupMemberCard"
@@ -18,6 +18,8 @@ import {loadGroupForChurch,deleteGroup,createGroupMember,
 import {Select} from "components/Input"
 import {getStaffByChurch} from "core/services/account.service"
 import {Formik,FormikProps} from "formik"
+
+
 import {useSelector,useDispatch} from "react-redux"
 import {setPageTitle} from "store/System/actions"
 import {getGroupPosition} from "core/services/utility.service"
@@ -28,6 +30,9 @@ import useToast from "utils/Toast"
 import {AppState} from "store"
 import {IStaff} from "core/models/Staff"
 import * as Yup from 'yup'
+import axios from "axios"
+
+
 
 interface IAddUser {
     member:string;
@@ -38,9 +43,53 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
     root:{
         "& > div:first-child":{
             minWidth:"20rem",
+            [theme.breakpoints.down("sm")]:{
+                alignItems:"center"
+            },
+            "& p,span,h2":{
+                fontFamily:"MulishRegular"
+            },
+            // "& h3,h5":{
+            //     fontFamily:"Bahnschrift"
+            // },
+            // "& h6":{
+            //     fontFamily:"MontserratBold",
+            // },
+            "& > button":{
+                margin:theme.spacing(3),
+                padding:theme.spacing(3,2)
+            },
             "& > h2":{
-                whiteSpace:"nowrap"
+                whiteSpace:"nowrap",
+                margin:theme.spacing(3,0),
+                marginTop:theme.spacing(1.5),
+                marginLeft:theme.spacing(3),
+                fontWeight:"400"
             }
+        },
+        "& > div:nth-child(2)":{
+            "& > div:first-child":{
+                "& h2,p":{
+                    fontFamily:"MontserratBold"
+                }
+            }
+        }
+    },
+    descriptionContainer:{
+        "& p":{
+            letterSpacing:"0.02rem",
+            fontFamily:"MontserratRegular !important",
+            color:"secondary",
+            maxWidth:"2xl",
+            fontSize:'1rem'
+        }
+    },
+    groupMemberContainer:{
+        "& h6":{
+            fontFamily:"Bahnschrift !important"
+        },
+        "& p":{
+            fontFamily:"MontserratRegular !important"
         }
     },
     select:{
@@ -50,6 +99,7 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
         }
     }
 }))
+
 
 
 
@@ -63,6 +113,7 @@ const AddUserToGroup = ({close}:any) => {
     const [member,setMember] = React.useState<IStaff[]>()
 
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
         const apiPositionCall = async () => {
             await getGroupPosition().then(payload => {
                 setPosition(payload.data)
@@ -75,8 +126,10 @@ const AddUserToGroup = ({close}:any) => {
             })
         }
         const apimemberCall = async () => {
-            await getStaffByChurch(Number(params.churchId)).then(payload => {
-                setMember(payload.data)
+            await getStaffByChurch(Number(params.churchId),cancelToken).then(payload => {
+                const churchStaff = payload.data.filter(item => !(currentGroup.groupMember?.find(member => member.fullname.split(" ").reverse().join(" ").trim() === item.fullname.trim())))
+                setMember(churchStaff)
+                console.log(churchStaff)
             }).catch(err => {
                 toast({
                     title:"Unable to load Church member",
@@ -87,6 +140,9 @@ const AddUserToGroup = ({close}:any) => {
         }
         apiPositionCall()
         apimemberCall()
+        return () => {
+            cancelToken.cancel()
+        }
           // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
@@ -104,10 +160,10 @@ const AddUserToGroup = ({close}:any) => {
         close()
     }
     const validationSchema = Yup.object({
-          // eslint-disable-next-line no-mixed-operators
-          position:Yup.number().oneOf((position && position.map((item,idx) => item.leadersPositionID) as number[] || []),
-          `Item must be one of the following ${position?.map((item,idx) => item.position)} `).required(),
-          // eslint-disable-next-line no-mixed-operators
+        // eslint-disable-next-line no-mixed-operators
+        position:Yup.number().oneOf((position && position.map((item,idx) => item.leadersPositionID) as number[] || []),
+        `Item must be one of the following ${position?.map((item,idx) => item.position)} `).required(),
+        // eslint-disable-next-line no-mixed-operators
         member:Yup.string().oneOf((member && member.map((item,idx) => item.staffID)|| []),
         `Item must be one of the following ${member?.map((item,idx) => item.fullname)} `).required()
     })
@@ -181,7 +237,7 @@ const Group = (props:any) => {
         dispatch(loadGroupMemberForCurrentGroup(societyId,toast))
     }
     React.useEffect(() => {
-        if(groups.length > 0){
+        if(!currentGroup.name && groups[0]?.name.length > 0){
             dispatch(setCurrentGroup(groups[0].name))
             setCurrentGroupMember((groups[0].societyID as number))
         }
@@ -192,8 +248,8 @@ const Group = (props:any) => {
         setOpen(!open)
     }
     const changeActive = (groupName: string,groupId:number) => () => {
+        dispatch(setCurrentGroup(groupName))
         setCurrentGroupMember(groupId)
-       dispatch(setCurrentGroup(groupName))
     }
     const handleUpdate = () => {
         dispatch(updateGroup)
@@ -206,21 +262,21 @@ const Group = (props:any) => {
     return (
         <>
             <Flex direction={["column","column", "row"]} className={classes.root} {...props}>
-                <Flex flex={2} bgColor="#F3F3F3" pt="3" maxWidth={{md:"md"}}
+                <Flex flex={3} bgColor="#F3F3F3" maxWidth={{md:"md"}}
                     direction="column" height="100vh" >
-                    <Button width={{base:"90%",md:"65%"}} mx="2">
+                    <Button width={{base:"90%",md:"60%"}}>
                         <Link to="groups/create" >
                             Add Group
                         </Link>
                     </Button>
-                    <Heading fontWeight="400" mt="3" color="primary" >
+                    <Heading color="primary" >
                         Church Groups
                     </Heading>
                     <Stack spacing={3} maxHeight={["30vh", "30vh", "75vh", "auto"]}
                      overflowY="auto">
                         {groups.length > 0 ? 
                         groups.map((item,idx) => (
-                            <OutlineCard my="3" cursor="pointer" key={idx}
+                            <OutlineCard cursor="pointer" key={idx}
                                 onClick={changeActive(item.name,item.societyID!)}
                                 active={currentGroup.name === item.name} >
                                 <GroupCard member={item.memberCount} imgSrc={item.imageUrl || "https://bit.ly/ryan-florence"}
@@ -233,12 +289,12 @@ const Group = (props:any) => {
                 <Flex flex={5} flexShrink={5} pt="10" pl={{base:0,md:5}} bgColor="#F9F5F9">
                     <Stack spacing={5} width={[ "95%","75%"]} maxWidth={{md:"3xl"}}
                         divider={<StackDivider borderColor="gray.200" />}>
-                        <Flex justify="space-between">
+                        <Flex className={classes.groupMemberContainer} justify="space-between">
                             <Box>
-                                <Text fontSize="1rem" color="#383838" >
+                                <Text fontSize="1rem" opacity={.4} color="secondary" >
                                     Group Name
                                 </Text>
-                                <Heading fontSize="1.5rem" color="#151C4D">
+                                <Heading fontSize="1.5rem" fontWeight={600} letterSpacing="0.48px" color="tertiary">
                                     {currentGroup.name}
                                 </Heading>
                             </Box>
@@ -263,17 +319,17 @@ const Group = (props:any) => {
                                 </Menu>
                             }
                         </Flex>
-                        <Box>
-                            <Heading as="h6" fontSize="1rem" color="#383838" >
+                        <Box className={classes.descriptionContainer}>
+                            <Heading as="h6" fontSize="1rem" opacity={0.4} color="secondary" >
                                 Group Description
-                    </Heading>
-                        <Text letterSpacing={"0.02rem"} maxWidth="2xl" fontSize='1rem' >
-                            {currentGroup.description}
-                        </Text>
+                            </Heading>
+                            <Text>
+                                {currentGroup.description}
+                            </Text>
                         </Box>
-                        <Box width={{base:"90vw",md:"65vw"}}>
-                            <Heading as="h6" fontSize="1rem"
-                             color="#383838" my="2" >
+                        <Box className={classes.groupMemberContainer} width={{base:"90vw",md:"65vw"}}>
+                            <Heading as="h6" fontSize="1rem" opacity={.4}
+                             color="secondary" my="2" >
                                 Group Members
                             </Heading>
                             <Stack overflowY="auto"
@@ -288,11 +344,12 @@ const Group = (props:any) => {
                             </Stack> {
                                 currentGroup.name &&
                                 <Button my={"5"} color="primary" onClick={handleToggle}
-                                width={["100%","75%","50%"]} py={["2","5"]} variant="outline"
+                                py={["2","5"]} variant="outline"
                                 colorScheme="primary" px={["5","7"]}>
                                     Invite a Member
                                 </Button>
                             }
+
                         </Box>
                     </Stack>
                 </Flex>

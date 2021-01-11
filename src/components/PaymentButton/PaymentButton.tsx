@@ -1,45 +1,49 @@
 import React from "react"
-import {Button} from "components/Button"
 import {usePaystackPayment} from 'react-paystack';
 // eslint-disable-next-line
-import {FormikProps } from "formik"
+import {Flex} from "@chakra-ui/react"
+import {useSelector} from "react-redux"
+import {AppState} from "store"
 
 
 interface IPaymentButton {
-    form:any;
     onSuccess:any;
     onClose:any;
-    onFailure?:any
+    onFailure?:any;
+    paymentCode:{
+        reference:string;
+        publicKey:string;
+        amount?:string
+    };
+    amount:number
 }
 
-const PaymentButton:React.FC<IPaymentButton> = ({form,onSuccess,onClose,onFailure}) => {
+const PaymentButton:React.FC<IPaymentButton> = ({onSuccess,onClose,paymentCode,amount,onFailure,children}) => {
+    const currentUser = useSelector((state:AppState) => state.system.currentUser)
     const config = {
-        reference: (new Date()).getTime().toString(),
-        email: form.values.email,
-        amount: 200_000,
-        publicKey: process.env.PAYSTACK_PUBLIC_KEY || "",
+        reference: paymentCode.reference,
+        email: currentUser.email,
+        amount,
+        publicKey: paymentCode.publicKey,
         metadata:{
-            custom_field:([form.values.name,
-                form.values.phoneNumber,form.values.email] as unknown as Record<string, string>[])
+            custom_field:([currentUser.fullname,
+                currentUser.phoneNumber,currentUser.email] as unknown as Record<string, string>[])
         }
     };
-    
     const initializePayment = usePaystackPayment(config);
     
-    const handleSubmit = (handleSubmit:any) => () => {
-        initializePayment(handleSubmit, onPaymentClose)
+    const handleSubmit = () => {
+        initializePayment(onSuccess, onClose)
     }
-    const onPaymentClose = () => {
-        onClose()
-        // implementation for  whatever you want to do when the Paystack dialog closed.
-        console.log('closed')
-    } 
+    // const onPaymentClose = () => {
+    //     onClose()
+    //     // implementation for  whatever you want to do when the Paystack dialog closed.
+    // } 
+    const doNothing = () => {}
     return (
-        <Button disabled={!form.validateForm}
-            width={{base:"90vw",md:"35%"}} backgroundColor="primary" my="6" 
-            onClick={handleSubmit(form.handleSubmit)} maxWidth="sm">
-            {form.isValid ? "Proceed To Pay":"Please Correct Form"}
-        </Button>                            
+        <Flex onClick={currentUser.id ? handleSubmit : doNothing}>
+            {children}
+        </Flex>    
     );
 };
 

@@ -15,22 +15,32 @@ import useParams from "utils/params"
 import {useInputTextValue} from "utils/InputValue"
 import {SearchInput} from "components/Input"
 import {createStyles,makeStyles,Theme} from "@material-ui/core/styles"
-
+import axios from "axios"
 
 const useStyles = makeStyles((theme:Theme) => createStyles({
     root:{
+        [theme.breakpoints.up("md")]:{
+            marginLeft:theme.spacing(10)
+        },
         "& ul":{
-            height:"30rem",
+            maxHeight:"30rem",
             overflowY:"auto",
             justifyContent:"center",
             [theme.breakpoints.up("sm")]:{
                 justifyContent:"flex-start"
             }
+        },
+        "& > div:nth-child(2)":{
+            margin:theme.spacing(3,0)
+        },
+        "& h2":{
+            fontFamily:"MulishRegular"
+        },
+        "& button":{
+            padding:theme.spacing(2.9,5)
         }
     }
 }))
-
-
 
 const Ads = () => {
     const classes = useStyles()
@@ -50,19 +60,25 @@ const Ads = () => {
     // const [selectAdvert,setSelectedAdvert] = React.useState<IAdvert>()
     const toast = useToast()
     React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
         dispatch(setPageTitle("Post Ads"))
         const apiCall = async (churchId:number) => {
-            await advertService.getAdverts(churchId).then(payload => {
+            await advertService.getAdverts(churchId,cancelToken).then(payload => {
                 setAdverts(payload.data)
             }).catch(err => {
-                toast({
-                    title:"Unable to load advert of church",
-                    subtitle:`Error: ${err}`,
-                    messageType:MessageType.ERROR
-                })
+                if(!axios.isCancel(err)){
+                    toast({
+                        title: "Unable to get Church Advert",
+                        subtitle: `Error : ${err}`,
+                        messageType: MessageType.ERROR
+                    })
+                }
             })
         }
         apiCall(Number(params.churchId))
+        return () => {
+            cancelToken.cancel()
+        }
           // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
@@ -144,11 +160,9 @@ const Ads = () => {
                             Post a new Ad
                         </Button>
                     </Link>
-                    <Flex>
                     <SearchInput ml={{ base: "1rem", md: "3rem" }} value={inputValue}
-                     setValue={setInputValue}  width="auto" maxW="20rem"
+                     setValue={setInputValue}  width="auto" maxW="23rem" flex={3}
                     />
-                    </Flex>
                 </Flex>
                 <VStack width="100%">
                     <Stack direction={"column"} mb={[2, 5]} align={["center", "flex-start"]}
@@ -159,8 +173,8 @@ const Ads = () => {
                         </Heading>
                         <Wrap>
                             {displayAdvert.length > 0 ? 
-                            adverts.map((item) => (
-                                <WrapItem>
+                            adverts.map((item,idx) => (
+                                <WrapItem key={item.advertID || idx} >
                                     <Skeleton isLoaded={Boolean(item.advertID)} >
                                         <MediaCard key={item.advertID} title={item.title}
                                         image={item.advertUrl || ""}/>
@@ -181,9 +195,8 @@ const Ads = () => {
                             </Heading>
                         }
                         <Wrap>
-                            {adverts.map((item) => (
-                                <WrapItem>
-
+                            {adverts.map((item,idx) => (
+                                <WrapItem key={item.advertID || idx} >
                                     <Skeleton isLoaded={Boolean(item.advertID)} >
                                         <MediaCard key={item.advertID} title={item.title}
                                             image={item.advertUrl || ""}/>

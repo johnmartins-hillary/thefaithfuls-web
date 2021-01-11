@@ -26,7 +26,7 @@ interface IProps{
 const StyledRow:React.FC<IProps> = ({fields,link}) => (
   <StyledTableRow onClick={link ? link : null}>
     {fields.map((item,idx) => (
-      <TableCell>
+      <TableCell key={idx} >
         {item}
       </TableCell>
     ))}

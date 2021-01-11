@@ -5,6 +5,7 @@ export interface IChurchResponse {
     longitude?:string;
     latitude?:string;
     churchLogo?:string;
+    churchMotto?:string
     denominationId:number;
     denomination?:string;
     dioceseId?:number;

@@ -24,17 +24,18 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 
 interface IProps {
-
+    showCancel?:boolean
 }
 
-const CreateLayout:React.FC<IProps> = ({children}) => {
+const CreateLayout:React.FC<IProps> = ({showCancel = true,children}) => {
     const classes = useStyles()
 
     return (
         <Stack className={classes.root}>
+            {showCancel && 
             <GoBackButton disabled={false} alignSelf="flex-end" border="none" >
-                <Icon color="tertiary" opacity={.75} fontSize="2rem" as={CgCloseO} />
-            </GoBackButton>
+            <Icon color="tertiary" opacity={.75} fontSize="2rem" as={CgCloseO} />
+        </GoBackButton>}
             <VStack spacing={14} className={classes.formContainer} pr={{ md: 16 }}
                 width={["98%", "100%", "75%"]} pl={{ base: 3, md: 12 }} pt={{ base: 12 }}>
                     {children}

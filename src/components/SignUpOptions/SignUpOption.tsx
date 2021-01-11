@@ -19,7 +19,8 @@ const SignUpOptions:React.FC<IProps> = ({icon,to,title,body}) => {
                         alignItems="center" shadow="0px 5px 10px #410E501A"
                         justifyContent={["center","flex-start"]}>
                         <Image boxSize="1.875rem" mr="2" fontSize="2em" src={icon}/>
-                        <Text textStyle="h6">
+                        <Text fontFamily="MulishBold !important"
+                        whiteSpace="nowrap" textTransform="capitalize" textStyle="h6">
                             {title}
                         </Text>
                     </Flex>

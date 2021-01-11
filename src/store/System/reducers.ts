@@ -8,7 +8,9 @@ const defaultChurchForm = {
     denominationId:0,
     name:"",
     stateID:0,
-    churchID:0
+    churchID:0,
+    status:1,
+    churchBarner:""
 }
 
 const defaultUserForm = {
@@ -39,7 +41,6 @@ const initialState: SystemState = {
         role: []
     },
     currentChurch:{
-        churchID: 0,
         name: "",
         address: "",
         churchLogo:"",
@@ -48,7 +49,9 @@ const initialState: SystemState = {
         country:"",
         stateID:0,
         cityID: 0,
-        churchStatus: ""
+        statusString: "",
+        status:1,
+        churchBarner:""
     },
     form:{
         church:defaultChurchForm,

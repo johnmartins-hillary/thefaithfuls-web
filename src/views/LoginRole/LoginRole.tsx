@@ -15,7 +15,7 @@ const LoginRole = () => {
                 <Link to="/" mb="4" display={["block", "none"]}>
                     <Icon name="close" opacity={.6} />
                 </Link>
-                <Heading textStyle="h3" my={[2, 20]} >
+                <Heading my={[20]} mt={{md:"15rem"}} >
                     What role would you like to <Box as="span" color="primary" >sign up</Box> for?
                     </Heading>
                 <Flex flexDirection={['column', "row"]} justifyContent={["initial", "initial", "space-between"]}
@@ -23,12 +23,13 @@ const LoginRole = () => {
                 >
                     <Box my={"2"} cursor="pointer" width={["auto", "auto", "50%"]}
                         mx={[0, "3", "5"]} ml={[0, 0, 0]} maxWidth="1xs" >
-                        <a href={`${process.env.REACT_APP_MEMBER}/login` || ""} target="_blank" >
+                        <a href={`${process.env.REACT_APP_MEMBER}/login` || ""}  rel="noopener noreferrer" target="_blank" >
                             <Flex px="8" height="5.625rem"
                                 alignItems="center" shadow="0px 5px 10px #410E501A"
                                 justifyContent={["center", "flex-start"]}>
                                 <Image boxSize="1.875rem" mr="2" fontSize="2em" src={UserAdmin} />
-                                <Text textStyle="h6">
+                                <Text fontFamily="MulishBold !important"
+                                 whiteSpace="nowrap" textTransform="capitalize"  textStyle="h6">
                                     Sign up as a member
                                     </Text>
                             </Flex>

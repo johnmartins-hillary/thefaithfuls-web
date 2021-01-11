@@ -24,15 +24,15 @@ const GroupCard:React.FC<IProps> = ({name,active,imgSrc,member,...props}) => {
                     boxSize=".6em" bg="green.300" />
             </Avatar>
             <Box>
-                <Heading as="h4" fontSize="1.5rem" >
+                <Heading as="h4" fontFamily="Bahnschrift" color="secondary" fontSize="1.5rem" >
                     {name}
                 </Heading>
-                <Text fontSize=".9rem" color="#383838">
+                <Text fontSize=".9rem" fontFamily="MontserratRegular !important" color="#383838">
                     {active ? "Active" : "Inactive"}
                 </Text>
                 <Box opacity={.7} color="#383838">
                     <Icon as={RiGroupFill} color="#383838" />
-                    <Box color="#383838" as="span">
+                    <Box fontWeight={300} color="#383838" fontFamily="MontserratRegular !important" as="span">
                         {member} members
                     </Box>
                 </Box>

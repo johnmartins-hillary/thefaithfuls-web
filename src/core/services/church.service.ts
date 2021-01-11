@@ -1,4 +1,4 @@
-import axios,{AxiosRequestConfig} from "axios"
+import axios,{AxiosRequestConfig,CancelTokenSource} from "axios"
 import {IChurch} from "core/models/Church"
 import {IChurchResponse} from "core/models/ChurchResponse"
 import {IChurchMember} from 'core/models/ChurchMember'
@@ -11,11 +11,12 @@ import {IChurchBankDetail} from "core/models/BankAccount"
 const baseUrl = `${process.env.REACT_APP_SERVER_URL}/Church`
 
 
-export const getChurchById = async (churchId:number) : Promise<IResponse<IChurch>> => {
+export const getChurchById = async (churchId:number,cancelToken?:CancelTokenSource) : Promise<IResponse<IChurch>> => {
     try{
-        console.log("calling get church detail",churchId)
         const url = `${baseUrl}/getchurchbyId?churchId=${churchId}`
-        const response = await axios.get(url)
+        const response = await axios.get(url,{
+            ...(cancelToken && {cancelToken:cancelToken.token})
+        })
         return response.data
     }catch(err){
         throw err
@@ -37,7 +38,6 @@ export const activateChurch = async (churchId:number):Promise<IResponse<IChurchR
     try{
         const urlBase = new URL(`${baseUrl}/activateChurch`)
         const url = new URLSearchParams(baseUrl).append("churchId",String(churchId))
-        console.log(url,urlBase)
         const config:AxiosRequestConfig = {headers:{"Accept":"application/json"}}
         const response = await axios.put(String(urlBase),{},config)
         return response.data
@@ -115,10 +115,12 @@ export const createChurchBankDetail = async (newBankDetail:IChurchBankDetail) =>
         throw err
     }
 }
-export const getChurchBankAccount = async (churchId:number):Promise<IResponse<IChurchBankDetail[]>> => {
+export const getChurchBankAccount = async (churchId:number,cancelToken:CancelTokenSource):Promise<IResponse<IChurchBankDetail[]>> => {
     try{
         const url = `${baseUrl}/getchurchBankAccountByChurch?churchId=${churchId}`
-        const response = await axios.get(url)
+        const response = await axios.get(url,{
+            cancelToken:cancelToken.token
+        })
         return response.data
     }catch(err){
         throw err

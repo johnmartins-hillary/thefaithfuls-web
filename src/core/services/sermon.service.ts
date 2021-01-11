@@ -1,4 +1,4 @@
-import axios,{AxiosRequestConfig} from "axios"
+import axios,{AxiosRequestConfig,CancelTokenSource} from "axios"
 import {ISermon} from "core/models/Sermon"
 import {IResponse} from "core/models/Response"
 
@@ -57,10 +57,10 @@ export const getSermonById = async (sermonId:number):Promise<IResponse<ISermon>>
     }
 }
 
-export const getChurchSermon = async (churchId:string):Promise<IResponse<ISermon[]>> => {
+export const getChurchSermon = async (churchId:string,cancelToken:CancelTokenSource):Promise<IResponse<ISermon[]>> => {
     const url = `${baseUrl}/GetSermonByChurch?churchId=${churchId}`
     try{
-        const config:AxiosRequestConfig = {headers:{Accept:"text/plain"}}
+        const config:AxiosRequestConfig = {headers:{Accept:"text/plain"},cancelToken:cancelToken.token}
         const response = await axios.get(url,config)
         return response.data
     }catch(err){

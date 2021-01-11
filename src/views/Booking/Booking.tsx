@@ -18,6 +18,7 @@ import { MessageType } from "core/enums/MessageType"
 import { Formik, Field, FieldProps, FormikProps } from "formik"
 import { AppState } from "store"
 import * as Yup from "yup"
+import axios from "axios"
 
 const useStyles = makeStyles((theme) => {
     return (
@@ -182,23 +183,29 @@ const Booking = () => {
         setOpen(!open)
         setCurrentTestimony(arg)
     }
+    const cancelToken = axios.CancelToken.source()
 
     
     const getChurchTestimony = () => {
-        getTestimony({ churchId: Number(params.churchId), testimonyType: "Thanksgiven" }).then(payload => {
+        getTestimony({ churchId: Number(params.churchId), testimonyType: "Thanksgiven" },cancelToken).then(payload => {
             setChurchTestimony(payload.data)
         }).catch(err => {
-            toast({
-                title: "Unable to get Church Testimony",
-                subtitle: `Error:${err}`,
-                messageType: MessageType.ERROR
-            })
+            if(!axios.isCancel(err)){
+                toast({
+                    title: "Unable to get Church Testimony",
+                    subtitle: `Error:${err}`,
+                    messageType: MessageType.ERROR
+                })
+            }
         })
     }
 
     React.useEffect(() => {
         dispatch(setPageTitle("Booking/Request"))
         getChurchTestimony()
+        return () => {
+            cancelToken.cancel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

@@ -6,7 +6,7 @@ import {
 } from "@chakra-ui/react"
 import {Button} from "components/Button"
 import { FaFilter } from "react-icons/fa"
-import { makeStyles, createStyles } from "@material-ui/styles"
+import { makeStyles, createStyles } from "@material-ui/core/styles"
 import { TiGroup } from "react-icons/ti"
 import {IoMdWallet} from "react-icons/io"
 import {IoIosArrowDown} from "react-icons/io"
@@ -20,7 +20,13 @@ const useStyles = makeStyles((theme) => {
     return (
         createStyles({
             root: {
-                height: "97vh"
+                // height: "97vh",
+
+                margin:theme.spacing(2),
+                [theme.breakpoints.up("md")]:{
+                    margin:theme.spacing(7),
+                    marginLeft:theme.spacing(10),
+                }
             },
             reportCard: {
                 "& > p": {
@@ -43,23 +49,31 @@ const controlMargin = ["0px !important", ".3rem !important "]
 const reportCardStyles = makeStyles((theme) => createStyles({
     root:{
         flex:1,
-        shadow:"0px 10px 20px #20A2A030",
+        boxShadow:"0px 10px 20px #20A2A030",
         justifyContent:"space-around",
         maxHeight:"8.5rem",
         position:"relative",
         "& > svg":{
             backgroundColor:"rgba(21, 28, 77, .3)",
             borderRadius:"0.625rem",
-            color:"#151C4D",
-            height:"7vh",
-            width:"8vh",
-            maxHeight:"4.125rem",
-            maxWidth:"4.57rem"
+            color:"#151C4D"
+        },
+        "& > div":{
+            height:"100%",
+            justifyContent:"space-evenly",
+            [theme.breakpoints.up("md")]:{
+                justifyContent:"space-evenly"
+            },
+        },
+        "& h6":{
+            marginTop:"-7px !important"
         }
     },
     monthContainer:{
         position:"absolute",
-        top:"10%"
+        top:"10%",
+        fontSize:".5rem",
+        alignItems:"center"
     }
 }))
 
@@ -75,26 +89,27 @@ interface IReportCard {
 const ReportCard: React.FC<IReportCard> = ({ heading,showMonth, number, bgColor,icon }) => {
     const classes = reportCardStyles()
     return (
-        <Flex className={classes.root} px={{ md: "7" }}
-         align={{base:'center',md:'flex-start'}} height={["13vh","35vh"]}
-         py={{ base: "2", md: "10" }} bgColor={bgColor} >
-            <Icon as={icon} p={{md:2}} display={{base:"none",sm:"block"}} />
+        <Flex className={classes.root} px={{ md: "5" }}
+         align={{base:'center',md:'center'}} height={["13vh","35vh"]}
+         py={{ base: "2", md: "7" }} bgColor={bgColor} >
+            <Icon as={icon} p={{md:1}} boxSize={['3rem',"4rem","5rem"]} display={{base:"none",sm:"block"}} />
             <VStack align={["center","flex-end"]} ml="2"  >
-                {showMonth &&
-                <HStack className={classes.monthContainer} spacing={1}
-                    fontSize={[".5rem"]} 
-                    color="tertiary" align="center" >
+                {/* {showMonth &&
+                <HStack className={classes.monthContainer} spacing={1} 
+                    color="tertiary">
                     <Text letterSpacing="0.26px"
                      fontWeight="600">
                          Last Month
                     </Text>
                     <Icon as={IoIosArrowDown} />
                 </HStack>
-                }
-                <Heading as="h6" textAlign={["center","right"]} fontSize={[".6rem","1rem"]} >
+                } */}
+                <Heading as="h6" textAlign={["center","right"]} fontFamily="MontserratBold"
+                 fontSize={[".6rem","1rem"]} color="tertiary">
                     {heading}
                 </Heading>
-                <Text fontSize={["1rem","1.1rem","2rem"]} mt={controlMargin} fontWeight="600" >
+                <Text fontSize={["1rem","1.1rem","2rem","3rem"]} mt={controlMargin} fontFamily="Bahnschrift"
+                 fontWeight="600"  color="tertiary">
                 {number}
                 </Text>
             </VStack>
@@ -129,8 +144,7 @@ const Reports = () => {
     },[])
 
     return (
-        <Flex className={classes.root} p={{ base: "4", md: "0" }}
-             pl={{ md: "12" }} pt={{ md: "12" }} direction={{ base: "column", md: "row" }}>
+        <Flex className={classes.root} direction={{ base: "column", md: "row" }}>
                 <Tabs width={{base:"100%",md:"90%"}} pr={{ md: "5" }} >
                     <TabList width="100%">
                         <Tab whiteSpace="nowrap" flex={1}
@@ -147,23 +161,23 @@ const Reports = () => {
                         </Tab>
                         <Flex flex={{ md: 1 }} flexShrink={{ md: 2 }} />
                         <SearchInput display={{ base: "none", md: "block" }}
-                         flex={2} value={inputText} setValue={handleInputChange} />
+                         flex={1.5} value={inputText} setValue={handleInputChange} />
                     </TabList>
                     <SearchInput display={{ md: "none" }} mt="3" width="100%"
                      ml="auto" value={inputText} setValue={handleInputChange} />
                     <TabPanels mb={{ base: "5rem", md: "10rem" }}
                      className={classes.tabContainer}>
                         <TabPanel mt={{ sm: "3", md: "10" }} ml={{ md: "3" }}
-                             width={[ "100%","95%"]}>
+                             width={{base:"100%",md:"95%"}}>
                             <HStack>
                                 <ReportCard number={"₦3454"} bgColor="rgba(182, 3, 201, 0.3)"
                                     heading="Total Amount in Wallet" icon={IoMdWallet}
                                 />
                                 <ReportCard number={"₦3454"} showMonth={true} bgColor="rgba(246, 185, 88, .18)"
-                                    heading="Total Amount in Wallet" icon={IoMdWallet}
+                                    heading="Total Amount withdrawn" icon={IoMdWallet}
                                 />
                                 <ReportCard number={"₦3454"} showMonth={true} bgColor="rgba(105, 199, 112, .1)"
-                                    heading="Total Amount in Wallet" icon={IoMdWallet}
+                                    heading="Total Offering" icon={IoMdWallet}
                                 />
                             </HStack>
                             <Stack spacing={5} mt={7}
@@ -177,12 +191,14 @@ const Reports = () => {
                                         <Icon as={FaFilter} color="tertiary"
                                         />
                                     </Flex>
-                                    <Button variant="link" color="tertiary"
+                                    <Button variant="link" color="tertiary" fontWeight="800"
+                                        fontFamily="MontserratBold"
                                         textDecoration="underline" fontSize="0.875rem" >
                                         Download Excel File
                                         </Button>
                                 </HStack>
-                                <Table rowLength={demoFinancialReport.length} heading={[null,null,"Name","Type","Transaction ID","Date","Amount"]} >
+                                <Table rowLength={demoFinancialReport.length}
+                                 heading={[null,null,"Name","Type","Transaction ID","Date","Amount"]} >
                                     {
                                         demoFinancialReport.map((item,idx) => (
                                             <TableRow key={idx} isLoaded={true} fields={item} />
