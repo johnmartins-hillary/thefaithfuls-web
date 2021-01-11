@@ -303,7 +303,8 @@ const Prayer = () => {
             })
         })
     }
-
+    const optionForDate = {month: 'long'};
+    const dateMonth = new Intl.DateTimeFormat('en-US', optionForDate).format(new Date())
 
     return (
         <Flex className={classes.root} p={{ base: "4", md: "0" }}
@@ -399,7 +400,7 @@ const Prayer = () => {
                                 </Button>
                                  <VStack>
                                     <Text color="primary">
-                                        October Daily Fasting & Prayers
+                                        {`${dateMonth} Daily Fasting & Prayers`}
                                     </Text>
                                  <SimpleGrid minChildWidth="17.5rem" alignItems={{base:"center",md:"flex-start"}} gridGap=".5rem"
                                      spacing={3}  className={classes.prayerContainer}>
