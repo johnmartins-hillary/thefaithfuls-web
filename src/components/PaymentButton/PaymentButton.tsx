@@ -1,12 +1,12 @@
 import React from "react"
 import {usePaystackPayment} from 'react-paystack';
 // eslint-disable-next-line
-import {Flex} from "@chakra-ui/react"
+import {Flex, FlexProps} from "@chakra-ui/react"
 import {useSelector} from "react-redux"
 import {AppState} from "store"
 
 
-interface IPaymentButton {
+interface IPaymentButton extends FlexProps {
     onSuccess:any;
     onClose:any;
     onFailure?:any;
@@ -18,7 +18,7 @@ interface IPaymentButton {
     amount:number
 }
 
-const PaymentButton:React.FC<IPaymentButton> = ({onSuccess,onClose,paymentCode,amount,onFailure,children}) => {
+const PaymentButton:React.FC<IPaymentButton> = ({onSuccess,onClose,paymentCode,amount,onFailure,children,...props}) => {
     const currentUser = useSelector((state:AppState) => state.system.currentUser)
     const config = {
         reference: paymentCode.reference,
@@ -41,7 +41,7 @@ const PaymentButton:React.FC<IPaymentButton> = ({onSuccess,onClose,paymentCode,a
     // } 
     const doNothing = () => {}
     return (
-        <Flex onClick={currentUser.id ? handleSubmit : doNothing}>
+        <Flex onClick={currentUser.id ? handleSubmit : doNothing} {...props} >
             {children}
         </Flex>    
     );

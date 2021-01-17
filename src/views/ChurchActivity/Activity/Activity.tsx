@@ -100,6 +100,7 @@ const Activity = () => {
             start:(item.schedule.time.startDate as string),
             end:(item.schedule.time.endDate as string),
             id:(item.activityID as unknown as string),
+            // rrule:"DTSTART:20120201T103000Z\nRRULE:FREQ=DAILY;INTERVAL=2"
             ...(item.schedule.recurrence && {rrule:item.schedule.recurrence})
         })) 
         const calendarEvents = [...newEvents,...churchCalendarActivity]
@@ -107,6 +108,7 @@ const Activity = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[churchEvent,churchActivity])
 
+    console.log(calendarEvent)
     return(
         <VStack width="100%" mt="3" className={classes.root} >
             <HStack>
