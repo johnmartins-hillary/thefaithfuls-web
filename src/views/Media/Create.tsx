@@ -26,6 +26,8 @@ import {AppState} from "store"
 import {Purpose,Payment} from "core/enums/Payment"
 import {MessageType} from "core/enums/MessageType"
 import {PaymentButton} from "components/PaymentButton"
+import {TinyMce} from "components/TinyMce"
+
 
 interface IForm {
     title: string;
@@ -317,6 +319,10 @@ const Content = () => {
                             const handleEditChange = (content: string, editor: any) => {
                                 formikProps.setValues({ ...formikProps.values, sermonContent: content })
                             }
+                            console.log(formikProps.values.sermonContent)
+                            // const handleEditChange = (content: string) => {
+                            //     formikProps.setValues({ ...formikProps.values, sermonContent: content })
+                            // }
                             return (
                                 <>
                                     <VStack width="inherit" align="flex-start" >
@@ -333,7 +339,12 @@ const Content = () => {
                                                 className={classes.dateContainer} minDate={formikProps.values.featureDateFrom}
                                             />
                                         </HStack>
-                                        <Field name="sermonContent" >
+                                            <TinyMce 
+                                                content=""
+                                                id="myCoolEditor"
+                                                onEditorChange={handleEditChange}
+                                            />
+                                        {/* <Field name="sermonContent" >
                                             {({ field }: FieldProps) => (
                                                 <Editor apiKey={apiKey}
                                                     initialValue={initialValues.sermonContent}
@@ -361,7 +372,7 @@ const Content = () => {
                                                     onEditorChange={handleEditChange}
                                                 />
                                             )}
-                                        </Field>
+                                        </Field> */}
                                     </VStack>
                                     <Stack direction={["column", "row"]} spacing={2}
                                         width="100%">
