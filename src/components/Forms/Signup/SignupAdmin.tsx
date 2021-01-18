@@ -360,7 +360,7 @@ const SignupAdmin = () => {
                 <Flex className={classes.root} px={{ sm: "3" }}
                     alignItems={["center", "flex-start"]} flex={[1, 3]}>
                     <Stack spacing={3} my={5} align={["center","left"]} >
-                        <Heading textStyle="h3" >
+                        <Heading textStyle="h3" style={{marginTop:30}}>
                             Sign Up
                         </Heading>
                         <Text textStyle="h6" maxWidth="sm">
