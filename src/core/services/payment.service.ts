@@ -1,4 +1,4 @@
-import axios,{AxiosRequestConfig,CancelTokenSource} from "axios"
+import axios,{CancelTokenSource} from "axios"
 import {Payment,PaymentResponse} from "core/models/Payment"
 import {IResponse} from "core/models/Response"
 import {Payment as PaymentEnum} from "core/enums/Payment"
@@ -20,6 +20,15 @@ export const generateReference = async (arg:Payment,cancelToken:CancelTokenSourc
 
 export const verifyTransaction = async (paymentGateWay:PaymentEnum,ref:string):Promise<IResponse<any>> => {
     const url = `${baseUrl}/VerifyTransaction?paymentGatewayType=${paymentGateWay}&referenceCode=${ref}`
+    try{
+        const response = await axios.post(url)
+        return response.data
+    }catch(err){
+        throw err
+    }
+}
+export const verifySubTransaction = async (paymentGateWay:PaymentEnum,ref:string,subPlanId:number):Promise<IResponse<any>> => {
+    const url = `${baseUrl}/VerifySubTransaction?paymentGatewayType=${paymentGateWay}&referenceCode=${ref}&subPlanId=${subPlanId}`
     try{
         const response = await axios.post(url)
         return response.data
