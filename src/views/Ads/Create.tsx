@@ -25,7 +25,7 @@ import {useSelector} from "react-redux"
 import {AppState} from "store"
 import {PaymentButton} from "components/PaymentButton"
 import axios from "axios"
-
+import * as advertDraftHelper from "./advertUtil"
 
 interface IForm {
     title: string;
@@ -132,6 +132,7 @@ const Create = () => {
         dateTo: new Date((new Date()).setDate(currentDate.getDate() + 1)),
         advertUrl: ""
     }
+    
     const toggleSubmitting = () => {
         setSubmitting(!submitting)
     }
@@ -205,6 +206,11 @@ const Create = () => {
 
     const handlePaymentClose = () => {
         history.goBack()
+    }
+
+    const saveAdvertToDraft = (values: IForm) => () => {
+        advertDraftHelper.saveAdvertToLocalStorage({ ...values,audience:"isInternal", churchId: Number(params.churchId) }, toast)
+        history.push(`/church/${params.churchId}/media`)
     }
     
 
@@ -330,7 +336,7 @@ const Create = () => {
                                                 Pay to publish
                                             </Button>
                                         </PaymentButton>
-                                        <Button variant="outline" >
+                                        <Button onClick={saveAdvertToDraft(formikProps.values)} variant="outline" >
                                             Save To draft
                                             </Button>
                                         <Flex flex={1} />

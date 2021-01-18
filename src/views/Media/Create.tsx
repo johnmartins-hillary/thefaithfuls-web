@@ -8,24 +8,16 @@ import {
 import { BsCardImage } from "react-icons/bs"
 import { Button } from "components/Button"
 import NormalInput from "components/Input/Normal"
-import { Formik, Field, FieldProps, FormikProps } from "formik"
+import { Formik,FormikProps } from "formik"
 import DatePicker from "react-date-picker"
 import { createStyles, makeStyles } from "@material-ui/styles"
 import * as sermonDraftHelper from "./sermonUtil"
 import * as Yup from "yup"
-import {generateReference,verifyTransaction} from "core/services/payment.service"
 import { buttonBackground } from "theme/palette"
 import { BiRightArrowAlt } from "react-icons/bi"
 import useToast from "utils/Toast"
 import useParams from "utils/params"
-import { Editor } from "@tinymce/tinymce-react"
 import {CreateLayout} from "layouts"
-import axios from "axios"
-import {useSelector} from "react-redux"
-import {AppState} from "store"
-import {Purpose,Payment} from "core/enums/Payment"
-import {MessageType} from "core/enums/MessageType"
-import {PaymentButton} from "components/PaymentButton"
 import {TinyMce} from "components/TinyMce"
 
 
@@ -51,8 +43,8 @@ const useStyles = makeStyles((theme) => createStyles({
     imageContainer: {
         border: "1px dashed rgba(0, 0, 0, .5)",
         borderRadius: "4px",
-        width: "25vh",
-        height: "25vh",
+        width: "15vh",
+        height: "15vh",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
@@ -89,9 +81,7 @@ const useStyles = makeStyles((theme) => createStyles({
 
 
 const Content = () => {
-    const apiKey = process.env.REACT_APP_TINYMCE_API_KEY
     const classes = useStyles()
-    const currentChurch = useSelector((state:AppState) => state.system.currentChurch)
     const currentDate = new Date()
     const [initialValues, setInitialValues] = React.useState({
         title: "",
@@ -102,45 +92,16 @@ const Content = () => {
         authorDesignation: "",
     })
     const [showForm,setShowForm] = React.useState(false)
-    const [submitting,setSubmitting] = React.useState(false)
     const history = useHistory()
     const location = useLocation()
-    const [transactRef,setTransactRef] = React.useState({
-        reference:"",
-        publicKey:""
-    })
     const params = useParams()
     const toast = useToast()
-    const toggleSubmitting = () => {
-        setSubmitting(!submitting)
-    }
     const [image, setImage] = React.useState({
         name: "",
         base64: ""
     })
 
     React.useEffect(() => {
-        const cancelToken = axios.CancelToken.source()
-        generateReference({
-            amount:2000,
-            organizationId:currentChurch.churchID as number,
-            organizationType:"church",
-            paymentGatewayType:Payment.PAYSTACK,
-            purpose:Purpose.SERMON,
-        },cancelToken).then(payload => {
-            setTransactRef({
-                ...transactRef,
-                reference:payload.data.reference,
-                publicKey:payload.data.publicKey
-            })
-        }).catch(err => {
-            toast({
-                title: "Unable to Get Church detail",
-                messageType: MessageType.ERROR,
-                subtitle: `Error: ${err}`
-            })
-        })
-        
         if (location.search) {
             const decodedTitle = decodeURI(location.search)
             const defaultSermon = sermonDraftHelper.getSermonFromLocalStorage(decodedTitle.split("=")[1])
@@ -156,9 +117,6 @@ const Content = () => {
             }
         }
         setShowForm(true)
-        return () => {
-            cancelToken.cancel()
-        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -211,7 +169,6 @@ const Content = () => {
         ))
         await createSermon(sermonData).then(payload => {
             actions.setSubmitting(false)
-            toggleSubmitting()
             toast({
                 title: "New Sermon",
                 subtitle: "New Sermon has been successfully created",
@@ -224,7 +181,6 @@ const Content = () => {
             }
             history.push(`/church/${params.churchId}/media`)
         }).catch(err => {
-            toggleSubmitting()
             actions.setSubmitting(false)
             toast({
                 title: "Unable to create new sermon",
@@ -233,42 +189,13 @@ const Content = () => {
             })
         })
     }
-    const handlePaymentAndSubmission = (func:any) => (refCode:any) => {
-        toggleSubmitting()
-        verifyTransaction(Payment.PAYSTACK,refCode.reference).then(payload => {
-            toast({
-                title:"Sermon Payment Successful",
-                subtitle:"",
-                messageType:MessageType.SUCCESS
-            })
-            func()
-        }).catch(err => {
-            toast({
-                title:"Unable to complete Sermon Payment",
-                subtitle:`Error:${err}`,
-                messageType:MessageType.ERROR
-            })
-        })
-    }
-
-    const handleFailure = (error: any) => {
-        toast({
-            title: "Something Went Wrong during payment",
-            subtitle: `Error:err`,
-            messageType: MessageType.ERROR
-        })
-    }
-
-    const handlePaymentClose = () => {
-        history.goBack()
-    }
     
     return (
         <VStack pl={{ base: 2, md: 12 }} pt={{ md: 6 }}
             className={classes.root} >
             <Heading textStyle="h4" >
                 New Sermon
-                </Heading>
+            </Heading>
             <CreateLayout>
             <VStack width={["100%", "90%"]} align="flex-start"
                     spacing={3}>
@@ -319,10 +246,6 @@ const Content = () => {
                             const handleEditChange = (content: string, editor: any) => {
                                 formikProps.setValues({ ...formikProps.values, sermonContent: content })
                             }
-                            console.log(formikProps.values.sermonContent)
-                            // const handleEditChange = (content: string) => {
-                            //     formikProps.setValues({ ...formikProps.values, sermonContent: content })
-                            // }
                             return (
                                 <>
                                     <VStack width="inherit" align="flex-start" >
@@ -340,52 +263,17 @@ const Content = () => {
                                             />
                                         </HStack>
                                             <TinyMce 
-                                                content=""
+                                                content={formikProps.values.sermonContent}
                                                 id="myCoolEditor"
                                                 onEditorChange={handleEditChange}
                                             />
-                                        {/* <Field name="sermonContent" >
-                                            {({ field }: FieldProps) => (
-                                                <Editor apiKey={apiKey}
-                                                    initialValue={initialValues.sermonContent}
-                                                    init={{
-                                                        height: 500,
-                                                        width: "100%",
-                                                        // placeholder:"Input Your sermon here",
-                                                        autosave_restore_when_empty: true,
-                                                        menubar: 'preview file view format help',
-                                                        plugins: [
-                                                            // eslint-disable-next-line
-                                                            'advlist autolink lists link image charmap print preview anchor',
-                                                            'searchreplace visualblocks code fullscreen',
-                                                            'insertdatetime media table paste code help wordcount'
-                                                        ],
-                                                        toolbar:
-                                                            // eslint-disable-next-line    
-                                                            'undo redo | formatselect | bold italic backcolor | \
-                                                            alignleft aligncenter alignright alignjustify | \
-                                                            bullist numlist outdent indent | removeformat',
-                                                        toolbar_mode: "sliding",
-                                                        style_formats_autohide: true,
-                                                        preview_styles: "Mulish 100px 900"
-                                                    }}
-                                                    onEditorChange={handleEditChange}
-                                                />
-                                            )}
-                                        </Field> */}
                                     </VStack>
                                     <Stack direction={["column", "row"]} spacing={2}
                                         width="100%">
-                                        <PaymentButton
-                                            paymentCode={transactRef}
-                                            onSuccess={handlePaymentAndSubmission(formikProps.handleSubmit)} amount={200_000}
-                                            onClose={handlePaymentClose} onFailure={handleFailure}
-                                        >
-                                            <Button px={5} py={2}
-                                                disabled={formikProps.isSubmitting || submitting || !formikProps.dirty || !formikProps.isValid}>
-                                                {formikProps.isSubmitting ? "Creating a New Sermon..." : "Pay to Publish"}
-                                            </Button>
-                                        </PaymentButton>
+                                        <Button onClick={(formikProps.handleSubmit as any)} px={5} py={2}
+                                            disabled={formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}>
+                                            {formikProps.isSubmitting ? "Creating a New Sermon..." : "Publish"}
+                                        </Button>
                                         <Button variant="outline" onClick={saveSermonToDraft(formikProps.values)}
                                             disabled={formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}>
                                             Save To draft
