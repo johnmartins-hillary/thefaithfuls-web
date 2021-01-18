@@ -1,10 +1,9 @@
 import React from "react";
 import {
-  Box, StackDivider, Text, Flex, Heading,
+  Box, StackDivider, Text, Flex, Heading,SlideFade,
   ModalContent, ModalBody, ModalFooter, ModalHeader, Skeleton,
   Stack, Icon, Image, FormControl, FormLabel, Switch, Wrap, WrapItem, VStack
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom"
 import { Button } from "components/Button"
 import { useDispatch } from "react-redux"
 import { setPageTitle } from "store/System/actions"
@@ -17,14 +16,13 @@ import axios from "axios"
 import { Purpose, Payment } from "core/enums/Payment"
 import { useSelector } from "react-redux"
 import { AppState } from "store"
-import { verifyTransaction, generateReference } from "core/services/payment.service"
+import { verifySubTransaction, generateReference } from "core/services/payment.service"
 import { getSubscription } from "core/services/subscription.service"
 import { ISubscription } from "core/models/subscription"
 import useToast from "utils/Toast"
 import { MessageType } from "core/enums/MessageType"
 import { FeatureImage } from "assets/images"
 import { PaymentButton } from "components/PaymentButton"
-import { Formik } from "formik"
 
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -150,35 +148,112 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 interface ISubscriptionProps {
   close: any;
   subscriptionPlan:ISubscription[]
+  handleSetSubscription(arg:ISubscription):void
 }
 
 interface ISubscriptionDisplayProps {
   subscription: ISubscription;
-  churchID: number;
-  handlePaymentAndSubmission: any;
-  handlePaymentClose: any
-  handleFailure: any;
-  submitting: boolean
 }
-const SubscriptionDisplay: React.FC<ISubscriptionDisplayProps> = ({
-  subscription, churchID, handlePaymentAndSubmission,
-  handleFailure, handlePaymentClose, submitting
-}) => {
+const SubscriptionDisplay: React.FC<ISubscriptionDisplayProps> = ({ subscription,children}) => {
+  
+  return (
+    <Skeleton isLoaded={Boolean(subscription.subscriptionPlanID)} >
+      <VStack>
+        <Image maxW="15rem" src={FeatureImage} />
+        <VStack>
+          <Heading as="h4" color="primary">
+            {subscription.name}
+          </Heading>
+          <Text fontFamily="MulishExtraBold">
+            {`₦${subscription.cost}`}
+          </Text>
+            {children}
+        </VStack>
+      </VStack>
+    </Skeleton>
+  )
+}
+
+const SubscriptionPlan: React.FC<ISubscriptionProps> = ({ close,subscriptionPlan,handleSetSubscription }) => {
+  const handleClose = (arg:ISubscription) => () => {
+    handleSetSubscription(arg)
+    close()
+  }
+  return (
+    <ModalContent>
+      <ModalBody display="flex" flexDirection="column"
+        justifyContent="center" alignItems="center">
+        <ModalHeader textAlign="center" my="4" color="primary">
+          Select From one of the subscription Plan
+            </ModalHeader>
+          <Wrap flexDirection="row" justify="center" >
+          {subscriptionPlan.map((item, idx) => (
+            <WrapItem onClick={handleClose(item)} key={item.subscriptionPlanID || idx} >
+              <SubscriptionDisplay subscription={item}>
+                <Button px={5} py={2}>
+                  Select
+              </Button>
+              </SubscriptionDisplay>
+            </WrapItem>
+          ))}
+        </Wrap>
+        </ModalBody>
+      <ModalFooter display="flex" justifyContent="center" >
+        <Button onClick={close} textDecoration="underline" variant="link">
+          Cancel
+        </Button>
+      </ModalFooter>
+    </ModalContent>
+  )
+}
+
+
+
+
+
+const Subscription = () => {
+  const defaultSubscription: ISubscription = {
+    category: "",
+    cost: 0,
+    createdAt: new Date(),
+    createdBy: "",
+    features: "",
+    lifetimeDuration: 0,
+    name: "",
+    status: 0,
+    updatedAt: new Date(),
+    updatedBy: ""
+  }
+  const classes = useStyles()
+  const [year, setYear] = React.useState(false)
+  const dispatch = useDispatch()
+  const currentChurch = useSelector((state:AppState) => state.system.currentChurch)
   const toast = useToast()
-  const [transactRef, setTransactRef] = React.useState({
-    reference: "",
-    publicKey: ""
+  const [showDialog, setShowDialog] = React.useState(false)
+  const [selectedSubscription,setSelectedSubscription] = React.useState<ISubscription>(defaultSubscription)
+  const [ transactRef,setTransactRef] = React.useState({
+    reference:"",
+    publicKey:""
   })
+  
+  const [subscriptionBundle, setSubscriptionBundle] = React.useState<ISubscription[]>(new Array(2).fill(defaultSubscription))
+
+  const handleDialogToggle = () => {
+    setShowDialog(!showDialog)
+  }
+  const handleSetSubscription = (arg:ISubscription) => {
+    setSelectedSubscription(arg)
+  }
 
   React.useEffect(() => {
     const cancelToken = axios.CancelToken.source()
     const referenceApi = () => {
       generateReference({
-        amount: subscription.cost,
-        organizationId: churchID as number,
+        amount: selectedSubscription!.cost,
+        organizationId: currentChurch.churchID as number,
         organizationType: "church",
         paymentGatewayType: Payment.PAYSTACK,
-        purpose: Purpose.SERMON,
+        purpose: Purpose.SUBSCRIPTION,
       }, cancelToken).then(payload => {
         setTransactRef({
           ...transactRef,
@@ -195,142 +270,12 @@ const SubscriptionDisplay: React.FC<ISubscriptionDisplayProps> = ({
         }
       })
     }
-    referenceApi()
+    if(selectedSubscription?.subscriptionPlanID){
+      referenceApi()
+    }
 
-  }, [])
-  console.log(subscription)
-  return (
-    <Skeleton isLoaded={Boolean(subscription.subscriptionPlanID)} >
-      <VStack>
-        <Image maxW="15rem" src={FeatureImage} />
-        <VStack>
-          <Heading as="h4" color="primary">
-            {subscription.name}
-          </Heading>
-          <Text fontFamily="MulishExtraBold">
-            {`₦${subscription.cost}`}
-          </Text>
-          <PaymentButton
-            paymentCode={transactRef}
-            onSuccess={handlePaymentAndSubmission} amount={subscription.cost*100}
-            onClose={handlePaymentClose} onFailure={handleFailure}
-          >
-            <Button px={5} py={2} disabled={submitting}
-              isLoading={submitting} loadingText={`Subscribing to ${subscription.name}`}>
-              Subscribe
-                      </Button>
-          </PaymentButton>
-        </VStack>
-      </VStack>
-    </Skeleton>
-  )
-}
-
-const SubscriptionPlan: React.FC<ISubscriptionProps> = ({ close,subscriptionPlan }) => {
-  const currentChurch = useSelector((state: AppState) => state.system.currentChurch)
-  const [submitting, setSubmitting] = React.useState(false)
-  const toast = useToast()
-
-  const toggleSubmitting = () => {
-    setSubmitting(!false)
-  }
-
-  const handlePaymentAndSubmission = (refCode: any) => {
-    toggleSubmitting()
-    verifyTransaction(Payment.PAYSTACK, refCode.reference).then(payload => {
-      toast({
-        title: "New Subscription Subscribed",
-        subtitle: "",
-        messageType: MessageType.SUCCESS
-      })
-      handlePaymentClose()
-    }).catch(err => {
-      toast({
-        title: "Unable to complete Sermon Payment",
-        subtitle: `Error:${err}`,
-        messageType: MessageType.ERROR
-      })
-    })
-  }
-
-  const handleFailure = (error: any) => {
-    toast({
-      title: "Something Went Wrong during payment",
-      subtitle: `Error:err`,
-      messageType: MessageType.ERROR
-    })
-  }
-
-  const handlePaymentClose = () => {
-    close()
-  }
-
-  const initialValues = {}
-
-
-  return (
-    <ModalContent>
-      <ModalBody display="flex" flexDirection="column"
-        justifyContent="center" alignItems="center">
-        <ModalHeader textAlign="center" my="4" color="primary">
-          Select From one of the subscription Plan
-            </ModalHeader>
-      {/* <form action="/process" method="post"> */}
-        <Formik onSubmit={handlePaymentAndSubmission}
-        initialValues={initialValues}
-        >
-        {() => (
-          <Wrap flexDirection="row" justify="center" >
-          {subscriptionPlan.map((item, idx) => (
-            <WrapItem key={item.subscriptionPlanID || idx} >
-              <SubscriptionDisplay handleFailure={handleFailure} handlePaymentClose={handlePaymentClose}
-              submitting={submitting} subscription={item}
-              churchID={currentChurch.churchID as number} handlePaymentAndSubmission={handlePaymentAndSubmission}
-              />
-            </WrapItem>
-          ))}
-        </Wrap>
-        )}
-        </Formik>
-      {/* </form> */}
-      </ModalBody>
-      <ModalFooter display="flex" justifyContent="center" >
-        <Button onClick={close} textDecoration="underline" variant="link">
-          Cancel
-        </Button>
-      </ModalFooter>
-    </ModalContent>
-  )
-}
-
-
-
-
-
-const Subscription = () => {
-  const classes = useStyles()
-  const [year, setYear] = React.useState(false)
-  const dispatch = useDispatch()
-  const toast = useToast()
-  const [showDialog, setShowDialog] = React.useState(false)
-  const defaultSubscription: ISubscription = {
-    category: "",
-    cost: 0,
-    createdAt: new Date(),
-    createdBy: "",
-    features: "",
-    lifetimeDuration: 0,
-    name: "",
-    status: 0,
-    updatedAt: new Date(),
-    updatedBy: ""
-  }
+  }, [selectedSubscription])
   
-  const [subscriptionBundle, setSubscriptionBundle] = React.useState<ISubscription[]>(new Array(2).fill(defaultSubscription))
-
-  const handleDialogToggle = () => {
-    setShowDialog(!showDialog)
-  }
 
   const handleToggle = () => {
     setYear(!year)
@@ -351,10 +296,39 @@ const Subscription = () => {
         }
       })
     }
-    subscriptionApi()
-    
+    subscriptionApi()  
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const handlePaymentAndSubmission = (refCode: any) => {
+    verifySubTransaction(Payment.PAYSTACK, refCode.reference,selectedSubscription!.subscriptionPlanID as number).then(payload => {
+      toast({
+        title: "Subscription Successfully Subscribed",
+        subtitle: "",
+        messageType: MessageType.SUCCESS
+      })
+      handlePaymentClose()
+      setSelectedSubscription({...defaultSubscription})
+    }).catch(err => {
+      toast({
+        title: "Unable to complete Sermon Payment",
+        subtitle: `Error:${err}`,
+        messageType: MessageType.ERROR
+      })
+    })
+  }
+
+  const handleFailure = (error: any) => {
+    toast({
+      title: "Something Went Wrong during payment",
+      subtitle: `Error:err`,
+      messageType: MessageType.ERROR
+    })
+  }
+
+  const handlePaymentClose = () => {
+  }
+
 
   return (
     <>
@@ -388,10 +362,24 @@ const Subscription = () => {
                   px="7" py="5" mt="3">
                   Renew Plan
                 </Button>
-                <Image boxSize={{ base: "90%", md: "75%" }}
-                  maxWidth="18rem"
-                  src={CreditCard}
-                />
+                <SlideFade  unmountOnExit in={!selectedSubscription?.subscriptionPlanID}>
+                  <Image boxSize={{ base: "90%", md: "75%" }}
+                    maxWidth="18rem"
+                    src={CreditCard}
+                  />
+                </SlideFade>
+                <SlideFade unmountOnExit in={Boolean(selectedSubscription?.subscriptionPlanID)} >
+                  <SubscriptionDisplay subscription={selectedSubscription as ISubscription}  />
+                  <PaymentButton justifyContent="center"
+                    paymentCode={transactRef}
+                    onSuccess={handlePaymentAndSubmission} amount={selectedSubscription!.cost*100}
+                    onClose={handlePaymentClose} onFailure={handleFailure}
+                  >
+                  <Button px={5} py={2}>
+                      Subscribe
+                  </Button>
+                </PaymentButton>
+                </SlideFade>
               </Flex>
             </Flex>
             <Box>
@@ -484,7 +472,7 @@ const Subscription = () => {
       {showDialog &&
         <Dialog size="2xl" close={handleDialogToggle} open={showDialog}>
           <SubscriptionPlan  subscriptionPlan={subscriptionBundle}
-          close={handleDialogToggle} />
+          close={handleDialogToggle} handleSetSubscription={handleSetSubscription} />
         </Dialog>
       }
     </>
