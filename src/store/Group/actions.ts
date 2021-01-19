@@ -61,9 +61,8 @@ export function createNewGroup (newGroup:IGroup,toast:ToastFunc,func?:any){
                     messageType:MessageType.SUCCESS
                 })
                 if(func){
-                    func(payload)
+                    func(payload,history.push(`/church/${newGroup.churchId}/groups`))
                 }
-                history.push(`/church/${newGroup.churchId}/groups`)
             })
         }catch(err){
             toast({

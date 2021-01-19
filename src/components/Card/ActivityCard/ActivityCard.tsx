@@ -160,7 +160,7 @@ const Activity: React.FC<IActivityProps> = ({ title, date,subtitle, dotColor }) 
     return (
         <Stack my="3" spacing={5} direction="row" color="#4C1C51" >
             <Dot color={dotColor} />
-            <VStack>
+            <VStack alignItems="flex-start">
                 {
                     title &&
                 <Text letterSpacing="0.28px" maxW="md" fontSize="0.875rem"

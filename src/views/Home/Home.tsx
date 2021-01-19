@@ -15,7 +15,8 @@ import { FaFacebookF, FaTwitter, FaLinkedinIn } from "react-icons/fa"
 import { AppStore, PlayStore,Logo,
     ChurchMemberApp,ChurchMemberDesktop,
     OnTheGo,FeatureImage,ChurchDetail,
-    PrayerHand,Bible,Sermon,Giving,Activity,Reflection,Groups,Announcement
+    PrayerHand,Bible,Sermon,Giving,Activity,
+    Reflection,Groups,Announcement
  } from "assets/images"
 import {HiOutlineMail} from "react-icons/hi"
 import { primary } from "theme/palette"
@@ -31,6 +32,9 @@ const useStyles = makeStyles((theme: Theme) => (
             "& h2":{
                 fontFamily:"MulishRegular",
                 textAlign:"center"
+            },
+            "& img":{
+                objectFit:"cover"
             }
         },
         churchImageContainer: {

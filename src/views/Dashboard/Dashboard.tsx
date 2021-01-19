@@ -19,6 +19,7 @@ import { Chart } from 'components/Chart'
 import useParams from "utils/params"
 import useToast from "utils/Toast"
 import * as activityService from "core/services/activity.service"
+import {getSubscriptionByChurchId} from "core/services/subscription.service"
 import { IEvent } from "core/models/Event"
 import { IActivity, ISchedule } from "core/models/Activity"
 import { MessageType } from "core/enums/MessageType"
@@ -29,6 +30,7 @@ import { Free } from "assets/images"
 import { Icon as DotIcon } from "components/Icon"
 import {tertiary} from "theme/palette"
 import axios from "axios"
+import { ISubscription, SubscriptionByChurch } from "core/models/subscription"
 
 
 
@@ -144,6 +146,17 @@ const Dashboard = () => {
         { name: 2019, Members: 78, Events: 30, Finances: 20, newMembers: 11 },
         { name: 2020, Members: 89, Events: 48, Finances: 18, newMembers: 90 }
     ]
+    const defaultSubscription:SubscriptionByChurch = {
+        churchId:0,
+        duration:0,
+        expirationDate:new Date(),
+        isActive:false,
+        paymentId:null,
+        startDate:new Date(),
+        subscriptionID:0,
+        timeRemaining:0,
+        subscriptionPlan:[]    
+    }
     const classes = useStyles()
     const dispatch = useDispatch()
     const currentDate = new Date()
@@ -174,20 +187,31 @@ const Dashboard = () => {
         title: ""
     }
     const [churchActivity, setChurchActivity] = React.useState<IActivity<ISchedule>[]>(new Array(10).fill(defaultActivity))
+    const [churchSubscriptionDetail,setChurchSubscriptionDetail] = React.useState<SubscriptionByChurch[]>([])
+    const [currentSubscription,setCurrentSubscription] = React.useState<SubscriptionByChurch>(defaultSubscription)
     const [churchEvent, setChurchEvent] = React.useState<IEvent[]>(new Array(10).fill(defaultEvent))
     const [open, setOpen] = React.useState(false)
     const handleToggle = () => {
         setOpen(!open)
     }
 
-
+    React.useEffect(() => {
+        if(churchSubscriptionDetail[0]){
+            const currentSub = churchSubscriptionDetail[0]
+            if((new Date(currentSub.expirationDate).getTime() > (new Date()).getTime())){
+                const { duration,startDate} = currentSub
+                const timeLapsedInMilli = (new Date()).getTime() - (new Date(startDate)).getTime()
+                const timeLapsed = timeLapsedInMilli/(1000*3600*24)
+                const timeRemaining = Math.round((duration/(24*60)) - timeLapsed)
+                setCurrentSubscription({timeRemaining,...currentSub})
+            }else{
+                setCurrentSubscription({timeRemaining:0,...currentSub})
+            }
+        }
+    },[churchSubscriptionDetail])
     React.useEffect(() => {
         const source = axios.CancelToken.source()
         dispatch(setPageTitle("Dashboard"))
-        // Parsing the string from rrule format to standard format
-        // const stringToDate = (arg: string) => (
-        //     `${arg.substring(0, 4)}-${arg.substring(4, 6)}-${arg.substring(6, 8)}T${arg.substring(9, 11)}:${arg.substring(11, 13)}:${arg.substring(13, 15).concat("Z")}`
-        // )
         const getChurchActivity = async () => {
             activityService.getChurchActivity(params.churchId,source).then(payload => {
                 setChurchActivity(payload.data.map((item, idx) => {
@@ -217,6 +241,11 @@ const Dashboard = () => {
                 }
             })
         }
+        const getChurchSubscriptionDetail = () => {
+            getSubscriptionByChurchId(params.churchId,source).then((payload) => {
+                setChurchSubscriptionDetail(payload.data)
+            }).catch(err => {})
+        }
         const getChurchEvent = async () => {
             activityService.getChurchEvent(params.churchId,source).then(payload => {
                 setChurchEvent(payload.data)
@@ -230,6 +259,7 @@ const Dashboard = () => {
                 }
             })
         }
+        getChurchSubscriptionDetail()
         getChurchActivity()
         getChurchEvent()
         return () => {
@@ -237,6 +267,8 @@ const Dashboard = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+
 
     if (!currentChurch) {
         return <div>loading...</div>
@@ -263,7 +295,7 @@ const Dashboard = () => {
                     </Box>
                 </Box>
                 <Box pt={["1", "12"]} px={["1", "5", "10"]} >
-                    {currentChurch.status === 2 &&
+                    {currentChurch.status == 2 &&
                         <Flex direction={{ base: "column-reverse", md: "row" }}
                             my={16}  minHeight="13rem" width="100%">
                             <Flex p={6} className={`${classes.verificationContainer} ${classes.boxShadownContainer}`}>
@@ -310,7 +342,7 @@ const Dashboard = () => {
                             </Text>
                             <Chart data={chartData} />
                         </Flex>
-                        <Stack mx="3" my={["3", 0]} shadow="0px 5px 10px #0000001A"
+                        <Stack mx="3" my={{base:"3", md:0}} shadow="0px 5px 10px #0000001A"
                             bgColor="#F0F4FF"
                             pt="3" pl="2" flex={3} divider={<StackDivider bgColor="gray.500" />}>
                             <VStack align="flex-start" ml={10}>
@@ -321,7 +353,7 @@ const Dashboard = () => {
                                 </DashboardCard>
                                 <DashboardCard heading="Head pastor/pariah priest" color="yellow.300">
                                     <Text color="#151C4D" mt="0px !important" fontSize="1rem" >
-                                        Bismark Achodo
+                                        {currentChurch.priestName}
                                     </Text>
                                 </DashboardCard>
                                 <DashboardCard heading="Church Verification Status" color="green.500">
@@ -334,9 +366,9 @@ const Dashboard = () => {
                                 </DashboardCard>
                                 <DashboardCard heading="Subscription Status" color="red.500">
                                     <HStack>
-                                        <DotIcon color={currentChurch.status === 1 ? "#68D391" : "#151C4D"} />
-                                        <Text color="#151C4D" mt="0px !important" fontSize="1rem" >
-                                            78 days left
+                                        <DotIcon  color={currentSubscription?.timeRemaining! > 0 ? "#68D391" : "#151C4D" }/>
+                                        <Text mt="0px !important" fontSize="1rem" >
+                                            {`${currentSubscription?.timeRemaining} days Left`}
                                         </Text>
                                     </HStack>
                                 </DashboardCard>
@@ -354,7 +386,7 @@ const Dashboard = () => {
                                         <DashboardActivity
                                         heading={item.speaker} isLoaded={Boolean(item.activityID)} >
                                         <Flex pb={{ md: 12 }} mr={{ md: 16 }} direction="column"  >
-                                            <DashboardActivity.Activity
+                                            <DashboardActivity.Activity 
                                                 title={item.title} dotColor="#B603C9"
                                                 subtitle={item.schedule.recurrence || ""}
                                                 date={`${(item.schedule.time.startDate as Date).toLocaleTimeString()} - 

@@ -1,5 +1,5 @@
 import React from "react"
-import {Flex,IconButton,Box,Icon} from "@chakra-ui/react"
+import {Flex,IconButton,Box,Icon,HStack} from "@chakra-ui/react"
 import {Logo} from "components/Logo"
 import {LoginLayout} from "layouts"
 import {CgCloseO} from "react-icons/cg"
@@ -32,18 +32,21 @@ const MinorLoginLayout:React.FC<IProps> = ({children,showLogo}) => {
     return(
         <LoginLayout className={classes.root} >
             <Flex position="relative" flex={[1,3]} pr={{sm:"5", md:"24"}}
-             pt={{sm:"5", md:"16"}} ml={[0,"2","32"]} flexDirection={["column","row-reverse"]}
+             pt={{sm:"5", md:"16"}} ml={[0,"2","32"]} flexDirection="column"
             >   
-            <IconButton aria-label="close-btn" bgColor="transparent" onClick={handleLocation} icon={
-                <Icon as={CgCloseO} color="#383838"
-                 opacity={.5} boxSize="2rem"  />
-            } />
-                {
-                    showLogo && 
-                <Box position="absolute" display={["none","block"]} left="0" top={["2rem","10rem"]}>
-                    <Logo white={false} />
-                </Box>
-                }
+            <HStack w="100%" justifyContent="space-between" flexDir="row-reverse">
+                <IconButton aria-label="close-btn" bgColor="transparent" onClick={handleLocation} icon={
+                    <Icon as={CgCloseO} color="#383838"
+                    opacity={.5} boxSize="2rem"  />
+                } />
+                    {
+                        showLogo && 
+                    <Box display={["none","block"]} left="0" top={["2rem","10rem"]}>
+                        <Logo white={false} />
+                    </Box>
+                    }
+
+            </HStack>
                 {children}
             </Flex>
         </LoginLayout>
