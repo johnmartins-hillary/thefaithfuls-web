@@ -216,13 +216,13 @@ const Subscription = () => {
     category: "",
     cost: 0,
     createdAt: new Date(),
-    createdBy: "",
+    createdBy: new Date(),
     features: "",
     lifetimeDuration: 0,
     name: "",
     status: 0,
     updatedAt: new Date(),
-    updatedBy: ""
+    updatedBy: new Date()
   }
   const classes = useStyles()
   const [year, setYear] = React.useState(false)

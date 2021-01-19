@@ -15,8 +15,7 @@ const PrivateRoute:React.FC<IProps> = ({component:Component,isLoading,isAuthenti
         {...rest}
         render={() => 
         isLoading ? <div>loading...</div> :
-        // isAuthenticated ? (
-        true ? (
+        isAuthenticated ? (
             <Component/>
         ):(
             <Redirect to={{pathname:"/login"}} />
