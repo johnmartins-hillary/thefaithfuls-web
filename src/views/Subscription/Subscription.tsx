@@ -18,11 +18,13 @@ import { useSelector } from "react-redux"
 import { AppState } from "store"
 import { verifySubTransaction, generateReference } from "core/services/payment.service"
 import { getSubscription } from "core/services/subscription.service"
-import { ISubscription } from "core/models/subscription"
 import useToast from "utils/Toast"
 import { MessageType } from "core/enums/MessageType"
 import { FeatureImage } from "assets/images"
 import { PaymentButton } from "components/PaymentButton"
+import {ISubscription,SubscriptionByChurch} from "core/models/subscription"
+import {getSubscriptionByChurchId} from "core/services/subscription.service"
+import useParams from "utils/params"
 
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -113,7 +115,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       paddingLeft: theme.spacing(3),
       backgroundColor: "white",
       borderRadius: "10px",
-      minHeight: "17.7rem",
+      // minHeight: "17.7rem",
       height: "auto",
       width: "95%",
       "& > div": {
@@ -224,18 +226,32 @@ const Subscription = () => {
     updatedAt: new Date(),
     updatedBy: new Date()
   }
+  const defaultSubscriptionPlan:SubscriptionByChurch = {
+    churchId:0,
+    duration:0,
+    expirationDate:new Date(),
+    isActive:false,
+    paymentId:null,
+    startDate:new Date(),
+    subscriptionID:0,
+    timeRemaining:0,
+    // subscriptionPlan:[]    
+}
+
   const classes = useStyles()
+  const params = useParams()
   const [year, setYear] = React.useState(false)
   const dispatch = useDispatch()
   const currentChurch = useSelector((state:AppState) => state.system.currentChurch)
   const toast = useToast()
   const [showDialog, setShowDialog] = React.useState(false)
   const [selectedSubscription,setSelectedSubscription] = React.useState<ISubscription>(defaultSubscription)
+  const [churchSubscriptionDetail,setChurchSubscriptionDetail] = React.useState<SubscriptionByChurch[]>([])
+  const [currentSubscription,setCurrentSubscription] = React.useState<SubscriptionByChurch>(defaultSubscriptionPlan)
   const [ transactRef,setTransactRef] = React.useState({
     reference:"",
     publicKey:""
   })
-  
   const [subscriptionBundle, setSubscriptionBundle] = React.useState<ISubscription[]>(new Array(2).fill(defaultSubscription))
 
   const handleDialogToggle = () => {
@@ -275,7 +291,22 @@ const Subscription = () => {
     }
 
   }, [selectedSubscription])
-  
+
+  React.useEffect(() => {
+    if(churchSubscriptionDetail[0]){
+        const currentSub = churchSubscriptionDetail[0]
+        if((new Date(currentSub.expirationDate).getTime() > (new Date()).getTime())){
+            const { duration,startDate} = currentSub
+            const timeLapsedInMilli = (new Date()).getTime() - (new Date(startDate)).getTime()
+            const timeLapsed = timeLapsedInMilli/(1000*3600*24)
+            const timeRemaining = Math.round((duration/(24*60)) - timeLapsed)
+            setCurrentSubscription({timeRemaining,...currentSub})
+        }else{
+            setCurrentSubscription({timeRemaining:0,...currentSub})
+        }
+    }
+},[churchSubscriptionDetail])
+
 
   const handleToggle = () => {
     setYear(!year)
@@ -296,6 +327,13 @@ const Subscription = () => {
         }
       })
     }
+    const getChurchSubscriptionDetail = () => {
+      getSubscriptionByChurchId(params.churchId,cancelToken).then((payload) => {
+          setChurchSubscriptionDetail(payload.data)
+      }).catch(err => {})
+  }
+
+    getChurchSubscriptionDetail()
     subscriptionApi()  
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -328,7 +366,8 @@ const Subscription = () => {
 
   const handlePaymentClose = () => {
   }
-
+  const optionForDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  
 
   return (
     <>
@@ -338,22 +377,24 @@ const Subscription = () => {
             <Flex py="7" px="3" overflow="hidden">
               <Stack flex={[4, 3, 1]} spacing={7} m={4}>
                 <Heading as="h3">
-                  Your yearly subscription
+                  Your subscription
                 </Heading>
                 <Text as="h4">
-                  Renew date: 3 october, 2020
+                  {currentSubscription.subscriptionID ? `Renew date: ${ new Intl.DateTimeFormat('en-US', optionForDate).format(new Date(currentSubscription.expirationDate))}` : "No Subscription yet"}
                     </Text>
                 <Flex direction="column">
                   <Text as="h6">
                     Your Current Plan
                   </Text>
                   <Heading as="h2" mt="-.6rem" color="primary">
-                    Free Plan
+                    { currentSubscription.subscriptionID ?  currentSubscription.subscriptionPlan?.name : "Free Plan"}
                   </Heading>
                 </Flex>
-                <Text as="h5" color="tertiary">
-                  ₦0
-                </Text>
+                  { currentSubscription.subscriptionID && 
+                    <Text as="h5" color="tertiary">
+                      ₦{currentSubscription.subscriptionPlan?.cost}
+                    </Text>
+                  }
               </Stack>
               <Flex justify={{ md: "space-around" }}
                 direction={{ base: "column-reverse", lg: "row" }}>
@@ -390,14 +431,16 @@ const Subscription = () => {
                 spacing={5} maxHeight="30vh" overflow="auto"
                 divider={<StackDivider borderColor="gray.200" />}
               >
-                {[1, 2, 3, 4, 5, 6].map((item, idx) => (
-                  <Stack color="tertiary" fontSize="0.875rem" key={idx}
-                    mx="3" direction="row" align="center" >
-                    <Box opacity={.5} >Basic Plan</Box>
-                    <Box opacity={.5} mx="5" >1st September 2020</Box>
+                {churchSubscriptionDetail.map((item, idx) => (
+                  <Skeleton mx="3" key={idx} isLoaded={Boolean(item.subscriptionID)} >
+                  <Stack color="tertiary" fontSize="0.875rem"
+                    direction="row" align="center" >
+                    <Box opacity={.5} >{item.subscriptionPlan?.name} Plan</Box>
+                    <Box opacity={.5} mx="5" >{new Intl.DateTimeFormat('en-US', optionForDate).format(new Date(item.startDate))}</Box>
                     <Box color="primary" fontWeight="600"
-                      fontSize="1.5rem" >₦20,000</Box>
+                      fontSize="1.5rem" >₦{item.subscriptionPlan?.cost}</Box>
                   </Stack>
+                  </Skeleton>
                 ))}
               </Stack>
             </Box>
