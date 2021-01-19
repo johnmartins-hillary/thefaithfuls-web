@@ -93,7 +93,7 @@ export const DashboardActivity: React.FC<IDashboardActivity> & IActivityCardComp
                     pt="2" {...props}>
                         <>
                             {heading &&
-                                <Text position="sticky" top={0}
+                                <Text position="sticky" top={0} fontFamily="MulishRegular"
                                  bg="white" textAlign="center" fontWeight="600" >
                                     {heading}
                                 </Text>

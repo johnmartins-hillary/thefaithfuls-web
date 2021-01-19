@@ -32,7 +32,7 @@ interface IForm {
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        alignItems: "flex-start !important"
+        alignItems: "center !important"
     },
     inputContainer: {
         backgroundColor: "#F3F3F3",
@@ -43,8 +43,6 @@ const useStyles = makeStyles((theme) => createStyles({
     imageContainer: {
         border: "1px dashed rgba(0, 0, 0, .5)",
         borderRadius: "4px",
-        width: "15vh",
-        height: "15vh",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
@@ -191,22 +189,28 @@ const Content = () => {
     }
     
     return (
-        <VStack pl={{ base: 2, md: 12 }} pt={{ md: 6 }}
+        <VStack p={{ base: 2, md: 12 }}
             className={classes.root} >
             <Heading textStyle="h4" >
                 New Sermon
             </Heading>
             <CreateLayout>
-            <VStack width={["100%", "90%"]} align="flex-start"
+            <VStack width={{base:"100%", md:"90%"}} 
                     spacing={3}>
                     <Stack direction={{ base: "column-reverse", md: "row" }} >
                         <Flex className={classes.imageContainer} p={5} >
                             <input accept="image/jpeg,image/png" onChange={handleImageTransformation} type="file"
                                 className={classes.input} id="icon-button-file" />
                             <label htmlFor="icon-button-file">
-                                <IconButton as="span" padding={4} boxSize="5rem" aria-label="submit image"
-                                    borderRadius="50%" bgColor={buttonBackground}
-                                    icon={<BsCardImage fontSize="2.5rem" />} />
+                                {
+                                    image.base64 ? 
+                                    <AspectRatio width={["75vw", "40vw"]} maxW="20rem" ratio={4 / 2} >
+                                        <Image src={image.base64} />
+                                    </AspectRatio> :
+                                        <IconButton as="span" padding={4} boxSize="5rem" aria-label="submit image"
+                                        borderRadius="50%" bgColor={buttonBackground}
+                                        icon={<BsCardImage fontSize="2.5rem" />} /> 
+                                } 
                             </label>
                             <Heading as="h4" mt={2} fontSize="1.125rem" >Upload Image</Heading>
                             {
@@ -215,11 +219,6 @@ const Content = () => {
                                     <Text fontSize="0.68rem" opacity={.5}>Dimension 200px by 400px</Text>
                             }
                         </Flex>
-                        {image.base64 &&
-                            <AspectRatio width={["75vw", "40vw"]} maxW="15rem" ratio={4 / 2} >
-                                <Image src={image.base64} />
-                            </AspectRatio>
-                        }
                     </Stack>
                     <Text fontSize="0.8rem" opacity={.5}>File size not more than 100mb</Text>
                 </VStack>
@@ -248,10 +247,10 @@ const Content = () => {
                             }
                             return (
                                 <>
-                                    <VStack width="inherit" align="flex-start" >
+                                    <VStack width="inherit">
                                         <NormalInput width="100%" maxW="md" name="title" placeholder="Input title" />
                                         <NormalInput width="100%" maxW="md" name="author" placeholder="Author Name" />
-                                        <HStack alignSelf="flex-start" >
+                                        <HStack>
                                             <DatePicker format="MMM dd,y" calendarIcon={null} clearIcon={null}
                                                 onChange={onChange("featureDateFrom")} value={formikProps.values.featureDateFrom}
                                                 className={classes.dateContainer} minDate={currentDate}
