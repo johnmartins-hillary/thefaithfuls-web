@@ -9,14 +9,25 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
         width: "100%",
         maxWidth: "70rem",
-        align: "flex-start"
+        alignItems: "center"
     },
     formContainer: {
         backgroundColor: "#F3F3F3",
         minHeight: "70vh",
         overflowX: "hidden",
         paddingBottom: "2rem",
-        alignItems: "flex-start !important"
+        "& > first-child":{
+            width:"80%",
+            maxWidth:"80rem"
+        },
+        "& > div:nth-child(2),& > div:nth-child(3)":{
+            justifyContent:"center",
+            textAlign:"center"
+        },
+        // "& p":{
+
+        // }
+        // alignItems: "c !important"
     }
 }))
 
@@ -37,7 +48,7 @@ const CreateLayout:React.FC<IProps> = ({showCancel = true,children}) => {
             <Icon color="tertiary" opacity={.75} fontSize="2rem" as={CgCloseO} />
         </GoBackButton>}
             <VStack spacing={14} className={classes.formContainer} pr={{ md: 16 }}
-                width={["98%", "100%", "75%"]} pl={{ base: 3, md: 12 }} pt={{ base: 12 }}>
+                width={["98%", "100%", "75%"]} p={{ base: 3, md: 12 }}>
                     {children}
             </VStack>
         </Stack>

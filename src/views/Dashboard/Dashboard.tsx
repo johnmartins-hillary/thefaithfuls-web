@@ -366,7 +366,7 @@ const Dashboard = () => {
                                 </DashboardCard>
                                 <DashboardCard heading="Subscription Status" color="red.500">
                                     <HStack>
-                                        <DotIcon  color={currentSubscription?.timeRemaining! > 0 ? "#151C4D" : "#68D391" }/>
+                                        <DotIcon  color={currentSubscription?.timeRemaining! > 0 ? "#68D391" : "#151C4D" }/>
                                         <Text mt="0px !important" fontSize="1rem" >
                                             {`${currentSubscription?.timeRemaining} days Left`}
                                         </Text>
@@ -386,7 +386,7 @@ const Dashboard = () => {
                                         <DashboardActivity
                                         heading={item.speaker} isLoaded={Boolean(item.activityID)} >
                                         <Flex pb={{ md: 12 }} mr={{ md: 16 }} direction="column"  >
-                                            <DashboardActivity.Activity
+                                            <DashboardActivity.Activity 
                                                 title={item.title} dotColor="#B603C9"
                                                 subtitle={item.schedule.recurrence || ""}
                                                 date={`${(item.schedule.time.startDate as Date).toLocaleTimeString()} - 
