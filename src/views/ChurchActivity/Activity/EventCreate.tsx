@@ -3,14 +3,14 @@ import { formatDate } from "@fullcalendar/react"
 import { useHistory } from "react-router-dom"
 import {
     Flex, Heading, useBreakpoint, HStack, FormControl,
-    Textarea,Box,Text,AspectRatio, Image,
-    Icon, FormLabel,Switch, Stack, VStack
+    Textarea, Box, Text, AspectRatio, Image,
+    Icon, FormLabel, Switch, Stack, VStack
 } from "@chakra-ui/react"
 import { Button } from "components/Button"
 import { TagContainer } from "components/Input/TagContainer"
-import { TextInput,Checkbox } from "components/Input"
+import { TextInput, Checkbox } from "components/Input"
 import { Formik, Field, FieldProps, FormikProps } from "formik"
-import { createStyles,makeStyles } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 import DatePicker from "react-date-picker"
 import TimePicker from "react-time-picker"
 import { BiRightArrowAlt, BiDownArrowAlt } from "react-icons/bi"
@@ -23,7 +23,7 @@ import { MessageType } from "core/enums/MessageType"
 import { Recurring } from "core/enums/Recurring"
 import useParams from "utils/params"
 import * as Yup from "yup"
-import {CreateLayout} from "layouts"
+import { CreateLayout } from "layouts"
 
 
 interface IForm {
@@ -43,7 +43,7 @@ interface IForm {
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        alignItems: "flex-start !important"
+        // alignItems: "flex-start !important"
     },
     inputContainer: {
         backgroundColor: "#F3F3F3",
@@ -128,14 +128,14 @@ const Create = () => {
         detail: Yup.string().min(3, "Detail is too short").required(),
     })
 
-    const showLongDate = (arg: Date) =>(
+    const showLongDate = (arg: Date) => (
         formatDate(arg, {
             weekday: "long",
         }))
 
     const handleSubmit = (values: IForm, { ...actions }: any) => {
         actions.setSubmitting(true)
-        const { title, detail, speaker,startDate, endDate, timeEnd, timeStart} = values
+        const { title, detail, speaker, startDate, endDate, timeEnd, timeStart } = values
 
 
         const changeToTime = (arg: string) => {
@@ -151,14 +151,14 @@ const Create = () => {
                 startDateTime: startDate.toJSON(),
                 endDateTime: endDate.toJSON()
             }
-            const schedule = {
-                attendee:[]
-            }
+        const schedule = {
+            attendee: []
+        }
         const newEvent: IEvent = {
             title,
             description: detail,
             churchId: Number(params.churchId),
-            schedule:JSON.stringify(schedule),
+            schedule: JSON.stringify(schedule),
             speaker,
             ...(image.base64 && { bannerUrl: image.base64 }),
             ...time
@@ -227,11 +227,11 @@ const Create = () => {
     return (
         <VStack pl={{ base: 2, md: 12 }} pt={{ md: 6 }}
             className={classes.root} >
-                <Heading textStyle="h4" >
-                    New Church Event
+            <Heading textStyle="h4" >
+                New Church Event
                 </Heading>
             <CreateLayout>
-            <Formik
+                <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
@@ -265,11 +265,6 @@ const Create = () => {
                         return (
                             <>
                                 <VStack width="inherit" maxW="md" align="flex-start" >
-                                    {image.name.length > 0 &&
-                                        <AspectRatio width={["75vw", "40vw"]} maxW="15rem" ratio={4 / 2} >
-                                            <Image src={image.base64} />
-                                        </AspectRatio>
-                                    }
                                     <TextInput width="100%" name="title"
                                         placeholder="Add title" />
                                     <TagContainer<IGroup, "name"> add={addToSelectedGroup}
@@ -329,18 +324,24 @@ const Create = () => {
                                             </FormControl>
                                         </HStack>
                                     </Stack>
-                                        <Flex align="center" p={3} height="2.7rem"
-                                            border="2px dashed rgba(0,0,0,.4)" flex={7}>
-                                            <input id="image" type="file" accept="image/jpeg,image/png"
-                                                onChange={handleImageTransformation}
-                                                style={{ display: "none" }} />
-                                            <FormLabel htmlFor="image" m={0} height="2.7rem" >
+                                    <Flex alignSelf="center" p={3}
+                                        border="2px dashed rgba(0,0,0,.4)" flex={7}>
+                                        <input id="image" type="file" accept="image/jpeg,image/png"
+                                            onChange={handleImageTransformation}
+                                            style={{ display: "none" }} />
+                                        <FormLabel htmlFor="image" m={0} >
+                                            {image.name.length ?
+                                                <AspectRatio width={["75vw", "40vw"]} maxW="15rem" ratio={4 / 2} >
+                                                    <Image src={image.base64} />
+                                                </AspectRatio> :
                                                 <Button color="white" as="span"
                                                     bgColor="rgba(0,0,0,.6)">
                                                     Upload event Poster
                                             </Button>
-                                            </FormLabel>
-                                        </Flex>
+                                            }
+
+                                        </FormLabel>
+                                    </Flex>
                                     <TextInput name="speaker" placeholder="Add Speaker" />
                                     <Field name="detail" >
                                         {({ field }: FieldProps) => (
@@ -369,7 +370,7 @@ const Create = () => {
                         )
                     }}
                 </Formik>
-            
+
             </CreateLayout>
         </VStack>
     )
