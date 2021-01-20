@@ -569,9 +569,14 @@ const ChangeStaff: React.FC<IChangeStaffProps> = ({ updateStaff, closeDialog,...
                             <input accept="image/jpeg,image/png" onChange={handleImageTransformation} type="file"
                                 className={classes.inputHidden} id="icon-button-file" />
                             <label htmlFor="icon-button-file">
+                            {image.base64 ?
+                            <AspectRatio width={["75vw", "40vw"]} maxW="15rem" ratio={4 / 2} >
+                                <Image src={image.base64} />
+                            </AspectRatio> :
                                 <IconButton as="span" padding={4} boxSize="5rem" aria-label="submit image"
                                     borderRadius="50%" bgColor={buttonBackground}
                                     icon={<BsCardImage fontSize="2.5rem" />} />
+                            }
                             </label>
                             <Heading as="h4" mt={2} fontSize="1.125rem" >Upload Image</Heading>
                             {
@@ -580,11 +585,6 @@ const ChangeStaff: React.FC<IChangeStaffProps> = ({ updateStaff, closeDialog,...
                                     <Text fontSize="0.68rem" opacity={.5}>Dimension 200px by 400px</Text>
                             }
                         </Flex>
-                        {image.base64 &&
-                            <AspectRatio width={["75vw", "40vw"]} maxW="15rem" ratio={4 / 2} >
-                                <Image src={image.base64} />
-                            </AspectRatio>
-                        }
                     </Stack>
             {
                 !loading &&
@@ -798,7 +798,7 @@ const UserManager = () => {
                 <Stack spacing={5} mt={[7, 10]} width={{base:"100%",md:"90%"}} overflow="auto"
                     divider={<StackDivider borderColor="gray.200" />}>
                     <Box>
-                        <Text>
+                        <Text fontFamily="MulishRegular" fontWeight="bold" fontSize="18px">
                             Sort By Roles
                             <Icon ml={1} as={IoIosArrowDown} />
                         </Text>
@@ -818,7 +818,7 @@ const UserManager = () => {
                     </Table>
                 </Stack>
             </Stack>
-            <Dialog open={open} size="lg" close={handleToggle} >
+            <Dialog open={open} size={dialog === "privileges" ? "2xl" : "lg"} close={handleToggle} >
                 {
                     dialog === "privileges" ?
                         <ChangeStaff closeDialog={handleToggle} currentStaff={currentStaff} updateStaff={apiStaffMemberCall} />

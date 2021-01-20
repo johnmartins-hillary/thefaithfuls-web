@@ -238,8 +238,7 @@ const CreateRole = () => {
     }
 
     return (
-        <VStack pl={{ base: 2, md: 12 }} pt={{ md: 6 }}
-            className={classes.root} >
+        <VStack p={{ md: 6 }} pt={["2rem","auto"]} className={classes.root} >
                 <HStack>
                     <IconButton aria-label="go-back button" bgColor="transparent"
                     boxSize="2.5rem" onClick={goBack}

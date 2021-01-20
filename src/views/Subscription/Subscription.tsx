@@ -112,6 +112,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       boxShadow: "0px 5px 20px #0000001A",
       marginTop: theme.spacing(7.5),
       paddingTop: theme.spacing(3.5),
+      paddingBottom: theme.spacing(3.5),
       paddingLeft: theme.spacing(3),
       backgroundColor: "white",
       borderRadius: "10px",
@@ -246,7 +247,7 @@ const Subscription = () => {
   const toast = useToast()
   const [showDialog, setShowDialog] = React.useState(false)
   const [selectedSubscription,setSelectedSubscription] = React.useState<ISubscription>(defaultSubscription)
-  const [churchSubscriptionDetail,setChurchSubscriptionDetail] = React.useState<SubscriptionByChurch[]>([])
+  const [churchSubscriptionDetail,setChurchSubscriptionDetail] = React.useState<SubscriptionByChurch[]>(new Array(5).fill(defaultSubscriptionPlan))
   const [currentSubscription,setCurrentSubscription] = React.useState<SubscriptionByChurch>(defaultSubscriptionPlan)
   const [ transactRef,setTransactRef] = React.useState({
     reference:"",
@@ -292,8 +293,10 @@ const Subscription = () => {
 
   }, [selectedSubscription])
 
+
+
   React.useEffect(() => {
-    if(churchSubscriptionDetail[0]){
+    if(churchSubscriptionDetail[0] && churchSubscriptionDetail[0].isActive ){
         const currentSub = churchSubscriptionDetail[0]
         if((new Date(currentSub.expirationDate).getTime() > (new Date()).getTime())){
             const { duration,startDate} = currentSub
@@ -398,11 +401,13 @@ const Subscription = () => {
               </Stack>
               <Flex justify={{ md: "space-around" }}
                 direction={{ base: "column-reverse", lg: "row" }}>
-                <Button mb={{ md: "7" }}
+                {!currentSubscription.subscriptionID  || !currentSubscription.isActive && 
+                  <Button mb={{ md: "7" }}
                   onClick={handleDialogToggle}
                   px="7" py="5" mt="3">
                   Renew Plan
                 </Button>
+                }
                 <SlideFade  unmountOnExit in={!selectedSubscription?.subscriptionPlanID}>
                   <Image boxSize={{ base: "90%", md: "75%" }}
                     maxWidth="18rem"
@@ -482,7 +487,7 @@ const Subscription = () => {
                 </Box>
               </Text>
               <Stack spacing={3}>
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, idx) => (
+                {[1, 2, 3, 4, 5].map((item, idx) => (
                   <Box key={idx} >
                     <Icon
                       boxSize="1.01rem"
