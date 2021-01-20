@@ -17,7 +17,6 @@ import useToast from "utils/Toast"
 import useParams from "utils/params"
 import { ISermon } from "core/models/Sermon"
 import * as sermonService from "core/services/sermon.service"
-import {verifyTransaction,generateReference} from "core/services/payment.service"
 import * as sermonDraftHelper from "./sermonUtil"
 import { DashboardActivity } from "components/Card/ActivityCard/ActivityCard"
 import { MessageType } from "core/enums/MessageType"
@@ -30,12 +29,8 @@ import { TextInput, DatePicker,SearchInput } from "components/Input"
 import { FaRegPlayCircle, FaRegPauseCircle } from "react-icons/fa"
 import { BiSkipNextCircle, BiSkipPreviousCircle } from "react-icons/bi"
 import {Media as MediaWrapper,Player} from "react-media-player"
-import {PaymentButton} from 'components/PaymentButton'
 import { GiCancel } from "react-icons/gi"
 import {withMediaProps} from "react-media-player"
-import {useSelector} from "react-redux"
-import {AppState} from "store"
-import {Purpose,Payment} from 'core/enums/Payment'
 import ReactHowler from "react-howler"
 import axios from "axios"
 import * as Yup from "yup"
@@ -122,39 +117,7 @@ const MediaDialog: React.FC<IMediaDialogProps> = ({ close, updateSermon }) => {
     const params = useParams()
     const toast = useToast()
     const [file, setFile] = React.useState<IFile>(defaultFile)
-    const currentChurch = useSelector((state:AppState) => state.system.currentChurch)
-    const [submitting,setSubmitting] = React.useState(false)
-    const [transactRef,setTransactRef] = React.useState({
-        reference:"",
-        publicKey:""
-    })
-
-    React.useEffect(() => {
-        const cancelToken = axios.CancelToken.source()
-        generateReference({
-            amount:2000,
-            organizationId:currentChurch.churchID as number,
-            organizationType:"church",
-            paymentGatewayType:Payment.PAYSTACK,
-            purpose:Purpose.SERMON,
-        },cancelToken).then(payload => {
-            setTransactRef({
-                ...transactRef,
-                reference:payload.data.reference,
-                publicKey:payload.data.publicKey
-            })
-        }).catch(err => {
-            toast({
-                title: "Unable to Get Church detail",
-                messageType: MessageType.ERROR,
-                subtitle: `Error: ${err}`
-            })
-        })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-    const toggleSubmitting = () => {
-        setSubmitting(!submitting)
-    }
+    
 
     const onDrop = (acceptedFile: any, fileRejection: any, e: any) => {
         if (acceptedFile[0].type === "video/mp4") {
@@ -222,7 +185,6 @@ const MediaDialog: React.FC<IMediaDialogProps> = ({ close, updateSermon }) => {
         file.audio.file && sermonData.append("vidaudio", file.audio.file, file.audio.file.name)
 
         await sermonService.createSermon(sermonData).then(payload => {
-            toggleSubmitting()
             actions.setSubmitting(false)
             toast({
                 title: "New Sermon",
@@ -235,7 +197,6 @@ const MediaDialog: React.FC<IMediaDialogProps> = ({ close, updateSermon }) => {
             updateSermon(payload.data)
             close()
         }).catch(err => {
-            toggleSubmitting()
             actions.setSubmitting(false)
             toast({
                 title: "Unable to create new sermon",
@@ -243,36 +204,6 @@ const MediaDialog: React.FC<IMediaDialogProps> = ({ close, updateSermon }) => {
                 messageType: "error"
             })
         })
-    }
-
-    const handlePaymentAndSubmission = (func:any) => (refCode:any) => {
-        toggleSubmitting()
-        verifyTransaction(Payment.PAYSTACK,refCode.reference).then(payload => {
-            toast({
-                title:"Sermon Payment Successful",
-                subtitle:"",
-                messageType:MessageType.SUCCESS
-            })
-            func()
-        }).catch(err => {
-            toast({
-                title:"Unable to complete Sermon Payment",
-                subtitle:`Error:${err}`,
-                messageType:MessageType.ERROR
-            })
-        })
-    }
-
-    const handleFailure = (error: any) => {
-        toast({
-            title: "Something Went Wrong during payment",
-            subtitle: `Error:err`,
-            messageType: MessageType.ERROR
-        })
-    }
-
-    const handlePaymentClose = () => {
-        close()
     }
 
     return (
@@ -340,16 +271,10 @@ const MediaDialog: React.FC<IMediaDialogProps> = ({ close, updateSermon }) => {
                                     <DatePicker value={formikProps.values.featureDateFrom} onChange={onChange("featureDateFrom")} name="featureDateFrom" />
                                     <DatePicker value={formikProps.values.featureDateTo} onChange={onChange("featureDateTo")} name="featureDateTo" />
                                 </HStack>
-                                <PaymentButton
-                                    paymentCode={transactRef}
-                                    onSuccess={handlePaymentAndSubmission(formikProps.handleSubmit)} amount={200_000}
-                                    onClose={handlePaymentClose} onFailure={handleFailure}
-                                >
-                                    <Button my={{ base: 2, md: 10 }} 
-                                        disabled={(!noChosenFile) || submitting || formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}>
-                                        {!noChosenFile ? "Please Upload audio/video" : formikProps.isSubmitting ? `Creating a sermon ${formikProps.values.title}` : "Submit"}
-                                    </Button>
-                                </PaymentButton>
+                                <Button my={{ base: 2, md: 10 }} 
+                                    disabled={(!noChosenFile) || formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}>
+                                    {!noChosenFile ? "Please Upload audio/video" : formikProps.isSubmitting ? `Creating a sermon ${formikProps.values.title}` : "Submit"}
+                                </Button>
                             </VStack>
                         )
                     }}

@@ -32,7 +32,7 @@ import * as Yup from "yup"
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        alignItems: "flex-start !important"
+        // alignItems: "center"
     },
     inputContainer: {
         backgroundColor: "#F3F3F3",
@@ -511,7 +511,6 @@ const Create = () => {
         title: Yup.string().min(3, "Title of Church Activity is too short").required(),
         startDate: Yup.string().min(3, "Title of Church Activity is too short").required(),
         endDate: Yup.string().min(3, "Title of Church Activity is too short").required(),
-        speaker: Yup.string().min(1, "Speaker name is too short").required(),
         detail: Yup.string().min(3, "Detail is too short").required(),
     })
 
@@ -722,14 +721,10 @@ const Create = () => {
                                 }
                             }
 
+                            
                             return (
                                 <>
-                                    <VStack width="inherit" align="flex-start" maxW="md" >
-                                        {image.name.length > 0 &&
-                                            <AspectRatio width={["75vw", "40vw"]} maxW="15rem" ratio={4 / 2} >
-                                                <Image src={image.base64} />
-                                            </AspectRatio>
-                                        }
+                                    <VStack width="inherit" align="flex-start">
                                         <TextInput width="100%" name="title"
                                             placeholder="Add title" />
                                         <TagContainer<IGroup, "name"> add={addToSelectedGroup}
@@ -789,7 +784,8 @@ const Create = () => {
                                                 </FormControl>
                                             </HStack>
                                         </Stack>
-                                        <Stack direction={["column", "row"]} align="center"
+                                        
+                                        <VStack align="center"
                                             width="100%">
                                             <SelectChakra name="repeat" placeholder=""
                                                 onChange={handleChange} >
@@ -803,19 +799,29 @@ const Create = () => {
                                                     Custom...
                                                 </option>
                                             </SelectChakra>
-                                            <Flex align="center" p={3} height="2.7rem"
+                                            <Flex align="center" p={3} w={image.base64 ? "100%" : ""}
                                                 border="2px dashed rgba(0,0,0,.4)" flex={7}>
                                                 <input id="image" type="file" accept="image/jpeg,image/png"
                                                     onChange={handleImageTransformation}
                                                     style={{ display: "none" }} />
-                                                <FormLabel htmlFor="image" m={0} height="2.7rem" >
+                                                <FormLabel htmlFor="image" w="100%" >
+                                                {image.name.length > 0 ? 
+                                                <AspectRatio w="100%" ratio={21 / 9}>
+                                                <Image src={image.base64} objectFit="cover" />
+                                                {/* <Image src={image.base64} /> */}
+                                            </AspectRatio>
+                                            
+                                            // <AspectRatio width={["75vw", "40vw"]} maxW="15rem" ratio={4 / 2} >
+                                            // </AspectRatio>
+                                             :
                                                     <Button color="white" as="span"
                                                         bgColor="rgba(0,0,0,.6)">
                                                             Upload Activity Poster
                                                         </Button>
+                                        }
                                                 </FormLabel>
                                             </Flex>
-                                        </Stack>
+                                        </VStack>
                                         <TextInput name="speaker" placeholder="Add Speaker" />
                                         <Field name="detail" >
                                             {({ field }: FieldProps) => (
