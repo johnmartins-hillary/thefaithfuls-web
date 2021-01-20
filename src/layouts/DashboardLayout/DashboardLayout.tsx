@@ -30,7 +30,7 @@ import { FaUserAlt, FaPrayingHands, FaCalendarCheck } from "react-icons/fa"
 
 
 
-const drawerWidth = 270;
+const drawerWidth = 300;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

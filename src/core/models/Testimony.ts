@@ -9,4 +9,5 @@ export interface ITestimony {
     testimonyType: TestimonyType;
     churchId:number;
     dateEntered:Date;
+    timeLapsed?:string;
 }

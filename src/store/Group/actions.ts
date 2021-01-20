@@ -82,11 +82,11 @@ export function createGroupMember (newGroupMember:ICreateGroupMember,toast:Toast
                     type:ActionTypes.CREATE_GROUP_MEMBER,
                     payload:payload.data
                 })
-                toast({
-                    title:"New Group Member Created",
-                    subtitle:`Group Member has been successfully created`,
-                    messageType:MessageType.SUCCESS
-                })
+                // toast({
+                //     title:"New Group Member Created",
+                //     subtitle:`Group Member has been successfully created`,
+                //     messageType:MessageType.SUCCESS
+                // })
             })
         }catch(err){
             toast({
