@@ -27,7 +27,7 @@ interface IForm {
 
 const useStyles = makeStyles((theme) => createStyles({
     root:{
-        alignItems:"flex-start !important"
+        // alignItems:"flex-start !important"
     },
     inputContainer:{
         backgroundColor:"#F3F3F3",
@@ -151,7 +151,7 @@ const Create = () => {
                                     }
                                     return (
                                         <>
-                                        <VStack width="inherit" align="flex-start" >
+                                        <VStack width="inherit" >
                                             <TextInput width="100%" name="title" placeholder="Add Title" />
                                             <Select name="receiver" placeholder="Choose Groups to Send To" >
                                                 {receiver?.map((item,idx) => (
@@ -173,7 +173,7 @@ const Create = () => {
                                             </HStack>
                                             <Field name="announcement" >
                                                 {({field}:FieldProps) => (
-                                                    <Textarea rows={7} width="100%" placeholder="Enter Announcement" {...field} />
+                                                    <Textarea rows={10} width="100%" placeholder="Enter Announcement" {...field} />
                                                 )}
                                             </Field>
                                         </VStack>

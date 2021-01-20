@@ -13,7 +13,7 @@ interface IDetailProps {
 
 const DetailCard:React.FC<IDetailProps> = ({image,isLoaded=true,title,children,timing,smallText,subtitle,body}) => (
     <Skeleton isLoaded={isLoaded} maxWidth="25rem" >
-    <VStack spacing={4} maxWidth="25rem">
+    <VStack spacing={4} alignItems="flex-start" maxWidth="25rem">
             <HStack align="center" flex={1} width="100%">
                 {
                     image &&
@@ -32,7 +32,7 @@ const DetailCard:React.FC<IDetailProps> = ({image,isLoaded=true,title,children,t
                     }
                 </VStack>
                 {timing &&
-                    <Text opacity={.5}>
+                    <Text opacity={.9}>
                         {timing}
                     </Text>
                 }

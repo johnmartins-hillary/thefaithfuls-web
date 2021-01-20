@@ -39,9 +39,13 @@ const useStyles = makeStyles((theme) => (createStyles({
         }
     },
     selectContainer:{
+        width:"45% !important",
         "& select":{
             border:`2px solid ${primary} !important`,
-            borderColor:`${primary} !important`
+            borderColor:`${primary} !important`,
+        },
+        "& select:nth-child(even)":{
+            marginRight:"0"
         }
     }
 })))
@@ -224,12 +228,12 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
                             justifyContent={["center", "center", "flex-start"]} flexDirection={{ md: "row" }}
                             my={["4"]} width={["90vw", "100%"]} flexWrap="wrap"
                             borderRadius="0.25rem" px={["1"]}>
-                            <OutlinedInput name="churchName" mr="auto" label="Church Name" />
+                            <OutlinedInput name="name" mr="auto" label="Church Name" />
                             <OutlinedInput name="address" ml="auto" label="Church Address" />
                             <OutlinedInput name="priest" mr="auto" label="Priest Name" />
                             <OutlinedInput name="landmark" ml="auto" label="Church Landmark" />
                             <Select name="countryID" placeholder="" 
-                                label="Select Country"
+                                label="Select Country" mr="auto"
                                 className={classes.selectContainer} >
                                 {country.map((item, idx) => (
                                     <option key={item.countryID} value={item.countryID} >
@@ -238,7 +242,7 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
                                 ))}
                             </Select>
                             <Select name="denominationId" placeholder="" 
-                            label="Church Denomination"
+                            label="Church Denomination" mr="0"
                             className={classes.selectContainer} >
                                 {denomination.map((item, idx) => (
                                     <option key={item.denominationID} value={item.denominationID} >
@@ -247,7 +251,7 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
                                 ))}
                             </Select>
                             <Select name="stateID" placeholder=""
-                            label="Select State"
+                            label="Select State" mr="auto"
                              className={classes.selectContainer} >
                                 {state.map((item, idx) => (
                                     <option key={item.stateID} value={item.stateID} >
@@ -256,7 +260,7 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
                                 ))}
                             </Select>
                             <Select name="cityID" placeholder=""
-                            label="Select City"
+                            label="Select City" mr="0"
                             className={classes.selectContainer}>
                                 {city.map((item, idx) => (
                                     <option key={item.cityID} value={item.cityID} >

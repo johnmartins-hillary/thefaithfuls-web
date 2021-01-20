@@ -22,7 +22,7 @@ interface IForm {
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        alignItems: "flex-start !important"
+        // alignItems: "flex-start !important"
     },
     inputContainer: {
         backgroundColor: "#F3F3F3",
@@ -30,10 +30,6 @@ const useStyles = makeStyles((theme) => createStyles({
         overflowX: "hidden",
         paddingBottom: "2rem",
         alignItems: "flex-start !important"
-    },
-    buttonContainer: {
-        alignSelf: "flex-start",
-        marginTop: "auto !important"
     },
     removeInput: {
         "& input": {
@@ -111,7 +107,7 @@ const EditRole = () => {
         <VStack pl={{ base: 2, md: 12 }} pt={{ md: 6 }}
             className={classes.root} >
             <Heading textStyle="h4" >
-                Create a Role
+                Edit a Role
                 </Heading>
             <CreateLayout>
                 <VStack flex={1} width="100%">
@@ -131,7 +127,7 @@ const EditRole = () => {
                                         <TextInput width="100%" name="newName"
                                             placeholder="Input New Role Name" />
                                     </VStack>
-                                    <HStack className={classes.buttonContainer} spacing={2}>
+                                    <HStack spacing={2}>
                                         <Button px={12} onClick={(formikProps.handleSubmit as any)}
                                             disabled={formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}
                                             isLoading={formikProps.isSubmitting} loadingText="Updating New Role"

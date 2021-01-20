@@ -2,11 +2,11 @@ import React from "react"
 import { Link } from "react-router-dom"
 import {
     Flex, IconButton, VStack, StackDivider,
-    Text, Skeleton,Stack, Heading, Icon,
+    Text, Skeleton, Stack, Heading, Icon,
     ModalBody, ModalCloseButton, ModalContent, Wrap,
-    ModalHeader,HStack, WrapItem
+    ModalHeader, HStack, WrapItem,AspectRatio,Image
 } from "@chakra-ui/react"
-import { Slide } from "@material-ui/core"
+import { Slide, Paper } from "@material-ui/core"
 import { Button } from "components/Button"
 import { MdFileUpload } from "react-icons/md"
 import { BsCameraVideoFill } from "react-icons/bs"
@@ -24,48 +24,48 @@ import { MediaCard } from "components/Card"
 import { Dialog } from "components/Dialog"
 import { bgColor2 } from "theme/palette"
 import { useDropzone } from "react-dropzone"
-import { Formik, FormikProps} from "formik"
-import { TextInput, DatePicker,SearchInput } from "components/Input"
+import { Formik, FormikProps } from "formik"
+import { TextInput, DatePicker, SearchInput } from "components/Input"
 import { FaRegPlayCircle, FaRegPauseCircle } from "react-icons/fa"
 import { BiSkipNextCircle, BiSkipPreviousCircle } from "react-icons/bi"
-import {Media as MediaWrapper,Player} from "react-media-player"
+import { Media as MediaWrapper, Player } from "react-media-player"
 import { GiCancel } from "react-icons/gi"
-import {withMediaProps} from "react-media-player"
+import { withMediaProps } from "react-media-player"
 import ReactHowler from "react-howler"
 import axios from "axios"
 import * as Yup from "yup"
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        [theme.breakpoints.up("md")]:{
-            marginLeft:theme.spacing(10)
+        [theme.breakpoints.up("md")]: {
+            marginLeft: theme.spacing(10)
         },
-        "& ul":{
-            maxHeight:"30rem",
-            overflowY:"auto",
-            justifyContent:"center",
-            [theme.breakpoints.up("sm")]:{
-                justifyContent:"flex-start"
+        "& ul": {
+            maxHeight: "30rem",
+            overflowY: "auto",
+            justifyContent: "center",
+            [theme.breakpoints.up("md")]: {
+                justifyContent: "flex-start"
             }
         },
-        "& h2":{
-            fontFamily:"MulishRegular"
+        "& h2": {
+            fontFamily: "MulishRegular"
         }
     },
-    buttonContainer:{
-        "& button:first-child":{
-            padding:theme.spacing(2.9,5)
+    buttonContainer: {
+        "& button:first-child": {
+            padding: theme.spacing(2.9, 5)
         },
-        "& button:last-child":{
-            padding:theme.spacing(2,3),
-            marginLeft:theme.spacing(1),
-            "& > div":{
-                alignItems:"center",
-                textTransform:"lowercase",
-                fontWeight:"500"
+        "& button:last-child": {
+            padding: theme.spacing(2, 3),
+            marginLeft: theme.spacing(1),
+            "& > div": {
+                alignItems: "center",
+                textTransform: "lowercase",
+                fontWeight: "500"
             },
-            "& p":{
-                fontFamily:'Bahnschrift'
+            "& p": {
+                fontFamily: 'Bahnschrift'
             }
         }
     }
@@ -117,7 +117,7 @@ const MediaDialog: React.FC<IMediaDialogProps> = ({ close, updateSermon }) => {
     const params = useParams()
     const toast = useToast()
     const [file, setFile] = React.useState<IFile>(defaultFile)
-    
+
 
     const onDrop = (acceptedFile: any, fileRejection: any, e: any) => {
         if (acceptedFile[0].type === "video/mp4") {
@@ -271,7 +271,7 @@ const MediaDialog: React.FC<IMediaDialogProps> = ({ close, updateSermon }) => {
                                     <DatePicker value={formikProps.values.featureDateFrom} onChange={onChange("featureDateFrom")} name="featureDateFrom" />
                                     <DatePicker value={formikProps.values.featureDateTo} onChange={onChange("featureDateTo")} name="featureDateTo" />
                                 </HStack>
-                                <Button my={{ base: 2, md: 10 }} 
+                                <Button my={{ base: 2, md: 10 }}
                                     disabled={(!noChosenFile) || formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}>
                                     {!noChosenFile ? "Please Upload audio/video" : formikProps.isSubmitting ? `Creating a sermon ${formikProps.values.title}` : "Submit"}
                                 </Button>
@@ -287,7 +287,7 @@ const MediaDialog: React.FC<IMediaDialogProps> = ({ close, updateSermon }) => {
 const musicStyles = makeStyles((theme: Theme) => createStyles({
     root: {
         position: "fixed",
-        justifyContent:"center",
+        justifyContent: "center",
         bottom: "30px",
         width: "25vw",
         marginLeft: "50%",
@@ -319,11 +319,11 @@ const musicStyles = makeStyles((theme: Theme) => createStyles({
         }
     }
 }))
-const videoStyles = makeStyles((theme:Theme) => createStyles({
-    root:{
-        "& video":{
-            width:"100%",
-            maxWidth:"100rem"
+const videoStyles = makeStyles((theme: Theme) => createStyles({
+    root: {
+        "& video": {
+            width: "100%",
+            maxWidth: "100rem"
         }
     }
 }))
@@ -364,16 +364,16 @@ const MusicPlayer: React.FC<IMusicPlayer> = ({ audio, closePlayer, playNext, pla
     React.useEffect(() => {
         setPlay(true)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[audio])
+    }, [audio])
 
     return (
         <VStack className={classes.root}>
             <Text>
                 {`Now Playing ${audio.title}`}
             </Text>
-                <IconButton aria-label="cancel-player" opacity={.5}
-                    position="absolute" top={0} right={0} onClick={closePlayer}
-                    icon={<GiCancel />} />
+            <IconButton aria-label="cancel-player" opacity={.5}
+                position="absolute" top={0} right={0} onClick={closePlayer}
+                icon={<GiCancel />} />
             <HStack>
                 <ReactHowler src={audio.featureVidAudio || ""} playing={play} />
                 <IconButton aria-label="previous-song" onClick={playPrevious(audio.idx as number)}
@@ -386,34 +386,103 @@ const MusicPlayer: React.FC<IMusicPlayer> = ({ audio, closePlayer, playNext, pla
     )
 }
 interface IVideoPlayer {
-    video:ISermon
+    video: ISermon
 }
 
-const CustomPause = withMediaProps(({media}:any) => {
+const CustomPause = withMediaProps(({ media }: any) => {
 
-    return(
+    return (
         <Flex>
 
         </Flex>
     )
 })
 
-const VideoPlayer:React.FC<IVideoPlayer> = ({video}) => {
+const VideoPlayer: React.FC<IVideoPlayer> = ({ video }) => {
     const classes = videoStyles()
 
-    return(
+    return (
         <ModalContent bgColor={bgColor2}>
-        <ModalBody className={classes.root}>
-            <MediaWrapper >
-                <VStack>
-                    <CustomPause/>    
-                    <Player autoPlay src={video.featureVidAudio} />
-                    <HStack>
-                    </HStack>
-                </VStack>
-            </MediaWrapper>
-        </ModalBody>
-    </ModalContent>
+            <ModalBody className={classes.root}>
+                <MediaWrapper >
+                    <VStack>
+                        <CustomPause />
+                        <Player autoPlay src={video.featureVidAudio} />
+                        <HStack>
+                        </HStack>
+                    </VStack>
+                </MediaWrapper>
+            </ModalBody>
+        </ModalContent>
+    )
+}
+interface ITextDialog {
+    sermon: ISermon
+}
+
+const textStyles = makeStyles((theme) => createStyles({
+    root: {
+
+    },
+    dateContainer: {
+        "& > p": {
+            fontSize: "1rem",
+            fontWeight: "bold",
+            fontFamily: "Bahnschrift"
+        }
+    },
+    detailContainer: {
+        "& p":{
+            fontStyle:"italic",
+            fontSize:"1.3rem"
+        }
+    },
+    sermonContainer:{
+        // height:"80%",
+        overflow:"auto",
+        "& p":{
+            fontFamily:"Bahnschrift",
+            fontSize:"1rem",
+            [theme.breakpoints.up("sm")]:{
+                fontSize:"1.3rem"
+            }
+        }
+    }
+}))
+
+const TextDialog: React.FC<ITextDialog> = ({ sermon }) => {
+    const classes = textStyles()
+    return (
+        <ModalContent bgColor={bgColor2}>
+            <ModalBody className={classes.root}>
+                <HStack justifyContent="space-between" >
+                    <VStack className={classes.detailContainer} alignItems="flex-start">
+                        <Heading>
+                            {sermon.title}
+                        </Heading>
+                        <Text>
+                            -
+                        {sermon.author}
+                        </Text>
+                    </VStack>
+                    {sermon.featureImage && 
+                    <AspectRatio w="50%" ratio={21 / 9}>
+                        <Image src={sermon.featureImage} objectFit="cover" />
+                    </AspectRatio>
+                    }
+                    <VStack className={classes.dateContainer}>
+                        <Text>
+                            {(new Date(sermon.featureDateFrom)).toLocaleDateString()} -
+                        {(new Date(sermon.featureDateTo)).toLocaleDateString()}
+                        </Text>
+                    </VStack>
+                </HStack>
+                <Paper className={classes.sermonContainer} elevation={1}>
+                    <Text p={10} textAlign="left" fontFamily="MontserratRegular" color="tertiary"
+                        noOfLines={7} dangerouslySetInnerHTML={{ __html: sermon.sermonContent }} />
+                </Paper>
+            </ModalBody>
+        </ModalContent>
     )
 }
 
@@ -439,23 +508,28 @@ const Media = () => {
     const [videoSermon, setVideoSermon] = React.useState<ISermon[]>([])
     const [audioSermon, setAudioSermon] = React.useState<ISermon[]>([])
     const [currentAudioSermon, setCurrentAudioSermon] = React.useState<IMediaSermon>(defaultSermon)
-    const [currentVideoSermon,setCurrentVideoSermon] = React.useState<ISermon>(defaultSermon)
+    const [currentVideoSermon, setCurrentVideoSermon] = React.useState<ISermon>(defaultSermon)
+    const [currentTextSermon, setCurrentTextSermon] = React.useState<ISermon>(defaultSermon)
     const [inputValue, setInputValue] = React.useState("")
     const [videoInputValue, setVideoInputValue] = React.useState("")
     const [open, setOpen] = React.useState(false)
+    const [showDialog, setShowDialog] = React.useState<"Text" | "addMedia" | "video">("Text")
     const [isLoaded, setIsLoaded] = React.useState(false)
+
     const handleToggle = () => {
         setOpen(!open)
     }
+
+
 
     React.useEffect(() => {
         const token = axios.CancelToken.source()
         dispatch(setPageTitle("Media/Content"))
         const getSermonForChurchApi = async () => {
-            await sermonService.getChurchSermon(params.churchId,token).then(payload => {
+            await sermonService.getChurchSermon(params.churchId, token).then(payload => {
                 setChurchSermon(payload.data)
             }).catch(err => {
-                if(!axios.isCancel(err)){
+                if (!axios.isCancel(err)) {
                     toast({
                         title: "Unable to load sermon for church",
                         subtitle: `Error: ${err}`,
@@ -513,12 +587,6 @@ const Media = () => {
     }, [videoInputValue])
 
 
-    React.useEffect(() => {
-        if(currentVideoSermon.sermonID){
-            handleToggle()
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[currentVideoSermon])
 
     const updateSermon = (arg: ISermon) => {
         setChurchSermon([...churchSermon, arg])
@@ -529,16 +597,30 @@ const Media = () => {
         setCurrentAudioSermon(arg)
     }
 
-    const handleCurrentVideoSermon = (arg:ISermon) => () => {
+    const handleCurrentVideoSermon = (arg: ISermon) => () => {
         setCurrentAudioSermon(defaultSermon)
         setCurrentVideoSermon(arg)
+        setShowDialog("video")
+        handleToggle()
+    }
+
+    const handleCurrentTextSermon = (arg: ISermon) => () => {
+        setCurrentAudioSermon(defaultSermon)
+        setCurrentVideoSermon(defaultSermon)
+        setCurrentTextSermon(arg)
+        setShowDialog("Text")
+        handleToggle()
+    }
+    const handleShowMediaDialog = () => {
+        handleToggle()
+        setShowDialog("addMedia")
     }
     const resetCurrentAudio = () => {
         setCurrentAudioSermon(defaultSermon)
     }
 
     const setNext = (idx: number) => () => {
-        const currentIdx = idx+1
+        const currentIdx = idx + 1
         const newCurrentAudio = audioSermon[currentIdx]
         if (newCurrentAudio) {
             setCurrentAudioSermon({
@@ -575,7 +657,7 @@ const Media = () => {
                 </Flex>
             </Slide>
             <VStack spacing={14} p="4" bgColor="bgColor" className={classes.root}
-            divider={<StackDivider borderColor="gray.200" />}
+                divider={<StackDivider borderColor="gray.200" />}
                 width={["100%", "100%", "93%"]} pt={{ md: "12" }}>
                 <Flex direction="column" mb={{ md: "2rem" }} width="100%">
                     <Flex mb={[2, 5]} className={classes.buttonContainer} align="center">
@@ -586,7 +668,7 @@ const Media = () => {
                         </Button>
                         <Flex flex={1} />
                         <SearchInput setValue={handleInput} flex={2}
-                         display={{ base: "none", md: "inline-block" }} value={inputValue} />
+                            display={{ base: "none", md: "inline-block" }} value={inputValue} />
                         <Flex flex={3} flexShrink={4} />
                         <Button variant="outline" borderWidth="3px">
                             <Flex align="center" >
@@ -597,19 +679,20 @@ const Media = () => {
                     </Flex>
                     <Flex flex={1} />
                     <SearchInput setValue={handleInput} flex={2.5} mb={2}
-                     display={{ md: "none" }} value={inputValue} />
+                        display={{ md: "none" }} value={inputValue} />
                     <Wrap spacing="15px">
                         {displaySermons.length > 0 ? displaySermons.map((item, idx) => (
-                            <WrapItem key={item.sermonID || idx}>
+                            <WrapItem cursor="pointer" onClick={handleCurrentTextSermon(item)} key={item.sermonID || idx}>
                                 <DashboardActivity isLoaded={Boolean(item.sermonID)} heading={item.title}
-                                p="4" width="100%">
-                                <Text as="i" color="#151C4D" fontFamily="MontserratBold" fontWeight="600"
-                                    fontSize="1.125rem" opacity={.5} >
-                                    {`By: ${item.author}`}
-                                </Text>
-                                <Text textAlign="left" fontFamily="MontserratRegular" color="#151C4D" opacity={.5}
-                                    maxWidth="sm" dangerouslySetInnerHTML={{ __html: item.sermonContent }} />
-                            </DashboardActivity>
+                                    p="4" width="100%">
+                                    <Text as="i" color="#151C4D" fontFamily="MontserratBold" fontWeight="600"
+                                        fontSize="1.125rem" opacity={.5} >
+                                        {`By: ${item.author}`}
+                                    </Text>
+                                    <Text textAlign="left" fontFamily="MontserratRegular" color="#151C4D" opacity={.8}
+                                        noOfLines={7}
+                                        maxWidth="sm" dangerouslySetInnerHTML={{ __html: item.sermonContent }} />
+                                </DashboardActivity>
                             </WrapItem>
                         )) :
                             <Text>No sermon is currently is available</Text>
@@ -619,9 +702,9 @@ const Media = () => {
                 {
                     draftSermon?.length > 0 &&
                     <Flex width="100%" direction="column" >
-                        <Text color="primary">
+                        <Heading color="primary">
                             Draft Sermon
-                        </Text>
+                        </Heading>
                         <Wrap>
                             {draftSermon.map((item, idx) => (
                                 <DashboardActivity p="4"
@@ -633,9 +716,9 @@ const Media = () => {
                                         fontSize="1.125rem" opacity={.5} >
                                         {item.author}
                                     </Text>
-                                    <Text textAlign="left" color="#151C4D" opacity={.5} maxWidth="sm" >
-                                        {item.sermonContent}
-                                    </Text>
+                                    <Text textAlign="left" noOfLines={5} color="#151C4D"
+                                     opacity={.5} maxWidth="sm"
+                                      dangerouslySetInnerHTML={{ __html: item.sermonContent }}/>
                                     <Button variant="link" ml="auto">
                                         <Link to={`/church/${params.churchId}/media/create?title=${item.title}`} >
                                             Continue
@@ -650,12 +733,12 @@ const Media = () => {
                 <Flex direction="column" width="100%">
                     <Flex mb={[2, 5]} direction={["column", "row"]} className={classes.buttonContainer}
                         align="center">
-                        <Button px={4} onClick={handleToggle}>
+                        <Button px={4} onClick={handleShowMediaDialog}>
                             Upload video/audio sermons
                         </Button>
                         <Flex flex={.5} />
                         <SearchInput setValue={handleVideoInput} flex={2.3}
-                         display={{ base: "none", md: "inline-block" }} value={videoInputValue} />
+                            display={{ base: "none", md: "inline-block" }} value={videoInputValue} />
                         <Flex flex={3} flexShrink={4} />
                         <Button variant="outline" mt={[2, "initial"]} borderWidth="3px" colorScheme="primary" color="primary" >
                             <Flex align="center" >
@@ -666,7 +749,7 @@ const Media = () => {
                     </Flex>
                     <Flex flex={1} />
                     <SearchInput setValue={handleVideoInput}
-                     display={{ md: "none" }} value={videoInputValue} />
+                        display={{ md: "none" }} value={videoInputValue} />
                     <Stack direction={"column"} mb={[2, 5]} align={["center", "flex-start"]} spacing={12} >
                         <Heading fontSize="2.2rem" mt={{ md: "2rem" }} letterSpacing={0}
                             color="primary" fontWeight={400} >
@@ -676,7 +759,7 @@ const Media = () => {
                             {videoSermon.length > 0 ?
                                 videoSermon.map((item, idx) => (
                                     <Skeleton isLoaded={isLoaded} key={item.sermonID || idx}
-                                     onClick={handleCurrentVideoSermon(item)} >
+                                        onClick={handleCurrentVideoSermon(item)} >
                                         <MediaCard title={item.title} showShare={true} key={idx} />
                                     </Skeleton>
                                 )) :
@@ -695,12 +778,12 @@ const Media = () => {
                             {audioSermon.length > 0 ?
                                 audioSermon.map((item, idx) => (
                                     <Skeleton isLoaded={isLoaded} key={item.sermonID || idx}
-                                    onClick={handleCurrentAudioSermon({
-                                        ...item,
-                                        next: !(idx >= (audioSermon.length - 1)),
-                                        previous: !(idx <= 0),
-                                        idx
-                                    })}>
+                                        onClick={handleCurrentAudioSermon({
+                                            ...item,
+                                            next: !(idx >= (audioSermon.length - 1)),
+                                            previous: !(idx <= 0),
+                                            idx
+                                        })}>
                                         <MediaCard title={item.title} showShare={true} key={idx} />
                                     </Skeleton>
                                 )) :
@@ -713,12 +796,12 @@ const Media = () => {
                 </Flex>
             </VStack>
             <Dialog open={open}
-             close={handleToggle} size={currentVideoSermon.sermonID ? "4xl" : "md"} >
+                close={handleToggle} size={currentVideoSermon.sermonID ? "4xl" : currentTextSermon.sermonID ? "full" : "md"} >
                 {
-                    currentVideoSermon.sermonID ? <VideoPlayer video={currentVideoSermon} /> : 
-                    <MediaDialog close={handleToggle}
-                        updateSermon={updateSermon}
-                    />
+                    showDialog === "Text" ? <TextDialog sermon={currentTextSermon} /> : showDialog === "video" ? <VideoPlayer video={currentVideoSermon} /> :
+                        <MediaDialog close={handleToggle}
+                            updateSermon={updateSermon}
+                        />
                 }
             </Dialog>
         </>

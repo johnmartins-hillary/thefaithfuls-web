@@ -171,7 +171,7 @@ const Announcement = () => {
                                 Create Announcement
                         </Link>
                     </Button>
-                    <Wrap>
+                    <Wrap w="100%">
                          { announcement && announcement.length > 0 ? 
                             announcement?.map((item,idx:number) => (
                                 <WrapItem  key={item.announcementID || idx}>

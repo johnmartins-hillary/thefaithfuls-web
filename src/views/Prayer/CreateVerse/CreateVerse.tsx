@@ -117,11 +117,6 @@ const Create = () => {
                                             >
                                                 Publish
                                         </Button>
-                                        <Button variant="link" onClick={(handleSubmitAndNoRedirect(formikProps.handleSubmit) as any)}
-                                          disabled={formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}
-                                         textDecoration="underline">
-                                            Publish and Create another prayer
-                                        </Button>
                                         <Flex flex={1} />
                                         <Button ml="auto" onClick={goBack}
                                          variant="outline" disabled={formikProps.isSubmitting}>

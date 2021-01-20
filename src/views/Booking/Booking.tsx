@@ -278,7 +278,7 @@ const Booking = () => {
                                         </HStack>
                                     </DetailCard>
                                 )) : <Text>
-                                        No Available Testimony
+                                        No Available Thanksigiving
                                         </Text>}
                             </SimpleGrid>
                         </TabPanel>

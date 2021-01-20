@@ -20,5 +20,5 @@ export interface SubscriptionByChurch {
     startDate:Date;
     subscriptionID:number;
     timeRemaining?:number;
-    subscriptionPlan:ISubscription[]
+    subscriptionPlan?:ISubscription
 }

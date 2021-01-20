@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
     root: {
         "& > button":{
             backgroundColor:"transparent",
+            fontFamily:"MulishRegular",
             "& svg":{
                 fontSize:"2rem"
             }
@@ -40,6 +41,9 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
             [theme.breakpoints.up("sm")]:{
                 justifyContent:"flex-start"
             }
+        },
+        "& p":{
+            fontFamily:"MulishRegular"
         },
         "& hr":{
             width:"100%",
@@ -67,10 +71,13 @@ const ManageCard: React.FC<IManageCard> = ({ heading,isLoaded, memberAmt,role,up
     const history = useHistory()
     const toast = useToast()
     const params = useParams()
+    const [submitting,setSubmitting] = React.useState(false)
 
     const handleDelete = () => {
+        setSubmitting(true)
         const deleteRoleString = encodeURI(`churchId=${params.churchId}&rolename=${role.name}`)
         userService.deleteRole(deleteRoleString).then(payload => {
+            setSubmitting(false)
             updateRole(role.id)
             toast({
                 title:"Role Deleted successful",
@@ -78,6 +85,7 @@ const ManageCard: React.FC<IManageCard> = ({ heading,isLoaded, memberAmt,role,up
                 messageType:"success"
             })
         }).catch(err => {
+            setSubmitting(false)
             toast({
                 title:"Unable To Delete Role",
                 subtitle:`Error:${err}`,
@@ -94,11 +102,9 @@ const ManageCard: React.FC<IManageCard> = ({ heading,isLoaded, memberAmt,role,up
                         {`${memberAmt} users`}
                     </Text>
                     <AvatarGroup size="xs" max={2}>
+                    {new Array(memberAmt).fill("").map(item => (
                         <Avatar border={`2px solid ${primary}`} name="Ryan Florence" src="https://bit.ly/ryan-florence" />
-                        <Avatar border={`2px solid ${primary}`} name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
-                        <Avatar border={`2px solid ${primary}`} name="Kent Dodds" src="https://bit.ly/kent-c-dodds" />
-                        <Avatar border={`2px solid ${primary}`} name="Prosper Otemuyiwa" src="https://bit.ly/prosper-baba" />
-                        <Avatar border={`2px solid ${primary}`} name="Christian Nwamba" src="https://bit.ly/code-beast" />
+                    ))}
                     </AvatarGroup>
                 </HStack>
                 <Heading textStyle="h5" fontSize="1.5rem"
@@ -117,7 +123,7 @@ const ManageCard: React.FC<IManageCard> = ({ heading,isLoaded, memberAmt,role,up
                     <Flex align="center"
                     >
                         <Icon as={RiDeleteBin6Line} />
-                        <Text cursor="pointer" onClick={handleDelete} >
+                        <Text cursor="pointer" disabled={!submitting} onClick={handleDelete} >
                             Delete
                         </Text>
                     </Flex>

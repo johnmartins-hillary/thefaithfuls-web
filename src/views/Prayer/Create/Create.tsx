@@ -26,7 +26,7 @@ interface IForm {
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        alignItems: "flex-start !important"
+        // alignItems: "flex-start !important"
     },
     inputContainer: {
         backgroundColor: "#F3F3F3",
@@ -122,19 +122,18 @@ const Create = () => {
                                         </Field>
                                     </VStack>
                                     <Stack direction={{base:"column",md:"row"}} spacing={2}
-                                        width="100%">
+                                        width="100%" justifyContent="space-between">
                                         <Button px={5} py={2} disabled={formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}
                                             onClick={(formikProps.handleSubmit as any)} 
                                             isLoading={formikProps.isSubmitting} loadingText="Creating new Advert"
                                             >
-                                                Pay To Publish
+                                                Publish
                                         </Button>
                                         <Button variant="link" onClick={(handleSubmitAndNoRedirect(formikProps.handleSubmit) as any)}
                                           disabled={formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}
                                          textDecoration="underline">
                                             Publish and Create another prayer
                                         </Button>
-                                        <Flex flex={1} />
                                         <Button ml="auto" onClick={goBack}
                                          variant="outline" disabled={formikProps.isSubmitting}>
                                             Close
