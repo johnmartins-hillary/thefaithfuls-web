@@ -7,7 +7,6 @@ import { OutlinedInput, Select } from "components/Input"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { useDispatch, useSelector } from "react-redux"
 import { AppState } from "store"
-import { createChurchValidation } from "components/Forms/Signup/SignupAdmin"
 import { Button } from "components/Button"
 import {updateChurch} from "core/services/church.service"
 import {getChurch} from "store/System/actions"
@@ -24,7 +23,7 @@ import { generateReference, verifyTransaction } from "core/services/payment.serv
 import { primary } from "theme/palette"
 import { Payment, Purpose } from "core/enums/Payment"
 import axios from "axios"
-
+import * as Yup from "yup"
 
 const useStyles = makeStyles((theme) => (createStyles({
     inputContainer: {
@@ -60,6 +59,18 @@ interface IProps {
     handleClose?(): void;
 }
 
+export const createChurchValidation = () => (
+    Yup.object({
+        name: Yup.string().min(3, "Church Denomination Should be longer")
+            .required("A Church Name is required"),
+        denominationId: Yup.string().notOneOf(["Select Denomination"])
+            .required("Church Denomination is required"),
+        address: Yup.string().min(20, "Address is too short").required("An address is required").required("Address is required"),
+        cityID: Yup.string().notOneOf(["Select City", "0"]).required("City should be from the Listed"),
+        stateID: Yup.string().notOneOf(["Select State", "0"]).required("State is required"),
+        countryID: Yup.string().notOneOf(["Select Your Country"]).required("Country is required"),
+    }))
+
 
 const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose, showText, ...props }) => {
     const history = useHistory()
@@ -70,6 +81,7 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
     const classes = useStyles()
     const toast = useToast()
     const [denomination, setDenomination] = React.useState<IDenomination[]>([])
+    const [submitting,setSubmitting] = React.useState(false)
     const [transactRef, setTransactRef] = React.useState({
         reference: "",
         publicKey: ""
@@ -180,14 +192,17 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
 
 
     const handlePaymentAndSubmission = (func:any) => (refCode: any) => {
+        toggleSubmitting()
         verifyTransaction(Payment.PAYSTACK, refCode.reference).then(payload => {
             func()
+            toggleSubmitting()
             toast({
                 title: "Church Verification Successful",
                 subtitle: "",
                 messageType: MessageType.SUCCESS
             })
         }).catch(err => {
+            toggleSubmitting()
             toast({
                 title: "Unable to complete Church Verification",
                 subtitle: `Error:${err}`,
@@ -195,7 +210,10 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
             })
         })
     }
-
+    const toggleSubmitting = () => {
+        setSubmitting(!submitting)
+    }
+    
     const handleFailure = (error: any) => {
         toast({
             title: "Something Went Wrong during payment",
@@ -250,7 +268,7 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
                 subtitle: "",
                 messageType: MessageType.SUCCESS
             })
-            history.goBack()
+            history.push(`/church/${params.churchId}/dashboard`)
         }).catch(err => {
             actions.setSubmitting(false)
             toast({
@@ -332,9 +350,10 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
                                     </Text>
                                 }
                                 <PaymentButton paymentCode={transactRef}
-                                    onSuccess={handlePaymentAndSubmission(formikProps.handleSubmit)} amount={200_000}
+                                    onSuccess={handlePaymentAndSubmission(formikProps.handleSubmit)}
+                                    amount={200_000}
                                     onClose={handlePaymentClose} onFailure={handleFailure}>
-                                    <Button disabled={!formikProps.validateForm}
+                                    <Button disabled={submitting || !formikProps.validateForm}
                                         backgroundColor="primary" my="10" mx="5"
                                         maxWidth="sm">
                                         {formikProps.isValid ? "Proceed To Pay" : "Please Correct Form"}
