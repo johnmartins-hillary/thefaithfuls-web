@@ -124,7 +124,6 @@ const Create = () => {
         title: Yup.string().min(3, "Title of Church Activity is too short").required(),
         startDate: Yup.string().min(3, "Title of Church Activity is too short").required(),
         endDate: Yup.string().min(3, "Title of Church Activity is too short").required(),
-        speaker: Yup.string().min(3, "Location is too short").required(),
         detail: Yup.string().min(3, "Detail is too short").required(),
     })
 
@@ -225,7 +224,7 @@ const Create = () => {
     }
 
     return (
-        <VStack pl={{ base: 2, md: 12 }} pt={{ md: 6 }}
+        <VStack pt={6}
             className={classes.root} >
             <Heading textStyle="h4" >
                 New Church Event

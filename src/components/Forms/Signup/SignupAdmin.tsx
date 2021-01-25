@@ -1,14 +1,16 @@
 import React from "react"
-import { Box, Flex, Avatar, Image, AspectRatio, VStack, Stack, Heading, Text, IconButton, HStack } from "@chakra-ui/react"
+import { 
+    Box, Flex, Avatar, Image, AspectRatio,
+    VStack, Stack, Heading, Text, IconButton, HStack } from "@chakra-ui/react"
 import { Button } from "components/Button"
 import { Fade } from "@material-ui/core"
 // eslint-disable-next-line
 import { Formik, FormikProps } from "formik"
 import { makeStyles, createStyles } from "@material-ui/core/styles"
-import { Dialog, VerifyDialog, Subscription } from "components/Dialog"
+import { Dialog, VerifyDialog} from "components/Dialog"
 import { Link } from "components/Link"
 import { login } from "store/System/actions"
-import { TextInput, Select, Checkbox } from "components/Input"
+import { TextInput, Select, Checkbox,PasswordInput } from "components/Input"
 import * as Yup from "yup"
 import { IChurchResponse } from "core/models/ChurchResponse"
 import { MinorLoginLayout } from "layouts"
@@ -25,6 +27,7 @@ import { IChurchForm } from "components/Forms/Interface"
 import { assignRoleClaimToUser } from 'core/services/user.service'
 import { BiLeftArrowCircle } from "react-icons/bi"
 import { useHistory } from "react-router-dom"
+// import passwordStrength from "check-password-strength"
 
 
 
@@ -54,10 +57,34 @@ const useStyles = makeStyles(theme => createStyles({
         justifyContent: "center",
         flexDirection: "column",
         marginLeft: "0 !important",
-        paddingLeft: "0 !important"
+        paddingLeft: "0 !important",
+        "& p":{
+            fontFamily:"MulishRegular",
+            fontSize:"1.125rem",
+            opacity:".66 !important"
+        },
+        "& > div":{
+            "& p":{
+                fontSize:"1.5rem",
+                opacity:".8 !important"
+            }
+        },
+        "& label":{
+            "& p":{
+                whiteSpace:"nowrap",
+                fontSize:"1rem !important",
+                [theme.breakpoints.up("sm")]:{
+                    fontSize:"1.125rem !important"
+                }
+            }
+        }
     },
     inputContainer: {
         width: "100%",
+    },
+    button:{
+        marginLeft:"50%",
+        transform:"translateX(-50%)"
     }
 }))
 
@@ -76,18 +103,12 @@ export const createChurchValidation = () => (
             .required("A Church Name is required"),
         denominationId: Yup.string().notOneOf(["Select Denomination"])
             .required("Church Denomination is required"),
-        email: Yup.string().email("Invalid Email Address").required("A Church Name is required"),
         address: Yup.string().min(20, "Address is too short").required("An address is required").required("Address is required"),
-        landmark: Yup.string().min(3, "Landmark Should be longer").required("Landmark is required"),
         city: Yup.string().notOneOf(["Select City", "0"]).required("City should be from the Listed"),
         state: Yup.string().notOneOf(["Select State", "0"]).required("State is required"),
         country: Yup.string().notOneOf(["Select Your Country"]).required("Country is required"),
         acceptedTerms: Yup.boolean().oneOf([true], "You need to Agree to our terms and condition")
-            .required("You need to agree to our terms and condition"),
-        phoneNumber: Yup.string().matches(phoneRegExp, "Phone Number is not valid"),
-        churchMotto: Yup.string(),
-        priestName: Yup.string(),
-        priestRole: Yup.string()
+            .required("You need to agree to our terms and condition")
     }))
 
 const createUserValidation = () => (
@@ -95,7 +116,7 @@ const createUserValidation = () => (
         firstname: Yup.string().max(20, "First Name is Too Long").required(),
         lastname: Yup.string().max(20, "Last Name is Too Long").required(),
         email: Yup.string().email("Invalid Email address").required(),
-        phoneNumber: Yup.string().min(10, "Phone Number is not valid").max(12, "Phone Number is Too Long").matches(phoneRegExp, "Phone Number is not valid"),
+        phoneNumber: Yup.string().matches(phoneRegExp, "Phone Number is not valid").min(10, "Phone Number is not valid").max(12, "Phone Number is Too Long").matches(phoneRegExp, "Phone Number is not valid"),
         password: Yup.string().min(5, "Password is too short").required(),
         confirmPassword: Yup.string().min(5, "Password is too short").required(),
     })
@@ -128,7 +149,7 @@ const SignupAdmin = () => {
         state: []
     })
     const toast = Toast()
-    const [showDialog, setShowDialog] = React.useState(true)
+    const [showDialog, setShowDialog] = React.useState(false)
     // For showing the church form
     const [showChurchForm, setShowChurchForm] = React.useState(false)
     // For Keeping A state of the church
@@ -232,7 +253,7 @@ const SignupAdmin = () => {
 
     // for creating a new church member
     const createNewUser = async (actions: any, userForm: IChurchMemberForm, churchValue: typeof churchForm) => {
-        const { email, firstname, lastname, password, phoneNumber } = userForm
+        const { email, firstname, lastname,genderID, password, phoneNumber } = userForm
         const { countryID, stateID, cityID, churchID } = churchValue
         const newUser: IChurchMember = {
             username: String(phoneNumber),
@@ -241,6 +262,7 @@ const SignupAdmin = () => {
             email,
             firstname,
             lastname,
+            genderID,
             countryID,
             stateID,
             cityID,
@@ -252,13 +274,13 @@ const SignupAdmin = () => {
             societyPosition: []
         }
 
-
         await createStaff(newUser).then(payloadData => {
             const assignRoleString = `roleName=ChurchAdmin&agentUserId=${payloadData.data.staffID}`
-            // assignRoleClaimToUser(assignRoleString).then(payload => {
+            // Assign the role of admin to the newly created staff
             assignRoleClaimToUser(assignRoleString).then(payload => {
                 actions.resetForm()
                 actions.setSubmitting(false)
+                // Login the user
                 dispatch(login(newUser.username!, newUser.password, toast))
                 const afterLogin = () => {
                     setShowChurchForm(true)
@@ -302,6 +324,7 @@ const SignupAdmin = () => {
             countryID: Number(values.country),
             address: values.address,
             denominationId: Number(values.denominationId),
+            churchMotto:values.churchMotto,
             ...(image.logo.base64 && { churchLogo: image.logo.base64 }),
             ...(image.banner.base64 && { churchBarner: image.banner.base64 })
         }
@@ -365,7 +388,7 @@ const SignupAdmin = () => {
                 <Flex className={classes.root} px={{ sm: "3" }}
                     alignItems={["center", "flex-start"]} flex={[1, 3]}>
                     <Stack spacing={3} my={5} align={["center", "flex-start"]} >
-                        <Heading textStyle="h3" >
+                        <Heading fontSize="43px" >
                             Sign Up
                         </Heading>
                         <Text textStyle="h6" maxWidth="sm">
@@ -383,16 +406,22 @@ const SignupAdmin = () => {
                                     {(formikProps: FormikProps<IChurchMemberForm>) => {
                                         return (
                                             <Box my={["4"]} width={["90vw", "100%"]}
-                                                maxWidth="sm" px="1" mx={["auto", "initial"]} >
+                                                maxWidth="24rem" px="1" mx={["auto", "initial"]} >
                                                 <Box>
                                                     <TextInput name="firstname" placeholder="First Name" />
                                                     <TextInput name="lastname" placeholder="Last Name" />
                                                     <TextInput name="email" placeholder="email" />
                                                     <TextInput name="phoneNumber" placeholder="Phone Number" />
-                                                    <TextInput name="password"
-                                                        type="password" placeholder="Password" />
-                                                    <TextInput name="confirmPassword"
-                                                        type="password" placeholder="Confirm Password" />
+                                                    <Select name="genderID" placeholder="Gender">
+                                                        <option value={1}>
+                                                            Male
+                                                        </option>
+                                                        <option value={2}>
+                                                            Female
+                                                        </option>
+                                                    </Select>
+                                                    <PasswordInput name="password" placeholder="Password" />
+                                                    <PasswordInput name="confirmPassword" placeholder="Confirm Password" />
                                                     <Button disabled={formikProps.isSubmitting || !formikProps.isValid}
                                                         my="6" maxWidth="sm" isLoading={formikProps.isSubmitting}
                                                         loadingText={`Creatinag new Church Admin ${formikProps.values.firstname}-${formikProps.values.lastname}`}
@@ -440,7 +469,7 @@ const SignupAdmin = () => {
                                             }
                                         }
                                         return (
-                                            <Box my={["4"]} width={["90vw", "100%"]} maxWidth={image.banner.base64 ? "lg" : "md"} px="1" >
+                                            <Box my={["4"]} px="4" maxWidth={image.banner.base64 ? "lg" : "24rem"}>
                                                 {
                                                     open ?
                                                         <Fade mountOnEnter unmountOnExit in={open}>
@@ -456,10 +485,7 @@ const SignupAdmin = () => {
                                                                         </option>
                                                                     ))}
                                                                 </Select>
-                                                                <TextInput name="email" placeholder="Church Email" />
                                                                 <TextInput name="address" placeholder="Church Address" />
-                                                                <TextInput name="landmark" placeholder="Closest Landmark" />
-                                                                <TextInput name="phoneNumber" placeholder="Church Phone Number" />
                                                                 <Select name="country" placeholder="Select Your Country"
                                                                     val={Number(formikProps.values.country)} func={getState} >
                                                                     {location.country.map((item, idx) => (
@@ -484,7 +510,7 @@ const SignupAdmin = () => {
                                                                     ))}
                                                                 </Select>
                                                                 <Checkbox name="acceptedTerms" >
-                                                                    <Text textStyle="h6" fontSize="1rem" whiteSpace="nowrap" >
+                                                                    <Text>
                                                                         Agree to our  &nbsp;
                                                                             <Link to="/" >
                                                                             Terms of Service and Policy
@@ -510,11 +536,18 @@ const SignupAdmin = () => {
                                                                         <input id="image" type="file" name="logo" onChange={handleImageTransformation}
                                                                             accept="image/jpeg, image/png" style={{ display: "none" }} />
                                                                         <label htmlFor="image" >
+                                                                        {image.logo.base64 ?
+                                                                            <VStack justify="center" mt="4" align="center" >
+                                                                                    <Text color="primary" >
+                                                                                        Church Logo
+                                                                            </Text>
+                                                                                    <Avatar size="2xl" src={image.logo.base64} />
+                                                                        </VStack> :
                                                                             <Button color="white" as="span"
                                                                                 bgColor="rgba(0,0,0,.6)">
                                                                                 Church Logo
                                                                                     </Button>
-
+                                                                            }
                                                                             {image.logo.name && <Text>{image.logo.name}</Text>}
                                                                         </label>
                                                                     </Box>
@@ -526,8 +559,8 @@ const SignupAdmin = () => {
                                                                                 image.banner.base64 ?
                                                                                 <>
                                                                                     <Text color="primary">
-                                                                            Church Banner
-                                                                    </Text>
+                                                                                            Church Banner
+                                                                                    </Text>
                                                                     
                                                                                     <AspectRatio w="100%" ratio={21 / 9}>
                                                                                         <Image src={image.banner.base64} objectFit="cover" />
@@ -536,23 +569,14 @@ const SignupAdmin = () => {
                                                                                         <Button color="white" as="span"
                                                                                             bgColor="rgba(0,0,0,.6)">
                                                                                             Church Banner
-                                                                            </Button>
+                                                                                        </Button>
                                                                                     }
                                                                             {image.banner.name && <Text>{image.banner.name}</Text>}
                                                                         </label>
                                                                     </Box>
-                                                                    <VStack justify="center" mt="4" align="center" >
-                                                                        {image.logo.base64 &&
-                                                                            <>
-                                                                                <Text color="primary" >
-                                                                                    Church Logo
-                                                                        </Text>
-                                                                                <Avatar size="2xl" src={image.logo.base64} />
-                                                                            </>}
-                                                                    </VStack>
-                                                                    <Button disabled={formikProps.isSubmitting}
-                                                                     onClick={(formikProps.handleSubmit as any)}
-                                                                        width={["90vw", "100%"]} my="6" maxWidth="sm">
+                                                                    <Button disabled={formikProps.isSubmitting} className={classes.button}
+                                                                        width={["90vw", "100%"]} my="6" maxWidth="sm"
+                                                                        onClick={(formikProps.handleSubmit as any)}>
                                                                         {formikProps.isSubmitting ? "Creating a New Church" : "Send"}
                                                                     </Button>
                                                                 </Box>

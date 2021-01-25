@@ -53,6 +53,9 @@ const useStyles = makeStyles((theme) => createStyles({
     root: {
         "& input,select": {
             color: "initial !important"
+        },
+        "& button,p":{
+            fontFamily:"MulishRegular"
         }
     },
     tableContainer: {
@@ -174,11 +177,12 @@ const AddStaff: React.FC<IAddStaff> = ({ updateStaff, closeDialog }) => {
         password: "",
         role: ""
     }
+    const phoneRegExp = /^[0]\d{10}$/
     const validationSchema = Yup.object({
         firstname: Yup.string().min(3, "Name is too Short").required(),
         lastname: Yup.string().min(3, "Name is too Short").required(),
         email: Yup.string().email("Invalid Email address").required(),
-        phoneNumber: Yup.number().required(),
+        phoneNumber: Yup.string().matches(phoneRegExp,"Phone Number is not Valid").required(),
         password: Yup.string().min(6, "Password is too short").required(),
         role: Yup.string().oneOf(roles.map((item) => item.name), "Role is not included in the accepted list")
     })
@@ -204,18 +208,21 @@ const AddStaff: React.FC<IAddStaff> = ({ updateStaff, closeDialog }) => {
             societies: [],
             societyPosition: []
         }
-
-
         createStaff(newChurchStaff).then(payload => {
             actions.setSubmitting(false)
             actions.resetForm()
             toast({
-                title: "New User",
+                title: "New Staff created",
                 subtitle: `New User ${newChurchStaff.username} has been created`,
                 messageType: MessageType.SUCCESS
             })
-            updateStaff()
-            closeDialog()
+            const assignRoleString = `roleName=${values.role}&agentUserId=${payload.data.staffID}`
+            // Assign the role of admin to the newly created staff
+            assignRoleClaimToUser(assignRoleString).then(payload => {
+                updateStaff()
+                closeDialog()
+                // Login the user
+            })
         }).catch(err => {
             actions.setSubmitting(false)
             toast({
@@ -438,7 +445,6 @@ const ChangeStaff: React.FC<IChangeStaffProps> = ({ updateStaff, closeDialog,...
         password: "",
         role:(role as string)
     }
-
 
     const validationSchema = Yup.object({
         firstname: Yup.string().min(3, "Name is too Short").required(),
@@ -679,8 +685,6 @@ const ChangeStaff: React.FC<IChangeStaffProps> = ({ updateStaff, closeDialog,...
 }
 
 
-
-
 const UserManager = () => {
     const defaultStaff: IStaff = {
         churchId: 0,
@@ -690,6 +694,7 @@ const UserManager = () => {
         claim: ""
     }
     const toast = useToast()
+    const classes = useStyles()
     const dispatch = useDispatch()
     const breakpoint = useBreakpoint()
     const notBaseBreakpoint = breakpoint !== "base"
@@ -775,6 +780,7 @@ const UserManager = () => {
     return (
         <>
             <Stack spacing={5} p={{ base: "4", md: "0" }} pl={{ md: "12" }}
+            className={classes.root}
                 width={{base:"100%",md:"90%"}} pr={{ md: "5" }} pt={{ md: "12" }}
                 divider={<StackDivider borderColor="gray.200" />}
             >

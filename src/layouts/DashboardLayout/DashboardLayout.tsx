@@ -14,7 +14,6 @@ import { CgBell, CgProfile } from 'react-icons/cg'
 import { Logo } from "components/Logo"
 import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from "react-redux"
-import { LoadActivitiesForChurch, LoadEventsForChurch } from "store/Activity/actions"
 import { FiLogOut } from "react-icons/fi"
 import { GiHamburgerMenu } from "react-icons/gi"
 import { getChurch, logout } from "store/System/actions"
@@ -36,6 +35,9 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
+      // "& h2":{
+      //   textAlign:"center"
+      // }
     },
     drawer: {
       [theme.breakpoints.up('md')]: {
@@ -56,7 +58,8 @@ const useStyles = makeStyles((theme: Theme) =>
         }
       },
       "& p": {
-        margin: ".5rem 0"
+        margin: ".5rem 0",
+        fontFamily:"MulishRegular"
       },
       "& svg": {
         marginRight: ".5rem"
@@ -265,7 +268,7 @@ const DashboardLayout: React.FC<IProps> = (props) => {
               <Avatar border="2px solid #B603C9"
                 size="xl" name={currentChurch.name}
                 src={currentChurch.churchLogo || "https://bit.ly/ryan-florence"} />
-              <Heading as="h2" color="primary" fontSize="1.7rem" fontWeight="400" >
+              <Heading as="h2" color="primary" textAlign="center" fontSize="1.7rem" fontWeight="400" >
                 {currentChurch.name}
               </Heading>
             </Flex>

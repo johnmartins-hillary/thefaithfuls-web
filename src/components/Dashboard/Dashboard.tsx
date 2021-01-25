@@ -16,7 +16,17 @@ import {useSelector} from "react-redux"
 
 const useStyles = makeStyles(() => (
     createStyles({
-        root:{},
+        root:{
+        },
+        headerContainer:{
+            flexDirection:"column",
+            alignItems:"center",
+            display:"flex",
+            justifyContent:"center",
+            "& h2":{
+                textAlign:"center !important",
+            }
+        },
         optionContainer:{
             "& > *":{
                 cursor:"pointer",
@@ -39,7 +49,7 @@ interface IProps {
     handleToggle:any
 }
 
-export const dashboardMenu = [
+const dashboardMenu = [
     {icon:MdDashboard,name:"Dashboard",link:"/dashboard"},
     {icon:BsCalendar,name:"Church Activities",link:"/activity"},
     {icon:RiGroupFill,name:"Groups",link:"/groups"},
@@ -73,15 +83,14 @@ return (
         finalFocusRef={btnRef}
     >
         <DrawerContent pt={16} maxWidth="2xs" zIndex={500} >
-            <DrawerHeader flexDirection="column" alignItems="center"
-            display="flex" justifyContent="center"
+            <DrawerHeader className={classes.headerContainer}
             >
                 <Avatar border="2px solid #B603C9"
                     size="xl" name={currentChurch.name}
                     src={currentChurch.churchLogo || "https://bit.ly/ryan-florence"} />
-                <Heading as="h2" color="primary" fontSize="1.7rem" fontWeight="400" >
+                {/* <Heading as="h2" color="primary" fontSize="1.7rem" fontWeight="400" >
                     {currentChurch.name}
-                </Heading>
+                </Heading> */}
             </DrawerHeader>
             {/* <Divider orientation="horizontal" bgColor="grey.500" /> */}
             <DrawerBody pt="12" pl="10" >

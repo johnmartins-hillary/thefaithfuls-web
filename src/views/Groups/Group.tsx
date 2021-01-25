@@ -6,6 +6,7 @@ import { Box, Heading, Flex,ModalContent,ModalHeader,
         Icon, Stack, StackDivider, Text} from "@chakra-ui/react"
 import {Button} from "components/Button"
 import { GroupCard } from "components/Card/GroupCard"
+import {NoContent} from "components/NoContent"
 import { GroupMemberCard } from "components/Card/GroupMemberCard"
 import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
 import { CgMoreAlt } from "react-icons/cg"
@@ -18,7 +19,6 @@ import {loadGroupForChurch,deleteGroup,createGroupMember,
 import {Select} from "components/Input"
 import {getStaffByChurch} from "core/services/account.service"
 import {Formik,FormikProps} from "formik"
-
 
 import {useSelector,useDispatch} from "react-redux"
 import {setPageTitle} from "store/System/actions"
@@ -41,6 +41,22 @@ interface IAddUser {
 
 const useStyles = makeStyles((theme:Theme) => createStyles({
     root:{
+        "& a":{
+            fontFamily:"MulishRegular",
+            margin:theme.spacing(3),
+            padding:theme.spacing(3,2),
+            paddingLeft:0,
+            width:"90%",
+            [theme.breakpoints.up("md")]:{
+                width:"60%"
+            },
+            "& button":{
+                width:"100%"
+            }
+        },
+        "& button":{
+            fontFamily:"MulishRegular" 
+        },
         "& > div:first-child":{
             minWidth:"20rem",
             [theme.breakpoints.down("sm")]:{
@@ -48,16 +64,6 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
             },
             "& p,span,h2":{
                 fontFamily:"MulishRegular"
-            },
-            // "& h3,h5":{
-            //     fontFamily:"Bahnschrift"
-            // },
-            // "& h6":{
-            //     fontFamily:"MontserratBold",
-            // },
-            "& > button":{
-                margin:theme.spacing(3),
-                padding:theme.spacing(3,2)
             },
             "& > h2":{
                 whiteSpace:"nowrap",
@@ -264,11 +270,11 @@ const Group = (props:any) => {
             <Flex direction={["column","column", "row"]} className={classes.root} {...props}>
                 <Flex flex={3} bgColor="#F3F3F3" maxWidth={{md:"md"}}
                     direction="column" height="100vh" >
-                    <Button width={{base:"90%",md:"60%"}}>
                         <Link to="groups/create" >
+                    <Button>
                             Add Group
-                        </Link>
                     </Button>
+                        </Link>
                     <Heading color="primary" >
                         Church Groups
                     </Heading>
@@ -287,71 +293,85 @@ const Group = (props:any) => {
                     </Stack>
                 </Flex>
                 <Flex flex={5} flexShrink={5} pt="10" pl={{base:0,md:5}} bgColor="#F9F5F9">
+                {
+                    groups.length > 0 ? 
                     <Stack spacing={5} width={[ "95%","75%"]} maxWidth={{md:"3xl"}}
-                        divider={<StackDivider borderColor="gray.200" />}>
-                        <Flex className={classes.groupMemberContainer} justify="space-between">
-                            <Box>
-                                <Text fontSize="1rem" opacity={.4} color="secondary" >
-                                    Group Name
-                                </Text>
-                                <Heading fontSize="1.5rem" fontWeight={600} letterSpacing="0.48px" color="tertiary">
-                                    {currentGroup.name}
-                                </Heading>
-                            </Box>
-                            {
-                                currentGroup.name &&
-                                <Menu>
-                                    <MenuButton>
-                                    <Icon bgColor="primary" color="white"
-                                                boxSize="2.5rem" as={CgMoreAlt}
-                                                borderRadius="50%"/>
-                                    </MenuButton>
-                                    <MenuList>
-                                        <MenuItem onClick={handleUpdate}>
-                                            <Icon as={FiEdit2}/>
-                                            <Text>Edit</Text>
-                                        </MenuItem>
-                                        <MenuItem onClick={handleDelete((currentGroup.societyID as number))}>
-                                            <Icon as={TiCancel}/>
-                                            <Text>Delete</Text>
-                                        </MenuItem>
-                                    </MenuList>
-                                </Menu>
-                            }
-                        </Flex>
-                        <Box className={classes.descriptionContainer}>
-                            <Heading as="h6" fontSize="1rem" opacity={0.4} color="secondary" >
-                                Group Description
-                            </Heading>
-                            <Text>
-                                {currentGroup.description}
+                    divider={<StackDivider borderColor="gray.200" />}>
+                    <Flex className={classes.groupMemberContainer} justify="space-between">
+                        <Box>
+                            <Text fontSize="1rem" opacity={.4} color="secondary" >
+                                Group Name
                             </Text>
-                        </Box>
-                        <Box className={classes.groupMemberContainer} width={{base:"90vw",md:"65vw"}}>
-                            <Heading as="h6" fontSize="1rem" opacity={.4}
-                             color="secondary" my="2" >
-                                Group Members
+                            <Heading fontSize="1.5rem" fontWeight={600} letterSpacing="0.48px" color="tertiary">
+                                {currentGroup.name}
                             </Heading>
-                            <Stack overflowY="auto"
-                                maxHeight={["30vh", "30vh", "75vh", "auto"]}
-                                maxWidth={{md:"sm"}} >
-                                    {currentGroup && currentGroup.groupMember && currentGroup.groupMember.length > 0 ? 
-                                    currentGroup.groupMember?.map((item,idx) => (
-                                        <GroupMemberCard key={idx} imgSrc={(item as any).imgSrc || "https://bit.ly/ryan-florence"}
-                                         name={(item as any).fullname} position={item.positionName} />
-                                    )) : <Text>No Church Member belongs to this group Yet</Text>
-                                }
-                            </Stack> {
-                                currentGroup.name &&
-                                <Button my={"5"} color="primary" onClick={handleToggle}
-                                py={["2","5"]} variant="outline"
-                                colorScheme="primary" px={["5","7"]}>
-                                    Invite a Member
-                                </Button>
-                            }
-
                         </Box>
-                    </Stack>
+                        {
+                            currentGroup.name &&
+                            <Menu>
+                                <MenuButton>
+                                <Icon bgColor="primary" color="white"
+                                            boxSize="2.5rem" as={CgMoreAlt}
+                                            borderRadius="50%"/>
+                                </MenuButton>
+                                <MenuList>
+                                    <MenuItem onClick={handleUpdate}>
+                                        <Icon as={FiEdit2}/>
+                                        <Text>Edit</Text>
+                                    </MenuItem>
+                                    <MenuItem onClick={handleDelete((currentGroup.societyID as number))}>
+                                        <Icon as={TiCancel}/>
+                                        <Text>Delete</Text>
+                                    </MenuItem>
+                                </MenuList>
+                            </Menu>
+                        }
+                    </Flex>
+                    <Box className={classes.descriptionContainer}>
+                        <Heading as="h6" fontSize="1rem" opacity={0.4} color="secondary" >
+                            Group Description
+                        </Heading>
+                        <Text>
+                            {currentGroup.description}
+                        </Text>
+                    </Box>
+                    <Box className={classes.groupMemberContainer} width={{base:"90vw",md:"65vw"}}>
+                        <Heading as="h6" fontSize="1rem" opacity={.4}
+                         color="secondary" my="2" >
+                            Group Members
+                        </Heading>
+                        <Stack overflowY="auto"
+                            maxHeight={["30vh", "30vh", "75vh", "auto"]}
+                            maxWidth={{md:"sm"}} >
+                                {currentGroup && currentGroup.groupMember && currentGroup.groupMember.length > 0 ? 
+                                currentGroup.groupMember?.map((item,idx) => (
+                                    <GroupMemberCard key={idx} imgSrc={(item as any).imgSrc || "https://bit.ly/ryan-florence"}
+                                     name={(item as any).fullname} position={item.positionName} />
+                                )) : <Text>No Church Member belongs to this group Yet</Text>
+                            }
+                        </Stack> {
+                            currentGroup.name &&
+                            <Button my={"5"} color="primary" onClick={handleToggle}
+                            py={["2","5"]} variant="outline"
+                            colorScheme="primary" px={["5","7"]}>
+                                Invite a Member
+                            </Button>
+                        }
+
+                    </Box>
+                </Stack> : 
+                <NoContent>
+                    <Text color="primary">
+                        No Groups yet
+                    </Text>
+                    <Button>
+                        <Link to="groups/create" >
+                            Add Group
+                        </Link>
+                    </Button>
+                    
+                </NoContent>
+                }
                 </Flex>
             </Flex>
         <Dialog open={open} size="lg" close={handleToggle} >
