@@ -129,12 +129,12 @@ const Header:React.FC<IProps> = props => {
         display={["none","","flex" ]}
         mt={{ base: 4, md: 0 }}
       >
-        <MenuItems>
           <Link to="/login" >
-            Login
+            <MenuItems>
+                Login
+            </MenuItems>
           </Link>
-        </MenuItems>
-        <Button px="9" height="2em" _hover={{ bg: "purple" }} backgroundColor="primary" color="white">
+        <Button px="9" height="2em">
           <Link to="/signup/role" >
             Sign Up
           </Link>

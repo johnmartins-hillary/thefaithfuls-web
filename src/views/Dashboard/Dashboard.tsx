@@ -394,14 +394,16 @@ const Dashboard = () => {
                                         </Text>
                                     </HStack>
                                 </DashboardCard>
+                                {currentSubscription.timeRemaining! > 0 && 
                                 <DashboardCard heading="Subscription Status" color="red.500">
-                                    <HStack>
-                                        <DotIcon  color={currentSubscription?.timeRemaining! > 0 ? "#68D391" : "#151C4D" }/>
-                                        <Text mt="0px !important" fontSize="1rem" >
-                                            {`${currentSubscription?.timeRemaining} days Left`}
-                                        </Text>
-                                    </HStack>
-                                </DashboardCard>
+                                <HStack>
+                                    <DotIcon  color="#68D391"/>
+                                    <Text mt="0px !important" fontSize="1rem" >
+                                        {`${currentSubscription?.timeRemaining} days Left`}
+                                    </Text>
+                                </HStack>
+                            </DashboardCard>
+                                }
                             </VStack>
                         </Stack>
                     </Flex>

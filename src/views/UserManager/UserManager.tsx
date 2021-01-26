@@ -24,7 +24,7 @@ import { Input } from "@material-ui/core"
 import useToast from "utils/Toast"
 import useParams from "utils/params"
 import { Dialog } from "components/Dialog"
-import { TextInput, Select } from "components/Input"
+import { TextInput, Select,PasswordInput } from "components/Input"
 import { MessageType } from "core/enums/MessageType"
 import { Formik, FormikProps } from "formik"
 import { useDispatch } from "react-redux"
@@ -211,18 +211,28 @@ const AddStaff: React.FC<IAddStaff> = ({ updateStaff, closeDialog }) => {
         createStaff(newChurchStaff).then(payload => {
             actions.setSubmitting(false)
             actions.resetForm()
-            toast({
-                title: "New Staff created",
-                subtitle: `New User ${newChurchStaff.username} has been created`,
-                messageType: MessageType.SUCCESS
-            })
             const assignRoleString = `roleName=${values.role}&agentUserId=${payload.data.staffID}`
             // Assign the role of admin to the newly created staff
-            assignRoleClaimToUser(assignRoleString).then(payload => {
+            if(values.role){
+                assignRoleClaimToUser(assignRoleString).then(payload => {
+                    toast({
+                        title: "New Staff created",
+                        subtitle: `New User ${newChurchStaff.username} has been created`,
+                        messageType: MessageType.SUCCESS
+                    })
+                    updateStaff()
+                    closeDialog()
+                    // Login the user
+                })
+            }else{
+                toast({
+                    title: "New Staff created",
+                    subtitle: `New User ${newChurchStaff.username} has been created`,
+                    messageType: MessageType.SUCCESS
+                })
                 updateStaff()
                 closeDialog()
-                // Login the user
-            })
+            }
         }).catch(err => {
             actions.setSubmitting(false)
             toast({
@@ -255,7 +265,7 @@ const AddStaff: React.FC<IAddStaff> = ({ updateStaff, closeDialog }) => {
                                     <TextInput name="lastname" placeholder="lastname" />
                                     <TextInput name="email" placeholder="Email" />
                                     <TextInput name="phoneNumber" placeholder="Phone Number" />
-                                    <TextInput name="password" placeholder="Password" />
+                                    <PasswordInput name="password" placeholder="Password" />
                                     <Select placeholder="select Roles" name="role" className={classes.input} >
                                         {roles.map((item, idx) => (
                                             <option key={item.concurrencyStamp} value={item.name} >
