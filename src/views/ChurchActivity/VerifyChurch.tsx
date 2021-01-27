@@ -3,7 +3,7 @@ import {useHistory} from "react-router-dom"
 import {Flex,Icon,Stack,Heading} from "@chakra-ui/react"
 // eslint-disable-next-line
 import {Verification as VerificationForm } from "components/Forms"
-import {createStyles,makeStyles} from "@material-ui/styles"
+import {createStyles,makeStyles} from "@material-ui/core/styles"
 import {CgCloseO} from "react-icons/cg"
 
 
@@ -12,8 +12,11 @@ const useStyles = makeStyles((theme) => (createStyles({
         paddingTop:"1.3rem",
         flexDirection:"column",
         bgColor:"#F9F5F9",
-        alignItems:"flex-start",
         justifyContent:"flex-start",
+        alignItems:"center",
+        [theme.breakpoints.up("md")]:{
+            alignItems:"flex-start",
+        },
         "& > *:first-child":{
             alignSelf:"flex-start",
             fontSize:"1.875rem"
@@ -39,12 +42,12 @@ const VerifyChurch = () => {
                 <Heading fontWeight={400} ml={5} color="primary">
                     Verify Church Location
                 </Heading>
-                <Flex width={[ "100%","85vw"]} pl={{md:16}}
+                <Flex pl={{md:16}}
                  pt={{md:5}} pr={{md:4}}
                  className={classes.formContainer}>
                         <Stack justify="space-between" align="center"
                          direction={["column-reverse","row"]} width="100%" >
-                            <Heading alignSelf={"flex-start"} textAlign={["center", "left"]}
+                            <Heading display={["none","initial"]} alignSelf={"flex-start"} textAlign={["center", "left"]}
                                 fontSize="1.5rem" >
                                 Please confirm the information you provided
                             </Heading>

@@ -27,7 +27,7 @@ const VerifyDialog:React.FC<IVerifyDialog> = (props) => {
                 outline="none" borderRadius="50%" opacity={.5} />
             <ModalBody display="flex" flexDirection="column"
                 alignItems="center" mt="2">
-                <Text color="tertiary" maxWidth="xl" lineHeight="30px" textAlign="center">
+                <Text color="tertiary" fontFamily="MulishRegular" maxWidth="xl" lineHeight="30px" textAlign="center">
                     To enjoy the full functions of this platform,
                     we need to verify that your church address exist,
                     you will be charged a token of ₦2000.
@@ -42,17 +42,16 @@ const VerifyDialog:React.FC<IVerifyDialog> = (props) => {
                 <Flex width="98%" flexDirection={["column", "row"]}
                     justifyContent="space-between" mb={3} >
                     <Button onClick={handleSubscribe} mb={["2", "auto"]} 
-                     px="18" bgColor="primary" mr={{sm:4}} color="white" >
+                     px="18" fontFamily="MulishRegular" >
                         Proceed to subscribe
                     </Button>
-                    <Button px="18" colorScheme="primary"
-                        variant="outline" color="primary"  >
+                    <Button px="18" variant="outline" fontFamily="Bahnschrift">
                         <Link to={`/church/${currentUser.churchId}/verify`} >
                             Proceed to verify
                         </Link>
                     </Button>
                 </Flex>
-                    <CustomLink to={`/church/${currentUser.churchId}/dashboard`}>
+                    <CustomLink fontFamily="Bahnschrift" to={`/church/${currentUser.churchId}/dashboard`}>
                         Verify Later
                     </CustomLink>
             </ModalFooter>

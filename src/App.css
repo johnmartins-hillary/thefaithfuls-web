@@ -12,6 +12,9 @@ body {
   font-family: MulishRegular;
 }
 
+button{
+  font-family: MulishRegular;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

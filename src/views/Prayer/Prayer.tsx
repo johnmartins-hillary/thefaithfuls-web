@@ -22,12 +22,16 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppState } from "store"
 import { ITestimony, TestimonyStatusType } from "core/models/Testimony"
 import axios, { CancelTokenSource } from "axios"
+import {NoContent} from "components/NoContent"
 
 
 const useStyles = makeStyles((theme) => {
     return (
         createStyles({
             root: {
+                "& button,p":{
+                    fontFamily:"MulishRegular"
+                },
                 "& > div": {
                     [theme.breakpoints.up("sm")]: {
                         width: "95%",
@@ -71,7 +75,7 @@ const useStyles = makeStyles((theme) => {
             prayerContainer: {
                 "& > *": {
                     shadow: "5px 0px 6px #0000001A",
-                    backgroundColor: "white",
+                    // backgroundColor: "white",
                     padding: "1rem",
                     borderRadius: "6px",
                     alignItems: "flex-start !important"
@@ -394,7 +398,7 @@ const Prayer = () => {
                     <TabPanel mt="3">
                         <SimpleGrid minChildWidth="17.5rem" alignItems={{ base: "center", md: "flex-start" }} gridGap=".5rem"
                             spacing={3} className={classes.prayerContainer}>
-                            {prayerRequest.length > 0 ? prayerRequest.map((item, idx) => (
+                            {prayerRequest.length > 0 && prayerRequest.map((item, idx) => (
                                 <DetailCard title={item.fullName} key={item.prayerRequestID || idx}
                                     subtitle={item.prayerTile}
                                     image={item.pictureUrl} timing={`${item.timeLapsed}d`}
@@ -419,16 +423,21 @@ const Prayer = () => {
                                             boxSize="1rem" icon={<FaPrayingHands />} />
                                     </HStack>
                                 </DetailCard>
-                            )) :
-                                <Text>
-                                    No Prayer Request Available
-                                    </Text>
+                            )) 
                             }
                         </SimpleGrid>
+                        {prayerRequest.length <= 0 && 
+                        <NoContent>
+                        <Text>
+
+                            
+                            No Prayer Request is Available
+                        </Text>
+                    </NoContent>}
                     </TabPanel>
                     <TabPanel mt="3" className={classes.testimonyContainer}>
                         <Wrap spacing={6}>
-                            {churchTestimony.length > 0 ? churchTestimony.map((item, idx) => (
+                            {churchTestimony.length > 0 && churchTestimony.map((item, idx) => (
                                 <WrapItem key={item.testimonyID || idx} bgColor="white">
                                     <DetailCard title="Bismark Achodo" timing={`${item.timeLapsed}d`}
                                         image="https://bit.ly/ryan-florence" isLoaded={Boolean(item.testimonyID)}
@@ -447,10 +456,14 @@ const Prayer = () => {
                                         </HStack>
                                     </DetailCard>
                                 </WrapItem>
-                            )) : <Text>
-                                    No Church Testimony available
-                                             </Text>}
+                            ))}
                         </Wrap>
+                        {churchTestimony.length <= 0 && 
+                        <NoContent>
+                        <Text>
+                            No Testimony is Available
+                        </Text>
+                    </NoContent>}
                     </TabPanel>
                     <TabPanel mt="3" className={classes.prayerMainContainer}>
                         <Button>

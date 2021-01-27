@@ -38,14 +38,12 @@ interface IForm {
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        alignItems: "flex-start !important"
-    },
-    inputContainer: {
-        backgroundColor: "#F3F3F3",
-        minHeight: "70vh",
-        overflowX: "hidden",
-        paddingBottom: "2rem",
-        alignItems: "flex-start !important"
+        "& a,button": {
+            fontFamily: "MulishRegular"
+        },
+        "& p,i":{
+            fontFamily:"MulishRegular"
+        }
     },
     imageContainer: {
         border: "1px dashed rgba(0, 0, 0, .5)",
@@ -77,6 +75,13 @@ const useStyles = makeStyles((theme) => createStyles({
                 appearance: "none"
             }
         }
+    },
+    activeImage:{
+            width:"100%",
+            height:"100%",
+            display:"flex",
+            justifyContent:"center",
+            alignItems:"center"
     }
 }))
 
@@ -90,6 +95,7 @@ const Create = () => {
     const [difference, setDifference] = React.useState<number>(1)
     const currentChurch = useSelector((state:AppState) => state.system.currentChurch)
     const [submitting,setSubmitting] = React.useState(false)
+    const [amount,setAmount] = React.useState(1000)
     const [image, setImage] = React.useState({
         base64: "",
         name: ""
@@ -99,10 +105,10 @@ const Create = () => {
         publicKey:""
     })
     
-    React.useEffect(() => {
-        const cancelToken = axios.CancelToken.source()
+    const cancelToken = axios.CancelToken.source()
+    const getPaymentReference = (amount:number) => {
         generateReference({
-            amount:1000,
+            amount,
             organizationId:currentChurch.churchID as number,
             organizationType:"church",
             paymentGatewayType:Payment.PAYSTACK,
@@ -113,17 +119,25 @@ const Create = () => {
                 publicKey:payload.data.publicKey
             })
         }).catch(err => {
-            toast({
-                title: "Unable to Get Church detail",
-                messageType: MessageType.ERROR,
-                subtitle: `Error: ${err}`
-            })
+            if(axios.isCancel(err)){
+                toast({
+                    title: "Unable to Get Church Reference",
+                    messageType: MessageType.ERROR,
+                    subtitle: `Error: ${err}`
+                })
+            }
         })
+        
+    }
+    React.useEffect(() => {
+        const newAmount = 2000*difference
+        getPaymentReference(newAmount)
+        setAmount(newAmount)
         return () => {
             cancelToken.cancel()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [difference])
 
     const initialValues = {
         title: "",
@@ -258,16 +272,20 @@ const Create = () => {
                         }
                         return (
                             <>
-                                <VStack width={["100%", "90%"]} align="flex-start"
+                                <VStack width={["100%", "90%"]}
                                     spacing={3}>
-                                    <Stack direction={{ base: "column-reverse", md: "row" }} >
                                         <Flex className={classes.imageContainer} p={5} >
                                             <input accept="image/jpeg,image/png" onChange={handleChange} type="file"
                                                 className={classes.input} id="icon-button-file" />
-                                            <label htmlFor="icon-button-file">
-                                                <IconButton as="span" padding={4} boxSize="5rem" aria-label="submit image"
-                                                    borderRadius="50%" bgColor={buttonBackground}
-                                                    icon={<BsCardImage fontSize="2.5rem" />} />
+                                            <label className={image.base64 ? classes.activeImage : ""} htmlFor="icon-button-file">
+                                            {image.base64 ?
+                                            <AspectRatio h="100%" width="100%" maxW="15rem" ratio={21/9} >
+                                                <Image src={image.base64} />
+                                            </AspectRatio> : 
+                                            <IconButton as="span" padding={4} boxSize="5rem" aria-label="submit image"
+                                            borderRadius="50%" bgColor={buttonBackground}
+                                            icon={<BsCardImage fontSize="2.5rem" />} />
+                                        }
                                             </label>
                                             <Heading as="h4" mt={2} fontSize="1.125rem" >Upload Image</Heading>
                                             {
@@ -276,20 +294,14 @@ const Create = () => {
                                                     <Text fontSize="0.68rem" opacity={.5}>Dimension 200px by 400px</Text>
                                             }
                                         </Flex>
-                                        {image.base64 &&
-                                            <AspectRatio width={["75vw", "40vw"]} maxW="15rem" ratio={4 / 2} >
-                                                <Image src={image.base64} />
-                                            </AspectRatio>
-                                        }
-                                    </Stack>
-                                    <FormControl
+                                    {/* <FormControl
                                             isInvalid={Boolean(formikProps.errors.advertUrl)}>
                                             {
                                                 formikProps.errors.advertUrl ?
                                                     <FormErrorMessage>{formikProps.errors.advertUrl}</FormErrorMessage> :
                                                     <Text fontSize="0.8rem" opacity={.5}>File size not more than 100mb</Text>
                                             }
-                                    </FormControl>
+                                    </FormControl> */}
                                         
                                 </VStack>
                                 <VStack width="100%" >
@@ -318,7 +330,7 @@ const Create = () => {
                                                         Amount Due
                                                     </Text>
                                                     <Text color="tertiary" fontSize="1.75rem" fontWeight={600}>
-                                                        ₦1000
+                                                        ₦{amount}
                                                     </Text>
                                                 </VStack>
                                             </Stack>
@@ -328,7 +340,7 @@ const Create = () => {
                                         width="100%">
                                         <PaymentButton
                                             paymentCode={transactRef}
-                                            onSuccess={handlePaymentAndSubmission(formikProps.handleSubmit)} amount={100_000}
+                                            onSuccess={handlePaymentAndSubmission(formikProps.handleSubmit)} amount={amount*100}
                                             onClose={handlePaymentClose} onFailure={handleFailure}
                                         >
                                             <Button px={5} py={2} disabled={formikProps.isSubmitting || submitting || !formikProps.dirty || !formikProps.isValid}

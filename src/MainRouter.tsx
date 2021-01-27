@@ -6,7 +6,7 @@ import {LoginRole} from "views/LoginRole"
 import {AuthForm} from "views/AuthForm"
 import {SignupAdmin} from "components/Forms/Signup"
 import {PrivateRoute} from "components/PrivateRoute"
-import {DashboardLayout} from "layouts/FormerDashboardLayout"
+import {DashboardLayout} from "layouts/DashboardRoute"
 import {useSelector} from "react-redux"
 import {AppState} from "store"
 

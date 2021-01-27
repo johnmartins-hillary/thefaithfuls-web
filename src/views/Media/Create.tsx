@@ -32,7 +32,10 @@ interface IForm {
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        alignItems: "center !important"
+        alignItems: "center !important",
+        "& button,a":{
+            fontFamily:"MulishRegular"
+        }
     },
     inputContainer: {
         backgroundColor: "#F3F3F3",

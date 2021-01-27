@@ -27,7 +27,9 @@ interface IForm {
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        alignItems: "flex-start !important",
+        // "& p,button":{
+        //     fontFamily:"MulishRegular"
+        // },
         "& > div:first-child":{
             "& svg":{
                 fontSize:"2rem"
@@ -42,8 +44,7 @@ const useStyles = makeStyles((theme) => createStyles({
         alignItems: "flex-start !important"
     },
     buttonContainer: {
-        alignSelf: "flex-start",
-        marginTop: "auto !important"
+        alignSelf: "center"
     },
     removeInput: {
         "& input": {
@@ -169,15 +170,16 @@ const CreateRole = () => {
     }
 
     const handleSubmit = async (values: IForm, { ...actions }: any) => {
-        setTimeout(() => {
-            actions.setErrors({})
-        }, 1500)
+        // actions.setSubmitting(true)
         if (selectedClaim.length <= 0) {
+            setTimeout(() => {
+                actions.setErrors({})
+            }, 1000)
+            // actions.setSubmitting(false)
             return actions.setErrors({
                 claim: "Please select At least one Claim"
             })
         }
-        actions.setSubmitting(true)
         // First Create A role
         const newRole = encodeURI(`roleName=${values.name}&churchId=${params.churchId}`)
         createRole(newRole).then(payload => {

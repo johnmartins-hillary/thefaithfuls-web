@@ -37,7 +37,7 @@ export function groupReducer(state = initialState,action:Action):GroupState {
             const foundIdx = filterGroups.findIndex(x => x.societyID === state.currentGroup.societyID)
             const newUpdatedGroup = {
                 ...filterGroups[foundIdx],
-                memberCount:filterGroups[foundIdx].memberCount+1
+                memberCount:filterGroups[foundIdx].memberCount ? filterGroups[foundIdx].memberCount+1 : 1
             }
             filterGroups.splice(foundIdx,1,newUpdatedGroup)
             return{

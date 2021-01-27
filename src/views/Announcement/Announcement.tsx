@@ -17,9 +17,19 @@ import useToast from "utils/Toast"
 import {useDispatch} from "react-redux"
 import {setPageTitle} from "store/System/actions"
 import axios from "axios"
+import {NoContent} from "components/NoContent"
 
 const useStyles = makeStyles(theme => createStyles({
     root:{
+        "& button":{
+            fontFamily:"MulishRegular"
+        },
+        "& h2":{
+            fontSize:"1.5rem"
+        },
+        "& a":{
+            alignSelf:"flex-start"
+        },
         "& ul":{
             [theme.breakpoints.up("sm")]:{
                 justifyContent:"flex-start"
@@ -166,11 +176,11 @@ const Announcement = () => {
         <VStack spacing={14} p={{ base: "4", md: "0" }} bgColor="bgColor"
                 justify="flex-start" className={classes.root}
                 pl={{ md: "12" }} width={["100%", "100%", "93%"]} pt={{ md: "12" }}>
-                    <Button alignSelf="flex-start" px={4}>
                         <Link to={`/church/${params.churchId}/announcement/create`} >
+                            <Button>
                                 Create Announcement
+                            </Button>
                         </Link>
-                    </Button>
                     <Wrap w="100%">
                          { announcement && announcement.length > 0 ? 
                             announcement?.map((item,idx:number) => (
@@ -181,8 +191,10 @@ const Announcement = () => {
                                     text={item.description} handleEdit={handleEdit(item)}
                                 />
                                 </WrapItem>
-                            )) : 
-                            <Text>No Available Announcement Yet</Text>
+                            )) :
+                            <NoContent>
+                                <Text>No Available Announcement Yet</Text>
+                            </NoContent> 
                         }
                     </Wrap>
             </VStack>
