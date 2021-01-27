@@ -9,12 +9,15 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
         width: "100%",
         maxWidth: "70rem",
-        alignItems: "center"
+        alignItems: "center",
+        "& p,button":{
+            fontFamily:"MulishRegular"
+        }
     },
     formContainer: {
         backgroundColor: "#F3F3F3",
         minHeight: "70vh",
-        overflowX: "hidden",
+        // overflowX: "hidden",
         paddingBottom: "2rem",
         "& > first-child":{
             width:"80%",
@@ -23,11 +26,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         "& > div:nth-child(2),& > div:nth-child(3)":{
             justifyContent:"center",
             textAlign:"center"
-        },
-        // "& p":{
-
-        // }
-        // alignItems: "c !important"
+        }
     }
 }))
 
@@ -44,7 +43,7 @@ const CreateLayout:React.FC<IProps> = ({showCancel = true,children}) => {
     return (
         <Stack className={classes.root}>
             {showCancel && 
-            <GoBackButton disabled={false} alignSelf="flex-end" border="none" >
+            <GoBackButton disabled={false} alignSelf={{md:"flex-end"}} border="none" >
             <Icon color="tertiary" opacity={.75} fontSize="2rem" as={CgCloseO} />
         </GoBackButton>}
             <VStack spacing={14} className={classes.formContainer} pr={{ md: 16 }}

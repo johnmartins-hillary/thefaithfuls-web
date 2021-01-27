@@ -19,6 +19,12 @@ import axios from "axios"
 
 const useStyles = makeStyles((theme:Theme) => createStyles({
     root:{
+        "& a,button": {
+            fontFamily: "MulishRegular"
+        },
+        "& p":{
+            fontFamily:"MulishRegular"
+        },
         [theme.breakpoints.up("md")]:{
             marginLeft:theme.spacing(10)
         },

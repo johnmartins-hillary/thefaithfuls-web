@@ -30,7 +30,7 @@ import { Free } from "assets/images"
 import { Icon as DotIcon } from "components/Icon"
 import {tertiary} from "theme/palette"
 import axios from "axios"
-import { ISubscription, SubscriptionByChurch } from "core/models/subscription"
+import { SubscriptionByChurch } from "core/models/subscription"
 
 
 
@@ -43,11 +43,19 @@ const useStyles = makeStyles((theme) => createStyles({
             fontStyle:"italic",
             opacity:".75"
         },
+        [theme.breakpoints.down("sm")]:{
+            "& h5":{
+                textAlign:"center"
+            }
+        },
         "& > div:nth-child(2)":{
             display:"flex",
             width:"100%",
             flexDirection:"column",
-            maxWidth:"115rem"
+            maxWidth:"115rem",
+            [theme.breakpoints.down("sm")]:{
+                alignItems:"center"
+            }
         }
     },
     verificationContainer: {
@@ -58,18 +66,24 @@ const useStyles = makeStyles((theme) => createStyles({
         borderRadius: "10px",
         justifyContent: "space-between",
         "& > div": {
+            [theme.breakpoints.down("sm")]:{
+                alignItems:"center",
+                "& h2":{
+                    textAlign:"center"
+                }
+            },
             "& button": {
                 marginTop: "auto !important",
-                padding: "1.5rem .5rem",
-                // paddingLeft:"initial",
-                // paddingRight:"initial"
+                padding: "1.5rem .5rem"
             },
         },
         "& img": {
             alignSelf: "center"
         },
         "& button":{
-            marginBottom:"2rem"
+            [theme.breakpoints.up("sm")]:{
+                marginBottom:"2rem"
+            }
         },
         "& p":{
             color:tertiary
@@ -82,6 +96,19 @@ const useStyles = makeStyles((theme) => createStyles({
         "& span":{
             fontFamily:"MontserratRegular !important"
         }
+    },
+    chartHolder:{
+        flexDirection:"column-reverse",
+        width:"94%",
+        [theme.breakpoints.up("sm")]:{
+            width:"100%",
+        },
+        [theme.breakpoints.up("md")]:{
+            flexDirection:"row",
+            minHeight:"25vh"
+        },
+        // flexDirection:{["column-reverse", "column-reverse", "row"]}
+        // minHeight:{{ base: "auto", md: "25vh" }}
     },
     link: {
         color: "white !important",
@@ -97,6 +124,9 @@ const useStyles = makeStyles((theme) => createStyles({
     mediaContainer: {
         "& h3":{
             fontFamily:"Bahnschrift"
+        },
+        "& p":{
+            fontFamily:"MontserratRegular"
         },
         "& ul":{
             maxHeight:"30rem",
@@ -270,10 +300,10 @@ const Dashboard = () => {
     }, [])
 
 
-
     if (!currentChurch) {
         return <div>loading...</div>
     } else {
+
         return (
             <Box className={classes.root}>
                 <Box width="100%">
@@ -295,10 +325,10 @@ const Dashboard = () => {
                         </Flex>
                     </Box>
                 </Box>
-                <Box pt={["1", "12"]} px={["1", "5", "10"]} >
+                <Box pt={["1", "12"]} px={{sm:"5", md:"10"}} >
                     {currentChurch.status == 2 &&
                         <Flex direction={{ base: "column-reverse", md: "row" }}
-                            my={16}  minHeight="13rem" width="100%">
+                            my={16}  minHeight="13rem" width={["95%","100%"]}>
                             <Flex p={6} className={`${classes.verificationContainer} ${classes.boxShadownContainer}`}>
                                 <VStack align="flex-start" >
                                     <Heading textStyle="h6" fontSize="1.5rem">
@@ -315,9 +345,9 @@ const Dashboard = () => {
                                         </RouterLink>
                                     </Button>
                                 </VStack>
-                                <Image src={VerifyImg} mr={{md:4}} boxSize={["9rem","15rem"]} />
+                                <Image src={VerifyImg} display={{base:"none",lg:"initial"}} mr={{md:4}} boxSize={["9rem","15rem"]} />
                             </Flex>
-                            <VStack p={6} ml={3} mb={[3, 3, 0]}
+                            <VStack p={6} ml={{md:3}} mb={[3, 3, 0]}
                              bg="primary" className={classes.upgradeContainer}>
                                 <Image src={Free} />
                                 <Heading fontSize={["1rem","1.75rem","2.3rem"]}
@@ -334,8 +364,7 @@ const Dashboard = () => {
                         </Flex>
                     }
 
-                    <Flex flexDirection={["column-reverse", "column-reverse", "row"]}
-                        minHeight={{ base: "auto", md: "25vh" }}>
+                    <Flex className={classes.chartHolder}>
                         <Flex flex={5} flexShrink={3} className={`${classes.chartContainer} ${classes.boxShadownContainer}`}
                             pt="3" pl="2" direction="column">
                             <Text color="#707070" fontSize=".9rem" >
@@ -343,9 +372,9 @@ const Dashboard = () => {
                             </Text>
                             <Chart data={chartData} />
                         </Flex>
-                        <Stack mx="3" my={{base:"3", md:0}} shadow="0px 5px 10px #0000001A"
+                        <Stack mx={{md:"3"}} my={{base:"3", md:0}} shadow="0px 5px 10px #0000001A"
                             bgColor="#F0F4FF"
-                            pt="3" pl="2" flex={3} divider={<StackDivider bgColor="gray.500" />}>
+                            pt="3" pl={{md:"2"}} flex={3} divider={<StackDivider bgColor="gray.500" />}>
                             <VStack align="flex-start" ml={10}>
                                 <DashboardCard heading="Church Name" color="primary">
                                     <Text color="#151C4D" mt="0px !important" fontSize="1rem" >
@@ -365,14 +394,16 @@ const Dashboard = () => {
                                         </Text>
                                     </HStack>
                                 </DashboardCard>
+                                {currentSubscription.timeRemaining! > 0 && 
                                 <DashboardCard heading="Subscription Status" color="red.500">
-                                    <HStack>
-                                        <DotIcon  color={currentSubscription?.timeRemaining! > 0 ? "#68D391" : "#151C4D" }/>
-                                        <Text mt="0px !important" fontSize="1rem" >
-                                            {`${currentSubscription?.timeRemaining} days Left`}
-                                        </Text>
-                                    </HStack>
-                                </DashboardCard>
+                                <HStack>
+                                    <DotIcon  color="#68D391"/>
+                                    <Text mt="0px !important" fontSize="1rem" >
+                                        {`${currentSubscription?.timeRemaining} days Left`}
+                                    </Text>
+                                </HStack>
+                            </DashboardCard>
+                                }
                             </VStack>
                         </Stack>
                     </Flex>

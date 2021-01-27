@@ -22,7 +22,7 @@ import { IRole } from "core/models/Role"
 import { useDispatch } from "react-redux"
 import {SearchInput} from "components/Input"
 import axios from "axios"
-
+import {NoContent} from "components/NoContent"
 
 
 const useStyles = makeStyles((theme:Theme) => createStyles({
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
                 justifyContent:"flex-start"
             }
         },
-        "& p":{
+        "& p,a":{
             fontFamily:"MulishRegular"
         },
         "& hr":{
@@ -259,10 +259,10 @@ const ManageUser = () => {
                             role={item}    
                             memberAmt={item.staff.length} />
                         </WrapItem>
-                    )): 
-                    <Text>
-                        No Church Role Available
-                    </Text>
+                    )):
+                    <NoContent>
+                        <Text>No Church Roles Available</Text>
+                    </NoContent>
                     }
                 </Wrap>
             </Stack>

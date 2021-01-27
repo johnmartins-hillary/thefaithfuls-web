@@ -33,6 +33,7 @@ import * as Yup from "yup"
 const useStyles = makeStyles((theme) => createStyles({
     root: {
         // alignItems: "center"
+        paddingLeft:"0 !important"
     },
     inputContainer: {
         backgroundColor: "#F3F3F3",
@@ -810,9 +811,6 @@ const Create = () => {
                                                 <Image src={image.base64} objectFit="cover" />
                                                 {/* <Image src={image.base64} /> */}
                                             </AspectRatio>
-                                            
-                                            // <AspectRatio width={["75vw", "40vw"]} maxW="15rem" ratio={4 / 2} >
-                                            // </AspectRatio>
                                              :
                                                     <Button color="white" as="span"
                                                         bgColor="rgba(0,0,0,.6)">

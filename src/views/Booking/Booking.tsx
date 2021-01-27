@@ -19,11 +19,15 @@ import { Formik, Field, FieldProps, FormikProps } from "formik"
 import { AppState } from "store"
 import * as Yup from "yup"
 import axios from "axios"
+import {NoContent} from "components/NoContent"
 
 const useStyles = makeStyles((theme) => {
     return (
         createStyles({
             root: {
+                "& button,p":{
+                    fontFamily:"MulishRegular"
+                },
                 "& > div": {
                     [theme.breakpoints.up("sm")]: {
                         width: "95%",
@@ -242,6 +246,9 @@ const Booking = () => {
         })
     }
 
+
+
+
     return (
         <>
             <Flex className={classes.root} p={{ base: "4", md: "0" }}
@@ -259,7 +266,7 @@ const Booking = () => {
                         className={classes.tabContainer}>
                         <TabPanel mt="3">
                             <SimpleGrid minChildWidth="17.5rem" alignItems={{ base: "center", md: "flex-start" }} gridGap="1.5rem" className={classes.prayerContainer}>
-                                {churchTestimony.length > 0 ? churchTestimony.map((item, idx) => (
+                                {churchTestimony.length > 0 && churchTestimony.map((item, idx) => (
                                     <DetailCard title="Bismark Achodo" key={item.testimonyID || idx} timing="2d"
                                         image="https://bit.ly/ryan-florence"
                                         subtitle={item.testimonyTile} isLoaded={Boolean(item.testimonyID)}
@@ -277,10 +284,14 @@ const Booking = () => {
                                         </Button>
                                         </HStack>
                                     </DetailCard>
-                                )) : <Text>
-                                        No Available Thanksigiving
-                                        </Text>}
+                                ))}
                             </SimpleGrid>
+                            {churchTestimony.length <= 0 && 
+                        <NoContent align={false} >
+                        <Text>
+                            No Church Testimony is Available
+                        </Text>
+                    </NoContent>}
                         </TabPanel>
                     </TabPanels>
                 </Tabs>

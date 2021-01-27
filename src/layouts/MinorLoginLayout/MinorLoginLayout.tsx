@@ -32,7 +32,7 @@ const MinorLoginLayout:React.FC<IProps> = ({children,showLogo}) => {
     return(
         <LoginLayout className={classes.root} >
             <Flex position="relative" flex={[1,3]} pr={{sm:"5", md:"24"}}
-             pt={{sm:"5", md:"16"}} ml={[0,"2","32"]} flexDirection="column"
+             pt={{sm:"5", md:"16"}} mt={{md:"4rem"}} ml={[0,"2","32"]} flexDirection="column"
             >   
             <HStack w="100%" justifyContent="space-between" flexDir="row-reverse">
                 <IconButton aria-label="close-btn" bgColor="transparent" onClick={handleLocation} icon={

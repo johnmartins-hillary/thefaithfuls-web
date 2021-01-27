@@ -34,10 +34,20 @@ import { useInputTextValue } from "utils/InputValue"
 import {SearchInput} from "components/Input"
 import {primary} from "theme/palette"
 import axios from "axios"
-
+import {NoContent} from "components/NoContent"
 
 const donationStyles = makeStyles((theme:Theme) => createStyles({
-    root:{},
+    root:{
+        backgroundColor:"#F3F3F3",
+        "& button,label,p":{
+            fontFamily:"MulishRegular"
+        },
+        "& button":{
+            [theme.breakpoints.down("md")]:{
+                padding:theme.spacing(2.5,0)
+            }
+        }
+    },
     radioGroupContainer:{
         alignItems:"flex-start !important",
         "& input":{
@@ -63,6 +73,9 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
     root:{
         "& p":{
             color:"#151C4D"
+        },
+        "& button":{
+            fontFamily:"MulishRegular"
         },
         "& > div":{
             "& > div":{
@@ -115,7 +128,7 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
     },
     transactionContainer:{
         maxHeight:"18rem",
-        overflowY:"scroll",
+        overflowY:"auto",
         "& p":{
             fontFamily:"MontserratRegular"
         }
@@ -210,7 +223,8 @@ const AddAccount:React.FC<IAddAccountProps> = ({close,addToBankAccount}) => {
         defaultAccount:false
     }
     const validationSchema = Yup.object({
-        name: Yup.string().required(),
+        name: Yup.string().min(3,"The Account name is too short").required(),
+        accountNumber: Yup.string().min(11,"The Account number is not valid").required(),
         societyId: Yup.number().oneOf(churchGroup.map((item) => item.societyID),
         "Please Select from one of Available Church Groups").required(),
         bankCode: Yup.number().oneOf(bankDetails.map((item) => item.bankCode),
@@ -439,7 +453,7 @@ const Donation:React.FC<IDonationProps> = ({close,addToDonation,churchAccount}) 
     }
 
     return(
-        <ModalContent bgColor="#F3F3F3" >
+        <ModalContent className={classes.root} >
             <ModalHeader color="primary" fontWeight="400" >
                 <Heading fontWeight="400" mt="5" textAlign="center" fontSize="1.875rem">
                     Set Up Donations
@@ -550,6 +564,7 @@ const Finance = () => {
         name:"",
         societyId:0
     }
+    const dispatch = useDispatch()
     const [open,setOpen] = React.useState(false)
     const [donations,setDonation] = React.useState<IDonation[]>(new Array(4).fill(defaultDonation))
     const [displayDonation,setDisplayDonation] = React.useState<IDonation[]>([])
@@ -575,6 +590,7 @@ const Finance = () => {
         setDonation([donation,...donations])
     }
     React.useEffect(() => {
+        dispatch(setPageTitle("Church Finance"))
         const cancelToken = axios.CancelToken.source()
         const getChurchBankAccountApi = () => {
             getChurchBankAccount(Number(params.churchId),cancelToken).then(payload => {
@@ -666,10 +682,12 @@ const Finance = () => {
                             <Button onClick={handleDonation("Bank")}>
                                 Add Bank Account
                             </Button>
-                            <SearchInput maxW="22.5rem" flex={1} value={accountInput} setValue={setAccountInput}
+                            <SearchInput maxW="22.5rem" flex={1} display={{base:"none",md:"flex"}} value={accountInput} setValue={setAccountInput}
                                 ml="5" 
                             />
                         </Flex>
+                        <SearchInput maxW="22.5rem" display={{md:"none"}}
+                         value={accountInput} setValue={setAccountInput}/>
                         <Wrap>
                         {displayChurchAccount.length > 0 ?
                         displayChurchAccount.map((item,idx) => (
@@ -682,9 +700,11 @@ const Finance = () => {
                             </ActivityCard>
                             </WrapItem>
                         )): 
-                        <Text>
-                            No Church Account Available
-                        </Text>
+                        <NoContent>
+                            <Text>
+                                No Church Account Available
+                            </Text>
+                        </NoContent>
                         }
                         </Wrap>
                     </Stack>
@@ -696,9 +716,10 @@ const Finance = () => {
                             <Button onClick={handleDonation("Donation")}>
                                 Set up Donations
                             </Button>
-                            <SearchInput maxW="22.5rem" flex={1}  ml="5" value={donationInput} setValue={setDonationInput}
-                            />
+                            <SearchInput maxW="22.5rem" flex={1}  ml="5"
+                            display={{base:"none",md:"flex"}} value={donationInput} setValue={setDonationInput}/>
                         </Flex>
+                        <SearchInput maxW="22.5rem" flex={1} display={{md:"none"}} value={donationInput} setValue={setDonationInput}/>
                         <Wrap>
                         {
                             displayDonation.length > 0 ?
@@ -713,15 +734,17 @@ const Finance = () => {
                                 </ActivityCard>
                                 </WrapItem>
                             )):
-                            <Text>
-                                No Available Donation
-                            </Text>
+                            <NoContent>
+                                <Text>
+                                    No Available Donation
+                                </Text>
+                            </NoContent>
                         }
                         </Wrap>
                     </Stack>
                 </Stack>
                 <Stack zIndex={1000} pt={10} maxWidth={{md:"24rem"}} width="100%"
-                 pl={10} flex={3} ml={{md:4}} align="center" bgColor="white" mt={{base:"3",md:"0"}}
+                 pl={[3,10]} flex={3} ml={{md:4}} align="center" bgColor="white" mt={{base:"3",md:"0"}}
                     borderRadius="10px" shadow=" 0px 5px 20px #0000001A"
                     divider={<StackDivider borderColor="gray.200" />}>
                     <Stack width="100%" align="center" className={classes.walletContainer}>
@@ -745,24 +768,7 @@ const Finance = () => {
                             Recent Transactions
                         </Heading>
                         <Stack className={classes.transactionContainer} >
-                            <Transaction title="Offering" amount={2000}
-                             date={new Date()} withdraw={false} />
-                            <Transaction title="Offering" amount={2000}
-                             date={new Date()} withdraw={true} />
-                            <Transaction title="Offering" amount={2000}
-                             date={new Date()} withdraw={true} />
-                            <Transaction title="Offering" amount={2000}
-                             date={new Date()} withdraw={true} />
-                            <Transaction title="Offering" amount={2000}
-                             date={new Date()} withdraw={false} />
-                            <Transaction title="Offering" amount={2000}
-                             date={new Date()} withdraw={false} />
-                            <Transaction title="Offering" amount={2000}
-                             date={new Date()} withdraw={false} />
-                            <Transaction title="Offering" amount={2000}
-                             date={new Date()} withdraw={false} />
-                            <Transaction title="Offering" amount={2000}
-                             date={new Date()} withdraw={false} />
+                            <Text>No Available Transaction History</Text>
                         </Stack>
                     </Stack>
                         <Flex direction="column" my="5" className={classes.buttonHolder} >

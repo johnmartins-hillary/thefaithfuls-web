@@ -30,6 +30,9 @@ import useParams from "utils/params"
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     maxWidth: "175rem",
+    "& button,p":{
+      fontFamily:"MulishRegular"
+    },
     "& h3": {
       fontFamily: "MulishBold",
       opacity: .85,
@@ -55,12 +58,15 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     }
   },
   subscriptionContainer: {
+    marginRight:"0 !important",
+    [theme.breakpoints.down("md")]:{
+      marginBottom:"10px"
+    },  
     "& > div:first-child": {
       boxShadow: "0px 5px 20px #0000001A",
       alignItems: "flex-end",
       minHeight: "17.7rem",
       height: "auto",
-      width: "95%",
       borderRadius: "10px",
       backgroundColor: "white",
       "& > div:first-child": {
@@ -118,7 +124,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       borderRadius: "10px",
       // minHeight: "17.7rem",
       height: "auto",
-      width: "95%",
       "& > div": {
         fontFamily: "MontserratBold",
         "& > div:nth-child(even)": {
@@ -127,6 +132,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         "& > div": {
           marginLeft: "0"
         }
+      }
+    },
+    "& > div":{
+      width: "95%",
+      [theme.breakpoints.up("md")]:{
+        width: "95%"
       }
     }
   },
@@ -186,14 +197,14 @@ const SubscriptionPlan: React.FC<ISubscriptionProps> = ({ close,subscriptionPlan
     <ModalContent>
       <ModalBody display="flex" flexDirection="column"
         justifyContent="center" alignItems="center">
-        <ModalHeader textAlign="center" my="4" color="primary">
+        <ModalHeader textAlign="center" fontFamily="Bahnschrift" my="4" color="primary">
           Select From one of the subscription Plan
             </ModalHeader>
           <Wrap flexDirection="row" justify="center" >
           {subscriptionPlan.map((item, idx) => (
             <WrapItem onClick={handleClose(item)} key={item.subscriptionPlanID || idx} >
               <SubscriptionDisplay subscription={item}>
-                <Button px={5} py={2}>
+                <Button px={5} fontFamily="MulishRegular" py={2}>
                   Select
               </Button>
               </SubscriptionDisplay>
@@ -314,8 +325,13 @@ const Subscription = () => {
   const handleToggle = () => {
     setYear(!year)
   }
+  const cancelToken = axios.CancelToken.source()
+  const getChurchSubscriptionDetail = () => {
+    getSubscriptionByChurchId(params.churchId,cancelToken).then((payload) => {
+        setChurchSubscriptionDetail(payload.data)
+    }).catch(err => {})
+  }
   React.useEffect(() => {
-    const cancelToken = axios.CancelToken.source()
     dispatch(setPageTitle("Subscription"))
     const subscriptionApi = () => {
       getSubscription(cancelToken).then(payload => {
@@ -330,11 +346,7 @@ const Subscription = () => {
         }
       })
     }
-    const getChurchSubscriptionDetail = () => {
-      getSubscriptionByChurchId(params.churchId,cancelToken).then((payload) => {
-          setChurchSubscriptionDetail(payload.data)
-      }).catch(err => {})
-  }
+    
 
     getChurchSubscriptionDetail()
     subscriptionApi()  
@@ -349,6 +361,7 @@ const Subscription = () => {
         messageType: MessageType.SUCCESS
       })
       handlePaymentClose()
+      getChurchSubscriptionDetail()
       setSelectedSubscription({...defaultSubscription})
     }).catch(err => {
       toast({
@@ -401,7 +414,7 @@ const Subscription = () => {
               </Stack>
               <Flex justify={{ md: "space-around" }}
                 direction={{ base: "column-reverse", lg: "row" }}>
-                {!currentSubscription.subscriptionID  || !currentSubscription.isActive && 
+                {!currentSubscription.subscriptionID  && 
                   <Button mb={{ md: "7" }}
                   onClick={handleDialogToggle}
                   px="7" py="5" mt="3">

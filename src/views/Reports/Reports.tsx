@@ -21,7 +21,9 @@ const useStyles = makeStyles((theme) => {
         createStyles({
             root: {
                 // height: "97vh",
-
+                "& button,p":{
+                    fontFamily:"MulishRegular"
+                },
                 margin:theme.spacing(2),
                 [theme.breakpoints.up("md")]:{
                     margin:theme.spacing(7),
@@ -135,8 +137,10 @@ const Reports = () => {
     const handleInputChange = (e:React.SyntheticEvent<HTMLInputElement>) => {
         setInputText(e.currentTarget.value)
     }
-    const demoFinancialReport = new Array(4).fill(defaultFinancialReport)
-    const demoMemberReport = new Array(4).fill(defaultMemberReport)
+    const demoFinancialReport: any[] = []
+    const demoMemberReport: any[] = []
+    // const demoFinancialReport = new Array(1).fill(defaultFinancialReport)
+    // const demoMemberReport = new Array(1).fill(defaultMemberReport)
 
     React.useEffect(() => {
         dispatch(setPageTitle("Reports"))

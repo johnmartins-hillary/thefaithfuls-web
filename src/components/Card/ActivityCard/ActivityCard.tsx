@@ -51,7 +51,8 @@ const financeStyles = makeStyles(() => createStyles({
         },
         "& p":{
             opacity:".9",
-            fontWeight:"600"
+            fontWeight:"600",
+            fontFamily:"MulishRegular"
         }
     }
 }))
@@ -131,7 +132,7 @@ export const FinanceActivity: React.FC<IFinanceActivity> = ({ heading,isLoaded, 
                             </Text>
                         }
                         {moreHeading &&
-                            <Text  color="tertiary">
+                            <Text color="tertiary">
                                 {moreHeading}
                             </Text>
                         }

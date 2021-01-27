@@ -1,13 +1,13 @@
 import React from "react"
 import {
     Heading, HStack, Avatar, VStack, Stack,
-    Textarea, Text, Box
+    Textarea, Text, Box,Flex
 } from "@chakra-ui/react"
 import { Button } from "components/Button"
 import NormalInput from "components/Input/Normal"
 import { GoBackButton } from "components/GoBackButton"
-import { createNewGroup,createGroupMember } from "store/Group/actions"
-import {IGroup} from "core/models/Group"
+import { createNewGroup, createGroupMember } from "store/Group/actions"
+import { IGroup } from "core/models/Group"
 import { IStaff } from "core/models/Staff"
 import { getStaffByChurch } from "core/services/account.service"
 import { useDispatch } from "react-redux"
@@ -29,9 +29,12 @@ interface IForm {
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        "& label":{
-            display:"flex",
-            flexDirection:"column"
+        "& label": {
+            display: "flex",
+            flexDirection: "column"
+        },
+        "& button":{
+            fontFamily:"MulishRegular"
         }
     },
     formContainer: {
@@ -71,6 +74,7 @@ const Create = () => {
     const params = useParams()
     const toast = useToast()
     const [initialGroupMember, setInitialGroupMember] = React.useState<IStaff[]>([])
+    const [groupLeader,setGroupLeader] = React.useState<IStaff[]>([])
     const [selectedMember, setSelectedMember] = React.useState<IStaff[]>([])
     const [allGroupMember, setAllGroupMember] = React.useState<IStaff[]>([])
 
@@ -101,21 +105,32 @@ const Create = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [initialGroupMember])
 
+
     React.useEffect(() => {
+        const filteredStaff = [...groupLeader,...selectedMember]
         const newAllGroupMember = initialGroupMember?.filter((item, idx) =>
-            !selectedMember.includes(item))
+            filteredStaff.find(staffItem => staffItem.staffID !== item.staffID))
+            console.log("This is the all group Leader",groupLeader)
+            console.log("This is the filteredStaff",filteredStaff)
+            console.log("This is the all group member",newAllGroupMember)
         setAllGroupMember(newAllGroupMember)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedMember])
+    }, [groupLeader,selectedMember])
 
     const addToSelectedMember = (e: IStaff) => () => {
         setSelectedMember([...selectedMember, e])
+    }
+    const addToGroupLeader = (e: IStaff) => () => {
+        setGroupLeader([{...e}])
     }
     const removeSelectedMember = (e: IStaff) => () => {
         const filteredMember = [...selectedMember]
         const idx = filteredMember.findIndex((item, idx) => item.fullname === e.fullname)
         filteredMember.splice(idx, 1)
         setSelectedMember(filteredMember)
+    }
+    const removeGroupLeader = (e: IStaff) => () => {
+        setGroupLeader([])
     }
     const initialValues = {
         group: "",
@@ -137,25 +152,33 @@ const Create = () => {
             ...(image.base64 && { imageUrl: image.base64 }),
             isDeleted: false
         }
-        const addMemberToGroup = (values:any,cb:any) => {
-            console.log("this is the returned value",values)
-            const newGroupsMember = selectedMember.map((item,idx) => (
+        const addMemberToGroup = (values: any, cb: any) => {
+            const newMembers = selectedMember.map((item, idx) => (
                 {
-                    societies:[values.data.societyID!],
-                    churchId:Number(params.churchId),
-                    societyPosition:[2],
-                    personId:(item.staffID as string)
-                    }
+                    societies: [values.data.societyID!],
+                    churchId: Number(params.churchId),
+                    societyPosition: [2],
+                    personId: (item.staffID as string)
+                }
             ))
-            for(let i= 0; i < newGroupsMember.length; i++){
-                dispatch(createGroupMember(newGroupsMember[i],toast))    
+            const newGroupsMember = [
+                {
+                    societies: [values.data.societyID!],
+                    churchId: Number(params.churchId),
+                    societyPosition: [1],
+                    personId: groupLeader[0].staffID as string
+                },
+                ...newMembers
+            ]
+            for (let i = 0; i < newGroupsMember.length; i++) {
+                dispatch(createGroupMember(newGroupsMember[i], toast))
             }
             actions.setSubmitting(false)
-            if(cb){
+            if (cb) {
                 cb()
             }
         }
-        dispatch(createNewGroup(newGroup, toast,addMemberToGroup ))
+        dispatch(createNewGroup(newGroup, toast, addMemberToGroup))
     }
     const handleImageTransformation = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files![0]
@@ -185,23 +208,30 @@ const Create = () => {
                             <>
                                 <VStack alignSelf="flex-start" className={classes.inputContainer}>
                                     <VStack>
-                                        {
-                                            image.base64 &&
-                                            <Avatar src={image.base64} size="2xl" />
-                                        }
-                                        <Box cursor="pointer" border="2px dashed rgba(0,0,0,.4)" >
+                                        <Box borderRadius={image.base64 ? "50%" : ""} cursor="pointer" border="2px dashed rgba(0,0,0,.4)" >
                                             <input id="image" type="file" onChange={handleImageTransformation}
                                                 accept="image/jpeg, image/png" style={{ display: "none" }} />
                                             <label htmlFor="image" >
-                                                <Button as="span"
-                                                    bgColor="rgba(0,0,0,.6)">
-                                                    Choose Group Image
+                                                {
+                                                    image.base64 ?
+                                                        <Avatar src={image.base64} size="2xl" /> :
+                                                        <>
+                                                            <Button as="span"
+                                                                bgColor="rgba(0,0,0,.6)">
+                                                                Choose Group Image
                                                         </Button>
-                                                {image.name && <Text>{image.name}</Text>}
+                                                            {image.name && <Text>{image.name}</Text>}
+                                                        </>
+                                                }
+
                                             </label>
                                         </Box>
                                     </VStack>
                                     <NormalInput width="100%" name="group" placeholder="Group Name" />
+                                    <TagContainer<IStaff, "fullname" > add={addToGroupLeader}
+                                        remove={removeGroupLeader} active={groupLeader} value="fullname"
+                                        name="Select Group Leader" tags={(allGroupMember as IStaff[])} />
+                                        <Flex/>
                                     <TagContainer<IStaff, "fullname" > add={addToSelectedMember}
                                         remove={removeSelectedMember} active={selectedMember} value="fullname"
                                         name="Invite Members" tags={(allGroupMember as IStaff[])} />

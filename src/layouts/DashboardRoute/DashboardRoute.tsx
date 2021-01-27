@@ -1,14 +1,12 @@
 import React, { Suspense } from "react"
 import { ErrorBoundary } from "components/ErrorBoundary"
 import loadable from "@loadable/component"
-import { Flex, Box, useBreakpoint } from "@chakra-ui/react"
+import { Flex, useBreakpoint } from "@chakra-ui/react"
 import { Switch, useRouteMatch, Route } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { AppState } from "store"
 import { getChurch } from 'store/System/actions'
 import useToast from "utils/Toast"
-import { Dashboard } from "components/Dashboard"
-import { DashboardHeader } from "components/DashboardHeader"
 import { makeStyles, createStyles } from "@material-ui/styles"
 import { Wrapper } from "components/Wrapper"
 import {DashboardLayout as MainLaoyu} from "layouts/DashboardLayout"
@@ -43,19 +41,12 @@ const VerseCreate = loadable(() => import("views/Prayer/CreateVerse/CreateVerse"
 //#endregion
 
 
+
+
 const useStyles = makeStyles((theme) => createStyles({
     rootContainer: {
         maxWidth: "100vw",
-        overflow: "hidden",
-        // "& p,span,h2":{
-        //     fontFamily:"MulishRegular"
-        // },
-        // "& h3,h5":{
-        //     fontFamily:"Bahnschrift"
-        // },
-        // "& h6":{
-        //     fontFamily:"MontserratBold",
-        // }
+        overflow: "hidden"
     },
     root: {
         marginLeft: "auto",
@@ -89,12 +80,6 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentUser])
 
-    const handleToggle = () => {
-        setOpen(!open)
-    }
-   
-    {/* <DashboardHeader handleToggle={handleToggle} /> */}
-    {/* <Dashboard open={open} handleToggle={handleToggle} /> */}
     return (
         // <Box position="relative" className={classes.rootContainer} >
             <MainLaoyu>

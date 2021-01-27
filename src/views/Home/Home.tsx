@@ -107,9 +107,11 @@ const useStyles = makeStyles((theme: Theme) => (
                 textAlign: "center"
             },
             "& p": {
+               [theme.breakpoints.up("sm")]:{
                 maxWidth: "50rem",
                 letterSpacing:"0.15px",
                 width: "75%",
+               }
             }
         },
         appContainer: {
@@ -119,7 +121,7 @@ const useStyles = makeStyles((theme: Theme) => (
                 textAlign:"center"
             },
             "& > div": {
-                padding: theme.spacing(7, 3),
+                padding: theme.spacing(7,0),
                 position:"relative",
                 paddingBottom:"0",
                 paddingRight:"0",
@@ -129,6 +131,7 @@ const useStyles = makeStyles((theme: Theme) => (
                 flex: 1,
                 marginTop: "0 !important",
                 [theme.breakpoints.up("sm")]:{
+                    padding: theme.spacing(7, 3),
                     height:"50rem",
                 },
                 "& p": {
@@ -177,6 +180,13 @@ const useStyles = makeStyles((theme: Theme) => (
                     width:"56%",
                     flex:"none"
                 }
+            },
+            "& > div:nth-child(2)":{
+                "& > div":{
+                    [theme.breakpoints.down("sm")]:{
+                       alignItems:"flex-start !important"
+                    }
+                }
             }
         },
         featureContainer: {
@@ -207,8 +217,10 @@ const useStyles = makeStyles((theme: Theme) => (
             }
         },
         detailContainer: {
-            margin: theme.spacing(5),
             width: "80%",
+            [theme.breakpoints.up("sm")]:{
+                margin: theme.spacing(5),
+            },
             "& hr": {
                 backgroundColor: primary,
                 margin: "1rem !important",
