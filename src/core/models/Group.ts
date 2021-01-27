@@ -30,6 +30,7 @@ export interface IGroupMember {
     societyId:number;
     positionName:string;
     leaderId:number;
+    pictureUrl?:string;
     leadersPosition:ILeaderPosition;
     fullname:string;
     church:IChurch;
