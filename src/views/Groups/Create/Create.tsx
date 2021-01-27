@@ -7,7 +7,6 @@ import { Button } from "components/Button"
 import NormalInput from "components/Input/Normal"
 import { GoBackButton } from "components/GoBackButton"
 import { createNewGroup, createGroupMember } from "store/Group/actions"
-import { IGroup } from "core/models/Group"
 import { IStaff } from "core/models/Staff"
 import { getStaffByChurch } from "core/services/account.service"
 import { useDispatch } from "react-redux"
@@ -107,21 +106,24 @@ const Create = () => {
 
 
     React.useEffect(() => {
-        const filteredStaff = [...groupLeader,...selectedMember]
-        const newAllGroupMember = initialGroupMember?.filter((item, idx) =>
-            filteredStaff.find(staffItem => staffItem.staffID !== item.staffID))
-            console.log("This is the all group Leader",groupLeader)
-            console.log("This is the filteredStaff",filteredStaff)
-            console.log("This is the all group member",newAllGroupMember)
+        const allSelectedMember = [...selectedMember,...groupLeader]
+        const newAllGroupMember = initialGroupMember?.filter((item, idx) => (!allSelectedMember.includes(item)))
+        // const filteredAllGroupMember = newAllGroupMember?.filter((item, idx) =>( !groupLeader.includes(item)))
         setAllGroupMember(newAllGroupMember)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [groupLeader,selectedMember])
+    }, [selectedMember,groupLeader])
+    
+
+    // React.useEffect(() => {
+    //     setAllGroupMember(newAllGroupMember)
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [groupLeader])
 
     const addToSelectedMember = (e: IStaff) => () => {
         setSelectedMember([...selectedMember, e])
     }
     const addToGroupLeader = (e: IStaff) => () => {
-        setGroupLeader([{...e}])
+        setGroupLeader([e])
     }
     const removeSelectedMember = (e: IStaff) => () => {
         const filteredMember = [...selectedMember]

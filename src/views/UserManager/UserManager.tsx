@@ -826,8 +826,10 @@ const UserManager = () => {
                                 <Checkbox/>,<Avatar name="Dan Abrahmov" size={!notBaseBreakpoint ? "sm" : "md"} src="https://bit.ly/dan-abramov" />,
                                 item.fullname, item.email, item.phoneNumber,
                                 <HStack spacing={3}>
-                                    <Icon as={BiEdit} cursor="pointer" onClick={showPrivileges(item)} />
-                                    <Icon as={RiDeleteBinLine} cursor="pointer" onClick={deleteStaffFunc(item.staffID as string)} />
+                                    <IconButton aria-label="edit button" icon={<BiEdit/>} disabled={submitting}
+                                     onClick={showPrivileges(item)} />
+                                    <IconButton aria-label="delete button" icon={<RiDeleteBinLine/>} disabled={submitting}
+                                     onClick={deleteStaffFunc(item.staffID as string)} />
                                 </HStack>]}
                             />
                         ))}

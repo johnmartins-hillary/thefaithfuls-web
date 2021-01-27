@@ -327,6 +327,8 @@ const Group = (props:any) => {
                             </Menu>
                         }
                     </Flex>
+
+
                     <Box className={classes.descriptionContainer}>
                         <Heading as="h6" fontSize="1rem" opacity={0.4} color="secondary" >
                             Group Description
@@ -345,7 +347,7 @@ const Group = (props:any) => {
                             maxWidth={{md:"sm"}} >
                                 {currentGroup && currentGroup.groupMember && currentGroup.groupMember.length > 0 ? 
                                 currentGroup.groupMember?.map((item,idx) => (
-                                    <GroupMemberCard key={idx} imgSrc={(item as any).imgSrc || "https://bit.ly/ryan-florence"}
+                                    <GroupMemberCard key={idx} imgSrc={item.pictureUrl || "https://bit.ly/ryan-florence"}
                                      name={(item as any).fullname} position={item.positionName} />
                                 )) : <Text>No Church Member belongs to this group Yet</Text>
                             }

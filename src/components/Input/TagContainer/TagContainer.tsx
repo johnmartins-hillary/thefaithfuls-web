@@ -79,7 +79,7 @@ function TagContainer<T, K>({ name, value, add, active, remove, tags, ...props }
                     </FormControl>
                     <MenuList className={classes.menuList} left={0} >
                         {tags.length > 0 ? tags.map((item, idx) => (
-                            <MenuItem key={idx} onClick={(add(item) as any)} >
+                            <MenuItem key={`${item[value]}-${name}`} onClick={(add(item) as any)} >
                                 {item[value]}
                             </MenuItem>
 
