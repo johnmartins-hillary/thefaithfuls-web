@@ -204,8 +204,8 @@ const DashboardLayout: React.FC<IProps> = (props) => {
             <Menu>
               <MenuButton>
                 <Avatar border="2px solid #B603C9"
-                  size="sm" name="Temitope Emmanuel"
-                  src={currentUser.picture_url || "https://bit.ly/ryan-florence"} />
+                  size="sm" name={currentUser.fullname}
+                  src={currentUser.picture_url} />
               </MenuButton>
               <MenuList>
                 {

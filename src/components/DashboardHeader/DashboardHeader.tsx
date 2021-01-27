@@ -24,7 +24,7 @@ const DashboardHeader:React.FC<IProps> = ({handleToggle,...props}) => {
       {...props}
     >
     <Flex align="center" justify="space-around" flex={3}>
-        <IconButton aria-label="handle drawer" variant="ghost" onClick={handleToggle}>
+        {/* <IconButton aria-label="handle drawer" variant="ghost" onClick={handleToggle}>
             <Icon color="black" w="1.69rem" h="1.13rem" as={GiHamburgerMenu} />
         </IconButton>
         <Logo white={false} />
@@ -40,7 +40,7 @@ const DashboardHeader:React.FC<IProps> = ({handleToggle,...props}) => {
           <Icon as={CgBell} boxSize="1.82rem" color="black" />
           <Avatar border="2px solid #B603C9"
            size="sm" name="Temitope Emmanuel"
-           src={currentUser.picture_url || "https://bit.ly/ryan-florence"} />
+           src={currentUser.picture_url || "https://bit.ly/ryan-florence"} /> */}
       </Flex>
     </Flex>
   );
