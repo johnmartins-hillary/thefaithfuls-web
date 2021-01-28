@@ -53,6 +53,10 @@ export function createNewGroup (newGroup:IGroup,toast:ToastFunc,func?:any){
     return async (dispatch:Dispatch) => {
         try{
             return await groupService.createGroup(newGroup).then(payload => {
+                dispatch<LoadMemberForCurrentGroupAction>({
+                    type:ActionTypes.LOAD_CURRENT_GROUP_MEMBER,
+                    payload:[]
+                })
                 dispatch<CreateGroupAction>
                 ({type:ActionTypes.CREATE_GROUP,payload:payload.data})
                 toast({

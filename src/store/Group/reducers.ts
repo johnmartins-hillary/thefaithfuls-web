@@ -40,6 +40,20 @@ export function groupReducer(state = initialState,action:Action):GroupState {
                 memberCount:filterGroups[foundIdx].memberCount ? filterGroups[foundIdx].memberCount+1 : 1
             }
             filterGroups.splice(foundIdx,1,newUpdatedGroup)
+            let newGroupMember = {
+                societyMemberID:action.payload[0].societyMemberID,
+                personId:action.payload[0].personId,
+                churchId:action.payload[0].churchId,
+                societyId:action.payload[0].societyId,
+                positionName:"",
+                leaderId:action.payload[0].leaderId,
+                pictureUrl:action.payload[0].person.picture_url,
+                leadersPosition:"",
+                fullname:action.payload[0].person.fullname,
+                church:action.payload[0].church,
+                person:action.payload[0].person,
+                society:action.payload[0].society,
+            }
             return{
                 ...state,
                 groups:[...filterGroups],
@@ -48,7 +62,7 @@ export function groupReducer(state = initialState,action:Action):GroupState {
                     ...state.currentGroup,
                     groupMember:[
                         ...(state.currentGroup.groupMember as IGroupMember[] || []),
-                        ...action.payload
+                        newGroupMember as any
                     ]
                 }
             };
@@ -61,7 +75,6 @@ export function groupReducer(state = initialState,action:Action):GroupState {
             };
         }
         case ActionTypes.LOAD_CURRENT_GROUP_MEMBER:{
-            console.log(action.payload)
             return{
                 ...state,
                 currentGroup:{
