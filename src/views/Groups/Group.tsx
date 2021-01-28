@@ -211,8 +211,7 @@ const AddUserToGroup = ({close}:any) => {
                             </ModalBody>
                             <ModalFooter display="flex" justifyContent="center">
                                 <Button disabled={formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}
-                                 bgColor="primary" width="45%" color="white"
-                                 onClick={(formikProps.handleSubmit as any)} >
+                                 width="45%" onClick={(formikProps.handleSubmit as any)} fontFamily="MulishRegular" >
                                    {formikProps.isSubmitting ? "Creating a new Group Member" 
                                    : formikProps.isValid ?  "Add" : "Please fill Form"}
                                 </Button>
