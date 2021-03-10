@@ -16,3 +16,12 @@ export interface IActivity<T extends ScheduleType = string> extends IBaseModel  
     schedule:T;
     recuring:string;
 }
+// For updating either activity and event
+export interface updatedActivityType {
+    title:string;
+    description:string;
+    speaker:string;
+    bannerUrl?:string
+    type:"activity" | "event",
+    id:number;
+} 

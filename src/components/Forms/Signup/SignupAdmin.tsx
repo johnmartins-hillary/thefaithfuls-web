@@ -121,10 +121,6 @@ const createUserValidation = () => (
     })
 )
 
-const GoBack = ({ func }: any) => (
-    <IconButton aria-label="go-back" color="primary" bgColor="transparent" onClick={func}
-        as={BiLeftArrowCircle} />
-)
 
 const TermDialog = () => {
     return (
@@ -251,7 +247,6 @@ const SignupAdmin = () => {
         getDenomination(toast)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
     React.useEffect(() => {
         if (userForm.firstname.length > 0) {
             localStorage.setItem(userFormKey, JSON.stringify(userForm))
@@ -525,10 +520,10 @@ const SignupAdmin = () => {
                                                     open ?
                                                         <Fade mountOnEnter unmountOnExit in={open}>
                                                             <Box>
-                                                                <HStack>
-                                                                    <GoBack func={handleFormToggle} />
                                                                     <TextInput name="name" placeholder="Church Name" />
-                                                                </HStack>
+                                                                {/* <HStack>
+                                                                    <GoBack func={handleFormToggle} />
+                                                                </HStack> */}
                                                                 <Select name="denominationId" placeholder="Select Denomination">
                                                                     {denomination && denomination.map((item, idx) => (
                                                                         <option key={idx} value={item.denominationID}>
@@ -568,21 +563,25 @@ const SignupAdmin = () => {
                                                                             </Button>
                                                                     </Text>
                                                                 </Checkbox>
-                                                                <Button disabled={!formikProps.dirty || !formikProps.isValid}
-                                                                    onClick={handleToggle} width={["90vw", "100%"]}
-                                                                    my="6" maxWidth="sm">
-                                                                    {formikProps.dirty && formikProps.isValid ? "Next" : "Please Complete The Form"}
-                                                                </Button>
+                                                                <Flex justifyContent="space-between">
+                                                                    <Button variant="outline"
+                                                                        onClick={handleFormToggle}
+                                                                        my="6" maxWidth="sm" w="48%">
+                                                                        Go Back
+                                                                    </Button>
+                                                                    <Button disabled={!formikProps.dirty || !formikProps.isValid}
+                                                                        onClick={handleToggle} w="48%"
+                                                                        my="6" maxWidth="sm">
+                                                                        {formikProps.dirty && formikProps.isValid ? "Next" : "Complete Form"}
+                                                                    </Button>
+                                                                </Flex>
                                                             </Box>
 
                                                         </Fade> :
                                                         <Fade mountOnEnter unmountOnExit in={!open}>
                                                             <VStack w="100%">
                                                                 <Box alignSelf="flex-start" w={image.banner.base64 ? "100%" : ""} >
-                                                                    <HStack>
-                                                                        <GoBack func={handleToggle} />
-                                                                        <TextInput showErrors={false} name="churchMotto" placeholder="Church Motto" />
-                                                                    </HStack>
+                                                                    <TextInput showErrors={false} name="churchMotto" placeholder="Church Motto" />
                                                                     <Box border="2px dashed rgba(0,0,0,.4)" >
                                                                         <input id="image" type="file" name="logo" onChange={handleImageTransformation}
                                                                             accept="image/jpeg, image/png" style={{ display: "none" }} />
@@ -625,11 +624,19 @@ const SignupAdmin = () => {
                                                                             {image.banner.name && <Text>{image.banner.name}</Text>}
                                                                         </label>
                                                                     </Box>
-                                                                    <Button disabled={formikProps.isSubmitting} className={classes.button}
-                                                                        width={["90vw", "100%"]} my="6" maxWidth="sm"
-                                                                        onClick={(formikProps.handleSubmit as any)}>
-                                                                        {formikProps.isSubmitting ? "Creating a New Church" : "Send"}
-                                                                    </Button>
+                                                                    <Flex justifyContent="space-between">
+                                                                        <Button variant="outline" disabled={formikProps.isSubmitting}
+                                                                            onClick={handleToggle}
+                                                                            my="6" maxWidth="sm" w="48%">
+                                                                            Go Back
+                                                                        </Button>
+                                                                    
+                                                                        <Button disabled={formikProps.isSubmitting}
+                                                                            width="48%" my="6" maxWidth="sm"
+                                                                            onClick={(formikProps.handleSubmit as any)}>
+                                                                            {formikProps.isSubmitting ? "Creating a New Church" : "Send Form"}
+                                                                        </Button>
+                                                                    </Flex>
                                                                 </Box>
                                                             </VStack>
                                                         </Fade>

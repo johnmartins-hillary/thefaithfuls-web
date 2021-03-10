@@ -33,7 +33,7 @@ const VerifyDialog:React.FC<IVerifyDialog> = (props) => {
                     you will be charged a token of ₦2000.
                     But if you subscribe to our pro plan your verification will be free
                 </Text>
-                <Image my="1" w="17.825rem" h="11rem"
+                <Image my="7" w="17.825rem" h="11rem"
                  objectFit="cover" src={VerifyImg}
                 />
             </ModalBody>
@@ -42,10 +42,10 @@ const VerifyDialog:React.FC<IVerifyDialog> = (props) => {
                 <Flex width="98%" flexDirection={["column", "row"]}
                     justifyContent="space-between" mb={3} >
                     <Button onClick={handleSubscribe} mb={["2", "auto"]} 
-                     px="18" fontFamily="MulishRegular" >
+                     w="48%" fontFamily="MulishRegular" >
                         Proceed to subscribe
                     </Button>
-                    <Button px="18" variant="outline" fontFamily="Bahnschrift">
+                    <Button w="48%" variant="outline" fontFamily="Bahnschrift">
                         <Link to={`/church/${currentUser.churchId}/verify`} >
                             Proceed to verify
                         </Link>

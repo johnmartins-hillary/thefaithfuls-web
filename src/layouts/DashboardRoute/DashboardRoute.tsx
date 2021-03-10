@@ -10,6 +10,7 @@ import useToast from "utils/Toast"
 import { makeStyles, createStyles } from "@material-ui/styles"
 import { Wrapper } from "components/Wrapper"
 import {DashboardLayout as MainLaoyu} from "layouts/DashboardLayout"
+import {LiveStream} from "views/LiveStream"
 
 //#region 
 import { Media } from "views/Media"
@@ -107,6 +108,8 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
                                                     </Wrapper>
                                                 )}
                                             />
+                                            <Route exact  path={`${path}/livestream`}
+                                             render={() => <LiveStream/>} />
                                             <Route path={`${path}/event/create`}
                                                 exact render={() => (
                                                     <Wrapper>

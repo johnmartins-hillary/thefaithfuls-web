@@ -79,6 +79,7 @@
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
+    "@types/dom-mediacapture-record": "^1.0.7",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lodash": "^4.14.162",
     "@types/material-ui": "^0.21.8",

@@ -31,6 +31,7 @@ import { Icon as DotIcon } from "components/Icon"
 import {tertiary} from "theme/palette"
 import axios from "axios"
 import { SubscriptionByChurch } from "core/models/subscription"
+import {NoContent} from "components/NoContent"
 
 
 
@@ -55,6 +56,34 @@ const useStyles = makeStyles((theme) => createStyles({
             maxWidth:"115rem",
             [theme.breakpoints.down("sm")]:{
                 alignItems:"center"
+            }
+        }
+    },
+    bannerContainer:{
+        position:"relative",
+        backgroundRepeat:"no-repeat",
+        backgroundPosition:"center",
+        height:"17.5rem",
+        width:"100%",
+        backgroundSize:"cover",
+        "& > div:first-child":{
+            position:"absolute",
+            width:"100%",
+            height:"100%",
+            backgroundColor:"rgba(0,0,0,.1)" 
+        },
+        "& > div:last-child":{
+            alignItems:"center",
+            justifyContent:"center",
+            position:"relative",
+            zIndex:2,
+            "& h5":{
+                fontSize:"1.86rem",
+                color:"whitesmoke"
+            },
+            "& p":{
+                fontSize:"1.25rem",
+                color:"whitesmoke"
             }
         }
     },
@@ -184,8 +213,7 @@ const Dashboard = () => {
         paymentId:null,
         startDate:new Date(),
         subscriptionID:0,
-        timeRemaining:0,
-        // subscriptionPlan:[]    
+        timeRemaining:0 
     }
     const classes = useStyles()
     const dispatch = useDispatch()
@@ -240,6 +268,7 @@ const Dashboard = () => {
             }
         }
     },[churchSubscriptionDetail])
+    
     React.useEffect(() => {
         const source = axios.CancelToken.source()
         dispatch(setPageTitle("Dashboard"))
@@ -307,22 +336,18 @@ const Dashboard = () => {
         return (
             <Box className={classes.root}>
                 <Box width="100%">
-                    <Box backgroundImage={`url(${currentChurch.churchBarner || DefaultChurchLogo})`} position="relative"
-                        backgroundRepeat="no-repeat"
-                        backgroundPosition="center" height="17.5rem"
-                        width="100%" backgroundSize="cover"
-                    >
-                        <Box position="absolute" width="100%"
-                            height="100%" bgColor="rgba(0,0,0,.1)" />
-                        <Flex direction="column" height={["17rem", "13rem"]} align="center" justify="center" >
-                            <Heading as="h5" fontWeight={400} mb="3" color="#4C1C51" fontSize="1.86rem" >
+                    <Box className={classes.bannerContainer} 
+                        backgroundImage={`url(${currentChurch.churchBarner || DefaultChurchLogo})`}>
+                        <Box/>
+                        <VStack height={["17rem", "13rem"]} >
+                            <Heading as="h5" fontWeight={400} mb="3">
                                 {`${currentChurch.name ? currentChurch.name : "Church"} Banner`}
                             </Heading>
-                            <Text fontSize="1.25rem" color="#151C4D" >
+                            <Text>
                                 share Church URL
                             <Icon as={FiLink2} color="primary" />
                             </Text>
-                        </Flex>
+                        </VStack>
                     </Box>
                 </Box>
                 <Box pt={["1", "12"]} px={{sm:"5", md:"10"}} >
@@ -344,6 +369,9 @@ const Dashboard = () => {
                                             Verify your Church
                                         </RouterLink>
                                     </Button>
+                                    <Link to="/live-stream" >
+                                        View LiveStream
+                                    </Link>
                                 </VStack>
                                 <Image src={VerifyImg} display={{base:"none",lg:"initial"}} mr={{md:4}} boxSize={["9rem","15rem"]} />
                             </Flex>
@@ -381,7 +409,7 @@ const Dashboard = () => {
                                         {currentChurch.name}
                                     </Text>
                                 </DashboardCard>
-                                <DashboardCard heading="Head pastor/pariah priest" color="yellow.300">
+                                <DashboardCard heading="Head pastor/Pariah priest" color="yellow.300">
                                     <Text color="#151C4D" mt="0px !important" fontSize="1rem" >
                                         {currentChurch.priestName}
                                     </Text>
@@ -394,15 +422,22 @@ const Dashboard = () => {
                                         </Text>
                                     </HStack>
                                 </DashboardCard>
+                                <DashboardCard heading="" color="green.500">
+                                    <RouterLink to={`/church/${params.churchId}/livestream`} >
+                                        <Button>
+                                            Show LiveStream
+                                        </Button>
+                                    </RouterLink>
+                                </DashboardCard>
                                 {currentSubscription.timeRemaining! > 0 && 
-                                <DashboardCard heading="Subscription Status" color="red.500">
-                                <HStack>
-                                    <DotIcon  color="#68D391"/>
-                                    <Text mt="0px !important" fontSize="1rem" >
-                                        {`${currentSubscription?.timeRemaining} days Left`}
-                                    </Text>
-                                </HStack>
-                            </DashboardCard>
+                                <DashboardCard heading="Subscription Status" color="primary">
+                                    <HStack>
+                                        <DotIcon  color="#68D391"/>
+                                        <Text mt="0px !important" fontSize="1rem" >
+                                            {`${currentSubscription?.timeRemaining} days Left`}
+                                        </Text>
+                                    </HStack>
+                                </DashboardCard>
                                 }
                             </VStack>
                         </Stack>
@@ -429,16 +464,19 @@ const Dashboard = () => {
                                     </DashboardActivity>
                                     </WrapItem>
                                 ))
-                                : <Text color="primary">
-                                    No Available Church Activity
-                                </Text>
+                                :
+                                <NoContent>
+                                    <Text>
+                                        No Activity Available
+                                    </Text>
+                                </NoContent>
                             }
                         </Wrap>
                     </Stack>
                     <Box mb="16" className={classes.mediaContainer}>
                         <Text fontSize="1.5rem" as="h3" mb="5" textAlign={["center", "left"]}
                             color="#4C1C51" >
-                            upcoming events
+                            Upcoming Events
                         </Text>
                         <Wrap>
                             {churchEvent.length > 0 ?
@@ -452,9 +490,11 @@ const Dashboard = () => {
                                         </Skeleton>
                                     </WrapItem>
                                 )) :
-                                <Text color="primary">
-                                    No Church Event Available
-                                </Text>
+                                <NoContent>
+                                    <Text>
+                                        No Church Event Available
+                                    </Text>
+                                </NoContent>
                             }
                         </Wrap>
                     </Box>

@@ -1,9 +1,9 @@
 
 body {
   margin: 0;
-  font-family:MulishRegular, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  /* font-family:MulishRegular, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    sans-serif; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -12,8 +12,11 @@ body {
   font-family: MulishRegular;
 }
 
-button{
+body label,body span,body button{
   font-family: MulishRegular;
+}
+body div {
+  font-family: MontserratRegular;
 }
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
