@@ -2,6 +2,9 @@
   "compilerOptions": {
     "baseUrl":"src",
     "target": "es5",
+    "types": [
+      "gapi", "gapi.auth2", "gapi.client.youtube"
+    ],
     "lib": [
       "dom",
       "dom.iterable",
