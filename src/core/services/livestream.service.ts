@@ -1,3 +1,5 @@
+import {saveLiveStream} from '../models/livestreamRequest'
+
 export const authenticate =() =>{
     return gapi.auth2.getAuthInstance()
         .signIn({scope: "https://www.googleapis.com/auth/youtube.force-ssl"})
@@ -12,11 +14,47 @@ export const authenticate =() =>{
               function(err) { console.error("Error loading GAPI client for API", err); });
   }
 
-  export const execute =(payload: any) =>{
-    return gapi.client.youtube.liveBroadcasts.insert(payload)
-        .then(function(response) {
-                // Handle the results here (response.result has the parsed body).
-                console.log("Response", response);
+  export const execute = async (payload: any) =>{
+      try  {
+        const broadcastRes = await gapi.client.youtube.liveBroadcasts.insert(payload);
+        const stream = {
+            "part": [
+                "snippet,cdn,contentDetails"
+              ],
+            "resource": {
+              "cdn": {
+                "frameRate": payload.cdn.frameRate,
+                "resolution": payload.cdn.resolution,
+                "ingestionType": payload.cdn.ingestionType
               },
-              function(err) { console.error("Execute error", err); });
+              "snippet": {
+                "title": payload.snippet.title,
+                "description": payload.snippet.description
+              },
+              "contentDetails": {
+                "isReusable": true
+              }
+            }
+          }
+        const streamInsertResp = await gapi.client.youtube.liveStreams.insert(stream);
+        const broadcastBind = await gapi.client.youtube.liveBroadcasts.bind({
+            "id": broadcastRes.result.id != null?broadcastRes.result.id: "",
+            "part": [
+              "id"
+            ],
+            "streamId": streamInsertResp.result.id
+          });
+          const saveLiveStream  ={
+
+          }
+         
+      }catch(e){
+        console.error("Execute error", e);
+      }
+      
+  }
+  export const load =()=>{
+    gapi.load("client:auth2", function() {
+        gapi.auth2.init({client_id: "YOUR_CLIENT_ID"});
+      });
   }

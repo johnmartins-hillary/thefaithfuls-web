@@ -1,5 +1,5 @@
 
-export interface saveLiveStream {
+export interface SaveLiveStream {
     broadcastId: string;
     streamId: string;
     snippet :{
