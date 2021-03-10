@@ -1,17 +1,19 @@
-import {saveLiveStream} from '../models/livestreamRequest'
+import {SaveLiveStream} from '../models/livestreamRequest'
+
+const gapi = (window as any).gapi
 
 export const authenticate =() =>{
     return gapi.auth2.getAuthInstance()
         .signIn({scope: "https://www.googleapis.com/auth/youtube.force-ssl"})
         .then(function() { console.log("Sign-in successful"); },
-              function(err) { console.error("Error signing in", err); });
+              function(err:any) { console.error("Error signing in", err); });
   }
 
   export const loadClient =() =>{
     gapi.client.setApiKey("YOUR_API_KEY");
     return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest", "v3")
         .then(function() { console.log("GAPI client loaded for API"); },
-              function(err) { console.error("Error loading GAPI client for API", err); });
+              function(err:any) { console.error("Error loading GAPI client for API", err); });
   }
 
   export const execute = async (payload: any) =>{
