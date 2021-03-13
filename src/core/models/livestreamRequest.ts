@@ -1,14 +1,15 @@
 export interface SaveLiveStream {
     broadcastId: string;
     streamId: string;
+    part?:string[]
     snippet :{
       title: string;
       scheduledStartTime: string;
       scheduledEndTime: string;
       description: string;
-      channelId: string;
-      liveChatId: string;
-      broadCastUrl: string
+      channelId?: string;
+      liveChatId?: string;
+      broadCastUrl?: string
     };
     contentDetails: {
       enableClosedCaptions: true;
@@ -20,16 +21,16 @@ export interface SaveLiveStream {
       isReusable: true
     };
     status: {
-      privacyStatus: string
+      privacyStatus: "private" | "public" | "unlisted"
     };
     cdn: {
       frameRate: string;
-      ingestionType: string;
       resolution: string;
-      ingestionAddress: string;
-      rtmpsBackupIngestionAddress: string;
-      rtmpsIngestionAddress: string;
-      streamName: string
+      ingestionType: string;
+      ingestionAddress?: string;
+      rtmpsBackupIngestionAddress?: string;
+      rtmpsIngestionAddress?: string;
+      streamName?: string
     };
     churchId: number;
     broadcastStatus: string

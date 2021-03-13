@@ -24,6 +24,7 @@ import { Recurring } from "core/enums/Recurring"
 import useParams from "utils/params"
 import * as Yup from "yup"
 import { CreateLayout } from "layouts"
+import GoogleService from "core/services/livestream.service"
 
 
 interface IForm {
@@ -89,6 +90,9 @@ const Create = () => {
     const [allGroups, setAllGroups] = React.useState<IGroup[]>([])
     const isDesktop = String(curBreakpoint) !== "base" && curBreakpoint !== "sm"
     const [showTime, setShowTime] = React.useState(true)
+    const [livestreamEvent,setLiveStreamEvent] = React.useState(false)
+    const googleService = new GoogleService(toast)
+
     const [image, setImage] = React.useState({
         name: "",
         base64: ""
@@ -126,16 +130,42 @@ const Create = () => {
         endDate: Yup.string().min(3, "Title of Church Activity is too short").required(),
         detail: Yup.string().min(3, "Detail is too short").required(),
     })
+    const handleSetLiveStream = () => {
+        setLiveStreamEvent(!livestreamEvent)
+    }
 
     const showLongDate = (arg: Date) => (
         formatDate(arg, {
             weekday: "long",
         }))
 
+        const handleCreateStream = ({
+            description,title,scheduledEndTime,scheduledStartTime
+        }:{
+            title:string;
+            description:string,
+            scheduledStartTime:string;
+            scheduledEndTime:string
+        }) => {  
+            googleService.authenticate().then(async () => {
+                const response = await googleService.createBroadCast({
+                    part:["snippet","status"],
+                    snippet:{
+                        title,
+                        description,
+                        scheduledStartTime,
+                        scheduledEndTime
+                    },
+                    status:{
+                        privacyStatus:"unlisted"
+                    }
+                },(params.churchId as unknown as number))
+            })
+        }
+
     const handleSubmit = (values: IForm, { ...actions }: any) => {
         actions.setSubmitting(true)
         const { title, detail, speaker, startDate, endDate, timeEnd, timeStart } = values
-
 
         const changeToTime = (arg: string) => {
             const parts = arg.split(/:/);
@@ -163,10 +193,19 @@ const Create = () => {
             ...time
         }
 
-        activityService.createEvent(newEvent).then(payload => {
+        activityService.createEvent(newEvent).then( async payload => {
             actions.setSubmitting(false)
             actions.resetForm()
             history.goBack()
+            if(values.streamed){
+                const response = await handleCreateStream({
+                    title,
+                    description:detail,
+                    scheduledStartTime:time.startDateTime,
+                    scheduledEndTime:time.endDateTime
+                })
+                console.log("this is the response",response)
+            }
             toast({
                 title: 'New Event has been created',
                 subtitle: "",
@@ -223,6 +262,7 @@ const Create = () => {
         detail: ""
     }
 
+
     return (
         <VStack pt={6}
             className={classes.root} >
@@ -261,9 +301,13 @@ const Create = () => {
                                 })
                             }
                         }
+
                         return (
                             <>
                                 <VStack width="inherit" maxW="md" align="flex-start" >
+                                    {/* <Button onClick={handleClick}>
+                                        Sign In With Google
+                                    </Button> */}
                                     <TextInput width="100%" name="title"
                                         placeholder="Add title" />
                                     <TagContainer<IGroup, "name"> add={addToSelectedGroup}
@@ -307,7 +351,7 @@ const Create = () => {
                                                     }
                                                 </HStack>
                                             </VStack>
-                                            <FormControl as={Flex} flex={3}
+                                            <FormControl flex={3} display="flex"
                                                 alignItems="center" justifyContent="center">
                                                 <FormLabel color="inputColor"
                                                     mb={0} htmlFor="time">
@@ -319,7 +363,7 @@ const Create = () => {
                                                     color="inputColor"
                                                     mb={0} htmlFor="time">
                                                     All day
-                                                            </FormLabel>
+                                                </FormLabel>
                                             </FormControl>
                                         </HStack>
                                     </Stack>
@@ -351,7 +395,7 @@ const Create = () => {
                                 <Checkbox name="streamed" >
                                     <Text textStyle="h" fontSize="1rem" whiteSpace="nowrap" >
                                         This Event will be Streamed Live
-                                                </Text>
+                                    </Text>
                                 </Checkbox>
                                 <Stack direction={["column", "row"]} spacing={2}
                                     width="100%">
