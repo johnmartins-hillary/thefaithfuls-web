@@ -29,7 +29,9 @@ const Signup = () => {
     const moveToChangePassword = () => {
         history.push("/reset?password")
     }
-
+    React.useEffect(() => {
+        console.log("Remounted component")
+    },[])
     const validationScheme = Yup.object({
         password: Yup.string().min(5, "Password is too short").required(),
     })

@@ -27,14 +27,6 @@ import {PaymentButton} from "components/PaymentButton"
 import axios from "axios"
 import * as advertDraftHelper from "./advertUtil"
 
-interface IForm {
-    title: string;
-    link?: string;
-    dateFrom: Date;
-    dateTo: Date;
-    advertUrl: string;
-}
-
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
@@ -85,6 +77,12 @@ const useStyles = makeStyles((theme) => createStyles({
     }
 }))
 
+interface IForm {
+    title:string;
+    dateFrom:Date;
+    dateTo:Date;
+    advertUrl:string
+}
 
 const Create = () => {
     const params = useParams()

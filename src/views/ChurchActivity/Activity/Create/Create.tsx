@@ -125,9 +125,9 @@ const customCreatorStyles = makeStyles((theme: Theme) => createStyles({
         marginTop: "0 !important",
         color: "grey",
         width: "85%",
-        [theme.breakpoints.up("sm")]: {
-            width: "30vw"
-        },
+        // [theme.breakpoints.up("sm")]: {
+        //     width: "30vw"
+        // },
         "& > div:first-child": {
             marginTop: "0 !important",
             width: "30%",
@@ -682,17 +682,6 @@ const Create = () => {
                                         ...formikProps.values,
                                         repeat: (e.currentTarget.value as any)
                                     })
-                                }else if(e.currentTarget.value === "0"){
-                                    // For whent the event is not going to repeat
-                                    setSchedule({
-                                        ...schedule,
-                                        FREQ: Recurring.NOREPEAT,
-                                        rule:``
-                                    })
-                                    formikProps.setValues({
-                                        ...formikProps.values,
-                                        repeat:""
-                                    })
                                 }else{
                                     // For setting recurring event
                                     setSchedule({
@@ -706,8 +695,6 @@ const Create = () => {
                                     })
                                 }
                             }
-
-
                             // Setting the time apart of the church activity
                             const addToTime = () => {
                                 setAllDay(!allDay)
@@ -721,8 +708,6 @@ const Create = () => {
                                     })
                                 }
                             }
-
-                            
                             return (
                                 <>
                                     <VStack width="inherit" align="flex-start">
@@ -790,7 +775,7 @@ const Create = () => {
                                             width="100%">
                                             <SelectChakra name="repeat" placeholder=""
                                                 onChange={handleChange} >
-                                                <option value={Recurring.NOREPEAT}>Does not Repeat</option>
+                                                {/* <option value={Recurring.NOREPEAT}>Does not Repeat</option> */}
                                                 <option value={Recurring.DAILY}>Daily</option>
                                                 <option value={Recurring.WEEKLY}>Weekly on {showLongDate(formikProps.values.startDate)}</option>
                                                 <option value={Recurring.MONTHLY}>Monthly on {showLongDate(formikProps.values.startDate)}</option>
@@ -816,7 +801,7 @@ const Create = () => {
                                                         bgColor="rgba(0,0,0,.6)">
                                                             Upload Activity Poster
                                                         </Button>
-                                        }
+                                                    }
                                                 </FormLabel>
                                             </Flex>
                                         </VStack>

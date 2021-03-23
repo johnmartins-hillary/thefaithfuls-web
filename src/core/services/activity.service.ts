@@ -16,7 +16,7 @@ export const createActivity = async (arg:IActivity):Promise<IResponse<IActivity>
     }
 }
 
-export const updateActivity = async (arg:IActivity):Promise<IResponse<IActivity>> => {
+export const updateActivity = async (arg:Partial<IActivity>):Promise<IResponse<IActivity>> => {
     const url = `${baseUrl}/Activity/UpdateActivity`
     try{
         const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
@@ -49,7 +49,7 @@ export const createEvent = async (arg:IEvent):Promise<IResponse<IEvent>> => {
     }
 }
 
-export const updateEvent = async (arg:IEvent):Promise<IResponse<IEvent>> => {
+export const updateEvent = async (arg:Partial<IEvent>):Promise<IResponse<IEvent>> => {
     const url = `${baseUrl}/Activity/UpdateEvents`
     try{
         const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}

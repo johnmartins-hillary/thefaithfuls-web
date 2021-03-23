@@ -3,7 +3,7 @@ import {Link} from "react-router-dom"
 import {HStack,VStack,Text} from "@chakra-ui/react"
 import {Button} from "components/Button"
 import {IEvent} from "core/models/Event"
-import {IActivity,ISchedule} from "core/models/Activity"
+import {IActivity,ISchedule,updatedActivityType} from "core/models/Activity"
 import * as activityService from "core/services/activity.service"
 import {useDispatch} from "react-redux"
 import {setPageTitle} from "store/System/actions"
@@ -14,6 +14,7 @@ import useParams from "utils/params"
 import {MessageType} from "core/enums/MessageType"
 import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
 import axios from "axios"
+
 
 const useStyles = makeStyles((theme:Theme) => createStyles({
     root:{
@@ -93,22 +94,93 @@ const Activity = () => {
             start:item.startDateTime,
             end:item.endDateTime,
             id:(item.eventId as unknown as string),
-            allDay:item.schedule === "Daily" ? true : false
+            allDay:item.schedule === "Daily" ? true : false,
+            extendedProps:item
         }))
         const churchCalendarActivity:EventInput[] = churchActivity.map((item) => ({
             title:item.title,
             start:(item.schedule.time.startDate as string),
             end:(item.schedule.time.endDate as string),
             id:(item.activityID as unknown as string),
-            // rrule:"DTSTART:20120201T103000Z\nRRULE:FREQ=DAILY;INTERVAL=2"
-            ...(item.schedule.recurrence && {rrule:item.schedule.recurrence})
+            rrule:item.schedule.recurrence,
+            extendedProps:item
         })) 
         const calendarEvents = [...newEvents,...churchCalendarActivity]
         setCalendarEvent(calendarEvents)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[churchEvent,churchActivity])
-
-    console.log(calendarEvent)
+    // Updated Church Event
+    const updateChurchEvent = (updatedEvent:IEvent,idx:number) => {
+            const filteredEvent = [...churchEvent]
+            filteredEvent.splice(idx,1,updatedEvent)
+            setChurchEvent([...filteredEvent])    
+            activityService.updateEvent(updatedEvent).then(payload => {
+                toast({
+                  title: "Success",
+                  subtitle: `Event Successfully updated`,
+                  messageType: "success"
+                })
+              }).catch(err => {
+                toast({
+                  title: "Unable to update event",
+                  subtitle: `Error: ${err}`,
+                  messageType: "error"
+        
+                })
+              })
+    }
+    // Update Church Activity
+    const updateChurchActivity = (updateActivity:IActivity<ISchedule>,idx:number) => {
+            const filteredActivity = [...churchActivity]
+            filteredActivity.splice(idx,1,updateActivity)
+            setChurchActivity([...filteredActivity])
+            
+            const newUpdatedActivity = {
+                ...updateActivity,
+                schedule:JSON.stringify(updateActivity.schedule)
+            }
+            activityService.updateActivity(newUpdatedActivity).then(payload => {
+                toast({
+                  title: "Success",
+                  subtitle: `Activity Successfully updated`,
+                  messageType: "success"
+                })
+              }).catch(err => {
+                toast({
+                  title: "Unable to update event",
+                  subtitle: `Error: ${err}`,
+                  messageType: "error"
+        
+                })
+              })
+    }
+    // Update a church activity
+    const updateCalendarActivity = (updatedActivity:updatedActivityType,func?:any) => {
+        if(updatedActivity.type === "event"){
+            const foundEventIdx = churchEvent.findIndex(item => item.eventId === updatedActivity.id)
+                const updatedEvent:IEvent = {
+                ...churchEvent[foundEventIdx],
+                title:updatedActivity.title,
+                description:updatedActivity.description,
+                speaker:updatedActivity.speaker,
+                ...(updatedActivity.bannerUrl && {bannerUrl:updatedActivity.bannerUrl})
+            }
+            updateChurchEvent(updatedEvent,foundEventIdx)
+            func()
+        }else{
+            const foundActivityIdx = churchActivity.findIndex(item => item.activityID === updatedActivity.id)
+            const updatedChurchActivity = {
+                ...churchActivity[foundActivityIdx],
+                title:updatedActivity.title,
+                description:updatedActivity.description,
+                speaker:updatedActivity.speaker,
+                ...(updatedActivity.bannerUrl && {bannerUrl:updatedActivity.bannerUrl})
+            }
+            updateChurchActivity(updatedChurchActivity,foundActivityIdx)
+            func()
+        }
+    }
+    
     return(
         <VStack width="100%" mt="3" className={classes.root} >
             <HStack>
@@ -131,7 +203,7 @@ const Activity = () => {
             }
             {
                 showCalendar &&
-                <Calendar events={calendarEvent} />  
+                <Calendar updateEvent={updateCalendarActivity} events={calendarEvent} />  
             }
         </VStack>
     )

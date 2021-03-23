@@ -248,7 +248,6 @@ const VerificationForm: React.FC<IProps> = ({ align, handleSuccess, handleClose,
     }
     const handleSubmit = (values: IUpdateChurchForm, { ...actions }: any) => {
         actions.setSubmitting(true)
-        console.log("calling the handle submit function")
         const newChurch = {
             name: values.name,
             churchID: currentChurch.churchID,

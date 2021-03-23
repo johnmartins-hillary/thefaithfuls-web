@@ -1,5 +1,4 @@
 export enum Recurring {
-    NOREPEAT = "0",
     DAILY = "DAILY",
     WEEKLY = "WEEKLY",
     MONTHLY = "MONTHLY",
