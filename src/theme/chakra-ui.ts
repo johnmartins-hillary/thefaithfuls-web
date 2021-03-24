@@ -1,4 +1,4 @@
-import {theme as initialTheme,DefaultTheme,extendTheme} from "@chakra-ui/react"
+import {theme as initialTheme,extendTheme} from "@chakra-ui/react"
 import colors,{primary} from "./palette"
 import "assets/styles/index.css"
 
@@ -53,7 +53,7 @@ const Input = {
   },
 }
 
-const theme:DefaultTheme & any =  {
+const theme: any =  {
     ...initialTheme,
     colors:{
       ...colors
