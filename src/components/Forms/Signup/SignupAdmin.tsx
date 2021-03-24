@@ -1,7 +1,7 @@
 import React from "react"
 import {
     Box, Flex, Avatar, Image, AspectRatio,
-    VStack, Stack, Heading, Text, IconButton, HStack, ModalBody, ModalCloseButton, ModalContent, ModalHeader
+    VStack, Stack, Heading, Text,ModalBody,ModalContent
 } from "@chakra-ui/react"
 import { Button } from "components/Button"
 import { Fade } from "@material-ui/core"
@@ -11,7 +11,7 @@ import { makeStyles, createStyles } from "@material-ui/core/styles"
 import { Dialog, VerifyDialog } from "components/Dialog"
 import { Link } from "components/Link"
 import { login } from "store/System/actions"
-import { TextInput, Select, Checkbox, PasswordInput } from "components/Input"
+import { TextInput, Select, Checkbox, PasswordInput,MaterialSelect } from "components/Input"
 import * as Yup from "yup"
 import { IChurchResponse } from "core/models/ChurchResponse"
 import { MinorLoginLayout } from "layouts"
@@ -174,7 +174,8 @@ const SignupAdmin = () => {
         phoneNumber: null,
         password: "",
         confirmPassword: "",
-        username: ""
+        username: "",
+        genderID:1
     }
     const userFormKey = "thefaithful-user-form"
     const history = useHistory()
@@ -428,6 +429,8 @@ const SignupAdmin = () => {
         }
     }
 
+    const genderOptions = [{option:"Male",value:1},{option:"Female",value:2}]
+
     return (
         <>
             <MinorLoginLayout showLogo={true}>
@@ -450,6 +453,7 @@ const SignupAdmin = () => {
                                     onSubmit={submitNewUserForm}
                                 >
                                     {(formikProps: FormikProps<IChurchMemberForm>) => {
+                                        console.log("this is the formikProps",formikProps.values)
                                         return (
                                             <Box my={["4"]} width={["90vw", "100%"]}
                                                 maxWidth="24rem" px="1" mx={["auto", "initial"]} >
@@ -458,14 +462,27 @@ const SignupAdmin = () => {
                                                     <TextInput name="lastname" placeholder="Last Name" />
                                                     <TextInput name="email" placeholder="email" />
                                                     <TextInput name="phoneNumber" placeholder="Phone Number" />
-                                                    <Select name="genderID" placeholder="Gender">
+                                                    {/* <MaterialSelect/> */}
+                                                    <MaterialSelect name="genderID" label="Select Gender" 
+                                                    getSelected={(option:any, value:any) => {
+                                                        // console.log("this is the options",option)
+                                                        // console.log("this is the value",value)
+
+                                                        if(value.value){
+                                                            return option.value === value.value
+                                                        }else{
+                                                            return option.value === value
+                                                        }
+                                                      }}
+                                                     options={genderOptions} getLabel={label => label.option || ""} />
+                                                    {/* <Select name="genderID" placeholder="Gender">
                                                         <option value={1}>
                                                             Male
                                                         </option>
                                                         <option value={2}>
                                                             Female
                                                         </option>
-                                                    </Select>
+                                                    </Select> */}
                                                     <PasswordInput name="password" placeholder="Password" />
                                                     <PasswordInput name="confirmPassword" placeholder="Confirm Password" />
                                                     <Button disabled={formikProps.isSubmitting || !formikProps.isValid}

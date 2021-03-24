@@ -9,13 +9,13 @@ import {
 
 
 interface IProps extends FormControlProps {
-    placeholder:string;
-    className?:any;
-    name:string;
-    label?:string;
-    func?:any;
-    val?:any;
-    [key:string]:any;
+  placeholder:string;
+  className?:any;
+  name:string;
+  label?:string;
+  func?:any;
+  val?:any;
+  [key:string]:any;
 }
 
 const InputComponent:React.FC<IProps> = ({placeholder,className,label,val = 0,name,func,children,...props}) => {
