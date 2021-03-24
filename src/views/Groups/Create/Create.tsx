@@ -17,14 +17,10 @@ import { createStyles, makeStyles } from "@material-ui/styles"
 import { MessageType } from "core/enums/MessageType"
 import { CreateLayout } from "layouts"
 import { TagContainer } from "components/Input/TagContainer"
+import {MaterialSelect} from "components/Input"
 import axios from "axios"
 import * as Yup from "yup"
 
-interface IForm {
-    group: string;
-    detail: string;
-    member: string;
-}
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
@@ -63,6 +59,30 @@ const useStyles = makeStyles((theme) => createStyles({
     }
 }))
 
+const defaultStaff:IStaff = {
+    churchId: 0,
+    claim: [],
+    email: "",
+    fullname: "",
+    imageUrl: null,
+    lastLogin: "",
+    phoneNumber: 0,
+    role: null,
+    staffID: "",
+    status: "",
+}
+
+
+const initialValues = {
+    group: "",
+    detail: "",
+    // member: "",
+    groupLeader:defaultStaff,
+    groupMember:[] as IStaff[]
+}
+
+type FormType = typeof initialValues
+
 const Create = () => {
     const [image, setImage] = React.useState({
         name: "",
@@ -73,9 +93,7 @@ const Create = () => {
     const params = useParams()
     const toast = useToast()
     const [initialGroupMember, setInitialGroupMember] = React.useState<IStaff[]>([])
-    const [groupLeader,setGroupLeader] = React.useState<IStaff[]>([])
-    const [selectedMember, setSelectedMember] = React.useState<IStaff[]>([])
-    const [allGroupMember, setAllGroupMember] = React.useState<IStaff[]>([])
+    
 
     React.useEffect(() => {
         const cancelToken = axios.CancelToken.source()
@@ -99,65 +117,24 @@ const Create = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    React.useEffect(() => {
-        setAllGroupMember(initialGroupMember)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [initialGroupMember])
-
-
-    React.useEffect(() => {
-        const allSelectedMember = [...selectedMember,...groupLeader]
-        const newAllGroupMember = initialGroupMember?.filter((item, idx) => (!allSelectedMember.includes(item)))
-        // const filteredAllGroupMember = newAllGroupMember?.filter((item, idx) =>( !groupLeader.includes(item)))
-        setAllGroupMember(newAllGroupMember)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedMember,groupLeader])
-    
-
-    // React.useEffect(() => {
-    //     setAllGroupMember(newAllGroupMember)
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [groupLeader])
-
-    const addToSelectedMember = (e: IStaff) => () => {
-        setSelectedMember([...selectedMember, e])
-    }
-    const addToGroupLeader = (e: IStaff) => () => {
-        setGroupLeader([e])
-    }
-    const removeSelectedMember = (e: IStaff) => () => {
-        const filteredMember = [...selectedMember]
-        const idx = filteredMember.findIndex((item, idx) => item.fullname === e.fullname)
-        filteredMember.splice(idx, 1)
-        setSelectedMember(filteredMember)
-    }
-    const removeGroupLeader = (e: IStaff) => () => {
-        setGroupLeader([])
-    }
-    const initialValues = {
-        group: "",
-        detail: "",
-        member: ""
-    }
-
     const validationSchema = Yup.object({
         group: Yup.string().min(3, "Group Name is too short").required()
     })
-    const handleSubmit = (values: IForm, { ...actions }: any) => {
+    const handleSubmit = (values: FormType, { ...actions }: any) => {
         actions.setSubmitting(true)
         const newGroup = {
             name: values.group,
             description: values.detail,
             denominationId: 3,
             churchId: Number(params.churchId),
-            memberCount: selectedMember.length,
+            memberCount: values.groupMember.length,
             ...(image.base64 && { imageUrl: image.base64 }),
             isDeleted: false
         }
-        const addMemberToGroup = (values: any, cb: any) => {
-            const newMembers = selectedMember.map((item, idx) => (
+        const addMemberToGroup = (newValues: any, cb: any) => {
+            const newMembers = values.groupMember.map((item, idx) => (
                 {
-                    societies: [values.data.societyID!],
+                    societies: [newValues.data.societyID!],
                     churchId: Number(params.churchId),
                     societyPosition: [2],
                     personId: (item.staffID as string)
@@ -165,10 +142,10 @@ const Create = () => {
             ))
             const newGroupsMember = [
                 {
-                    societies: [values.data.societyID!],
+                    societies: [newValues.data.societyID!],
                     churchId: Number(params.churchId),
                     societyPosition: [1],
-                    personId: groupLeader[0].staffID as string
+                    personId: values.groupLeader.staffID as string
                 },
                 ...newMembers
             ]
@@ -193,68 +170,76 @@ const Create = () => {
         }
     }
 
+    const compareStaff = (option:any, value:any) => {
+        return option.fullname === value.fullname
+    }
+
 
     return (
         <VStack pt={{ md: 6 }}
             className={classes.root} >
             <Heading textStyle="h4" >
                 New Church Group
-                </Heading>
+            </Heading>
             <CreateLayout>
                 <Stack w="100%" maxW="70rem" align="flex-start">
                     <Formik initialValues={initialValues}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
                     >
-                        {(formikProps: FormikProps<IForm>) => (
-                            <>
-                                <VStack alignSelf="flex-start" className={classes.inputContainer}>
-                                    <VStack>
-                                        <Box borderRadius={image.base64 ? "50%" : ""} cursor="pointer" border="2px dashed rgba(0,0,0,.4)" >
-                                            <input id="image" type="file" onChange={handleImageTransformation}
-                                                accept="image/jpeg, image/png" style={{ display: "none" }} />
-                                            <label htmlFor="image" >
-                                                {
-                                                    image.base64 ?
-                                                        <Avatar src={image.base64} size="2xl" /> :
-                                                        <>
-                                                            <Button as="span"
-                                                                bgColor="rgba(0,0,0,.6)">
-                                                                Choose Group Image
-                                                        </Button>
-                                                            {image.name && <Text>{image.name}</Text>}
-                                                        </>
-                                                }
-
-                                            </label>
-                                        </Box>
+                        {(formikProps: FormikProps<FormType>) => {
+                            console.log(formikProps.values)
+                            return(
+                                <>
+                                    <VStack alignSelf="flex-start" className={classes.inputContainer}>
+                                        <VStack>
+                                            <Box borderRadius={image.base64 ? "50%" : ""} cursor="pointer" border="2px dashed rgba(0,0,0,.4)" >
+                                                <input id="image" type="file" onChange={handleImageTransformation}
+                                                    accept="image/jpeg, image/png" style={{ display: "none" }} />
+                                                <label htmlFor="image" >
+                                                    {
+                                                        image.base64 ?
+                                                            <Avatar src={image.base64} size="2xl" /> :
+                                                            <>
+                                                                <Button as="span"
+                                                                    bgColor="rgba(0,0,0,.6)">
+                                                                    Choose Group Image
+                                                            </Button>
+                                                                {image.name && <Text>{image.name}</Text>}
+                                                            </>
+                                                    }
+                                                </label>
+                                            </Box>
+                                        </VStack>
+                                        <NormalInput width="100%" name="group" placeholder="Group Name" />
+                                        <MaterialSelect style={{width:"100%"}} name="groupLeader" label="Select Group Leader" 
+                                            getSelected={compareStaff}
+                                            options={initialGroupMember} getLabel={(label:IStaff) => label.fullname}
+                                        />
+                                        <MaterialSelect style={{width:"100%"}} name="groupMember"
+                                            label="Invite Church Members" multiple={true} 
+                                            getSelected={compareStaff}
+                                            options={initialGroupMember} getLabel={(label:IStaff) => label.fullname}
+                                        />
+                                        <Field name="detail" >
+                                            {({ field }: FieldProps) => (
+                                                <Textarea placeholder="Enter description for group"
+                                                    rows={7} width="100%" {...field} />
+                                            )}
+                                        </Field>
                                     </VStack>
-                                    <NormalInput width="100%" name="group" placeholder="Group Name" />
-                                    <TagContainer<IStaff, "fullname" > add={addToGroupLeader}
-                                        remove={removeGroupLeader} active={groupLeader} value="fullname"
-                                        name="Select Group Leader" tags={(allGroupMember as IStaff[])} />
-                                        <Flex/>
-                                    <TagContainer<IStaff, "fullname" > add={addToSelectedMember}
-                                        remove={removeSelectedMember} active={selectedMember} value="fullname"
-                                        name="Invite Members" tags={(allGroupMember as IStaff[])} />
-                                    <Field name="detail" >
-                                        {({ field }: FieldProps) => (
-                                            <Textarea placeholder="Enter description for group"
-                                                rows={7} width="100%" {...field} />
-                                        )}
-                                    </Field>
-                                </VStack>
-                                <HStack spacing={2} justifyContent="center" width="100%" my={{ base: 5, md: 12 }}>
-                                    <Button px={10} disabled={formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}
-                                        onClick={(formikProps.handleSubmit as any)}
-                                        isLoading={formikProps.isSubmitting} loadingText={`Creating New ${formikProps.values.group}`}
-                                    >
-                                        {formikProps.isSubmitting ? "Creating a new Group" : "Save"}
-                                    </Button>
-                                    <GoBackButton px={10} disabled={formikProps.isSubmitting} />
-                                </HStack>
-                            </>
-                        )}
+                                    <HStack spacing={2} justifyContent="center" width="100%" my={{ base: 5, md: 12 }}>
+                                        <Button px={10} disabled={formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}
+                                            onClick={(formikProps.handleSubmit as any)}
+                                            isLoading={formikProps.isSubmitting} loadingText={`Creating New ${formikProps.values.group}`}
+                                        >
+                                            {formikProps.isSubmitting ? "Creating a new Group" : "Save"}
+                                        </Button>
+                                        <GoBackButton px={10} disabled={formikProps.isSubmitting} />
+                                    </HStack>
+                                </>
+                            )
+                        }}
                     </Formik>
                 </Stack>
             </CreateLayout>
