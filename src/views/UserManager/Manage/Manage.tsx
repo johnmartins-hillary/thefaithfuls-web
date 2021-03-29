@@ -102,8 +102,8 @@ const ManageCard: React.FC<IManageCard> = ({ heading,isLoaded, memberAmt,role,up
                         {`${memberAmt} users`}
                     </Text>
                     <AvatarGroup size="xs" max={2}>
-                    {new Array(memberAmt).fill("").map(item => (
-                        <Avatar border={`2px solid ${primary}`} name="Ryan Florence" src="https://bit.ly/ryan-florence" />
+                    {new Array(memberAmt).fill("").map((item,idx) => (
+                        <Avatar border={`2px solid ${primary}`} key={idx} name="Ryan Florence" src="https://bit.ly/ryan-florence" />
                     ))}
                     </AvatarGroup>
                 </HStack>

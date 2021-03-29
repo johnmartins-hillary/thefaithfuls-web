@@ -151,6 +151,8 @@ const useStyles = makeStyles((theme) => createStyles({
         marginBottom:"auto"
     },
     mediaContainer: {
+        // [theme.breakpoints,]
+        width:"100%",
         "& h3":{
             fontFamily:"Bahnschrift"
         },
@@ -161,9 +163,9 @@ const useStyles = makeStyles((theme) => createStyles({
             maxHeight:"30rem",
             overflowY:"auto",
             justifyContent:"center",
-            [theme.breakpoints.up("sm")]:{
-                justifyContent:"flex-start"
-            },
+            // [theme.breakpoints.up("md")]:{
+            //     justifyContent:"flex-start"
+            // },
             "& li":{
                 width:"80%",
                 "& > div":{
@@ -195,6 +197,8 @@ const useStyles = makeStyles((theme) => createStyles({
         backgroundColor:"white"
     }
 }))
+
+
 
 const Dashboard = () => {
     const currentChurch = useSelector((state: AppState) => state.system.currentChurch)

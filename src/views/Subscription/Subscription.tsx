@@ -468,7 +468,7 @@ const Subscription = () => {
             color="white" justify="center"
           >
             <Stack className={classes.upgradeContainer}
-              width={["90vw", "100%"]}
+              width={["90vw", "100%"]} p={5}
               py="2" spacing="6"
             >
               <Image

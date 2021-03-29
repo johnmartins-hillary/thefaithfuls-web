@@ -9,6 +9,7 @@ const useStyles = makeStyles((theme) => createStyles({
     root:{
         display:"flex",
         flexDirection:"column",
+        // margin:"auto !important",
         alignItems:"center",
         justifyContent:"center",
         "& button":{
@@ -27,8 +28,8 @@ const useStyles = makeStyles((theme) => createStyles({
     },
     align:{
         [theme.breakpoints.up("sm")]:{
-            marginLeft:"50%",
-            transform:"translateX(-50%)"
+            // marginLeft:"50%",
+            // transform:"translateX(50%)"
         }
     }
 }))

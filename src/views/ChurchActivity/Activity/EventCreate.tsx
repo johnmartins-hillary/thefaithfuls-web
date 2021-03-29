@@ -7,8 +7,7 @@ import {
     Icon, FormLabel, Switch, Stack, VStack
 } from "@chakra-ui/react"
 import { Button } from "components/Button"
-import { TagContainer } from "components/Input/TagContainer"
-import { TextInput, Checkbox } from "components/Input"
+import { TextInput, Checkbox,MaterialSelect } from "components/Input"
 import { Formik, Field, FieldProps, FormikProps } from "formik"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 import DatePicker from "react-date-picker"
@@ -85,9 +84,7 @@ const Create = () => {
     const params = useParams()
     const currentDate = new Date()
     const curBreakpoint = useBreakpoint()
-    const [selectedGroups, setSelectedGroups] = React.useState<IGroup[]>([])
     const [initialGroups, setInitialGroup] = React.useState<IGroup[]>([])
-    const [allGroups, setAllGroups] = React.useState<IGroup[]>([])
     const isDesktop = String(curBreakpoint) !== "base" && curBreakpoint !== "sm"
     const [showTime, setShowTime] = React.useState(true)
     const googleService = new GoogleService(toast)
@@ -112,17 +109,7 @@ const Create = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    React.useEffect(() => {
-        setAllGroups(initialGroups)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [initialGroups])
-
-    React.useEffect(() => {
-        const newAllGroups = initialGroups.filter(item => !selectedGroups.includes(item))
-        setAllGroups(newAllGroups)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedGroups])
-
+    
     const validationSchema = Yup.object({
         title: Yup.string().min(3, "Title of Church Activity is too short").required(),
         startDate: Yup.string().min(3, "Title of Church Activity is too short").required(),
@@ -136,12 +123,14 @@ const Create = () => {
         }))
 
     const handleCreateStream = ({
-            description,title,scheduledEndTime,scheduledStartTime
+            description,title,scheduledEndTime,scheduledStartTime,
+            eventId
         }:{
             title:string;
-            description:string,
+            description:string;
             scheduledStartTime:string;
-            scheduledEndTime:string
+            scheduledEndTime:string;
+            eventId:number;
         }) => {  
             googleService.authenticate().then(async () => {
                 await googleService.createBroadCast({
@@ -160,10 +149,14 @@ const Create = () => {
                             enableMonitorStream:true
                         }
                     }
-
-                },(params.churchId as unknown as number))
+                },{
+                    churchId:params.churchId as any,
+                    eventId:eventId as number
+                })
             })
         }
+
+
 
     const handleSubmit = (values: IForm, { ...actions }: any) => {
         actions.setSubmitting(true)
@@ -204,7 +197,8 @@ const Create = () => {
                     title,
                     description:detail,
                     scheduledStartTime:time.startDateTime,
-                    scheduledEndTime:time.endDateTime
+                    scheduledEndTime:time.endDateTime,
+                    eventId:payload.data.eventId as number
                 })
                 console.log("this is the response",response)
             }
@@ -223,16 +217,6 @@ const Create = () => {
         })
     }
 
-    const addToSelectedGroup = (e: IGroup) => () => {
-        setSelectedGroups([...selectedGroups, e])
-    }
-    const removeFromSelectedGroup = (e: IGroup) => () => {
-        const filteredGroup = [...selectedGroups]
-        const idx = filteredGroup.findIndex((item, idx) => item.name === e.name)
-        filteredGroup.splice(idx, 1)
-        setSelectedGroups(filteredGroup)
-    }
-
     // For transforming the selected image to base 64
     const handleImageTransformation = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files![0]
@@ -247,6 +231,7 @@ const Create = () => {
             reader.readAsDataURL(file)
         }
     }
+
 
     const goBack = () => {
         history.goBack()
@@ -268,10 +253,14 @@ const Create = () => {
             description:"This is a main description",
             scheduledStartTime:"2021-03-17T23:27:07.522Z",
             scheduledEndTime:"2021-03-18T23:27:07.522Z",
-            title:"This is the title"
+            title:"This is the title",
+            eventId:1
         })
     }
 
+    const compareStaff = (option:any, value:any) => {
+        return option.societyID === value.societyID
+    }
 
     return (
         <VStack pt={6}
@@ -314,14 +303,11 @@ const Create = () => {
                         return (
                             <>
                                 <VStack width="inherit" maxW="md" align="flex-start" >
-                                    {/* <Button onClick={handleClick}>
-                                        Sign In With Google
-                                    </Button> */}
                                     <TextInput width="100%" name="title"
-                                        placeholder="Add title" />
-                                    <TagContainer<IGroup, "name"> add={addToSelectedGroup}
-                                        remove={removeFromSelectedGroup} tags={allGroups}
-                                        active={selectedGroups} value="name" name="Invite all Members and groups"
+                                        placeholder="Add title" />                          
+                                    <MaterialSelect style={{width:"100%"}} name="groups" label="Invite all Members and groups" 
+                                        getSelected={compareStaff} multiple
+                                        options={initialGroups} getLabel={(label:IGroup) => label.name}
                                     />
                                     <Stack my={5} direction={["column", "row"]}
                                         align="center">
