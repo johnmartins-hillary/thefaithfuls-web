@@ -1,6 +1,5 @@
 import {ToastFunc} from "utils/Toast"
 
-
 interface videoSizeDetail {
     min:number;
     max:number;
@@ -34,9 +33,8 @@ class LiveStream {
     private videoRef:HTMLVideoElement;
     public audiobitrate:number;
     private checkedRef:HTMLInputElement;
-    private state:"stop" | "ready";
+    private state:"stop" | "start" | "streaming" | "ready" | "preparing" ;
     
-    // toast:ToastFunc;
     constructor(arg:constructorArgsType){
         const {audiobitrate,checkedRef,state,toast,videoRef,constraint} = arg
         this.toast = toast;
@@ -67,15 +65,10 @@ class LiveStream {
     }
 
     showVideo = (stream:MediaStream) => {
-        console.log("Calling the show video function",stream)
         if("srcObject" in this.videoRef){
-            console.log("this is the videoRef",this.videoRef.srcObject)
             this.videoRef.muted = true;
             this.videoRef.srcObject = stream
-            console.log("this is the videoRef",this.videoRef.srcObject)
         }else{
-            console.log("this is the stream",stream);
-
             (this.videoRef as any).src = window.URL.createObjectURL(stream)
         }
         const that = this
@@ -88,22 +81,26 @@ class LiveStream {
         },false)
     }
 
-    showOutput = (str:string) => {
-        // this.textAreaRef.value = "\n"+str;
-        // this.textAreaRef.scrollTop = this.textAreaRef.scrollHeight;
-    }
     requestMedia = () => {
-        console.log("this is the constraint",this.constraint)
         navigator.mediaDevices.getUserMedia(this.constraint).then((stream) => {
+            this.state = "streaming"
             this.showVideo(stream)
             this.mediaRecorder = new MediaRecorder(stream);
             this.mediaRecorder.start(250);
+            const that = this
             this.mediaRecorder.onstop = (e) => {
+                stream.getTracks().forEach(function(track){
+                    that.state = "stop"
+                    track.stop()
+                })
                 this.toast({
                     messageType:"info",
                     title:"The Media Recorder has stopped",
                     subtitle:""
                 })
+            }
+            this.mediaRecorder.ondataavailable = function(e){
+                
             }
             this.mediaRecorder.onerror = (evt) => {
                 const error = evt.error;

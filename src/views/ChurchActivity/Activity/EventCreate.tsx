@@ -90,7 +90,6 @@ const Create = () => {
     const [allGroups, setAllGroups] = React.useState<IGroup[]>([])
     const isDesktop = String(curBreakpoint) !== "base" && curBreakpoint !== "sm"
     const [showTime, setShowTime] = React.useState(true)
-    const [livestreamEvent,setLiveStreamEvent] = React.useState(false)
     const googleService = new GoogleService(toast)
 
     const [image, setImage] = React.useState({
@@ -130,16 +129,13 @@ const Create = () => {
         endDate: Yup.string().min(3, "Title of Church Activity is too short").required(),
         detail: Yup.string().min(3, "Detail is too short").required(),
     })
-    const handleSetLiveStream = () => {
-        setLiveStreamEvent(!livestreamEvent)
-    }
-
+    
     const showLongDate = (arg: Date) => (
         formatDate(arg, {
             weekday: "long",
         }))
 
-        const handleCreateStream = ({
+    const handleCreateStream = ({
             description,title,scheduledEndTime,scheduledStartTime
         }:{
             title:string;
@@ -148,8 +144,8 @@ const Create = () => {
             scheduledEndTime:string
         }) => {  
             googleService.authenticate().then(async () => {
-                const response = await googleService.createBroadCast({
-                    part:["snippet","status"],
+                await googleService.createBroadCast({
+                    part:["snippet","status","contentDetails"],
                     snippet:{
                         title,
                         description,
@@ -158,7 +154,13 @@ const Create = () => {
                     },
                     status:{
                         privacyStatus:"unlisted"
+                    },
+                    contentDetails:{
+                        monitorStream:{
+                            enableMonitorStream:true
+                        }
                     }
+
                 },(params.churchId as unknown as number))
             })
         }
@@ -166,20 +168,20 @@ const Create = () => {
     const handleSubmit = (values: IForm, { ...actions }: any) => {
         actions.setSubmitting(true)
         const { title, detail, speaker, startDate, endDate, timeEnd, timeStart } = values
-
+        
         const changeToTime = (arg: string) => {
             const parts = arg.split(/:/);
             const timePeriodMillis = (parseInt(parts[0], 10) * 60 * 1000) + (parseInt(parts[1], 10) * 1000);
             return timePeriodMillis
         }
-
+        
         const time = !showTime ? {
             startDateTime: new Date(startDate.setTime(startDate.getTime() + changeToTime(timeStart))).toJSON(),
             endDateTime: new Date(endDate.setTime(endDate.getTime() + changeToTime(timeEnd))).toJSON()
         } : {
-                startDateTime: startDate.toJSON(),
-                endDateTime: endDate.toJSON()
-            }
+            startDateTime: startDate.toJSON(),
+            endDateTime: endDate.toJSON()
+        }
         const schedule = {
             attendee: []
         }
@@ -261,6 +263,14 @@ const Create = () => {
         speaker: "",
         detail: ""
     }
+    const handleClick = () => {
+        handleCreateStream({
+            description:"This is a main description",
+            scheduledStartTime:"2021-03-17T23:27:07.522Z",
+            scheduledEndTime:"2021-03-18T23:27:07.522Z",
+            title:"This is the title"
+        })
+    }
 
 
     return (
@@ -301,7 +311,6 @@ const Create = () => {
                                 })
                             }
                         }
-
                         return (
                             <>
                                 <VStack width="inherit" maxW="md" align="flex-start" >

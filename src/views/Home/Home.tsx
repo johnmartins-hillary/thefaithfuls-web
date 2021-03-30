@@ -257,7 +257,10 @@ const useStyles = makeStyles((theme: Theme) => (
             justifyContent: "center",
             alignItems: "center",
             [theme.breakpoints.up("sm")]:{
-                padding: theme.spacing(16, 0)
+                padding: theme.spacing(16, 0),
+                "& a":{
+                    textAlign:"left"
+                }
             },
             "& button":{
                 fontFamily:"MulishRegular"

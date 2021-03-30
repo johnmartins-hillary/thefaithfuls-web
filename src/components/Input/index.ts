@@ -7,3 +7,4 @@ export {default as DatePicker} from "./DatePicker"
 export {default as SearchInput} from './SearchInput'
 export {default as PasswordInput} from "./PasswordInput"
 export {default as NormalNumberStepper} from "./NumberStepper/NormalNumberStepper"
+export {MaterialSelect} from "./MaterialSelect"
