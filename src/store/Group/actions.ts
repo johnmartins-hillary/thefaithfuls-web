@@ -79,18 +79,13 @@ export function createNewGroup (newGroup:IGroup,toast:ToastFunc,func?:any){
 }
 
 export function createGroupMember (newGroupMember:ICreateGroupMember,toast:ToastFunc) {
-    return async (dispatch:Dispatch,getState:() => AppState) => {
+    return async (dispatch:Dispatch) => {
         try{
             return await groupService.createGroupMember(newGroupMember).then(payload => { 
                 dispatch<CreateGroupMemberAction>({
                     type:ActionTypes.CREATE_GROUP_MEMBER,
                     payload:payload.data
                 })
-                // toast({
-                //     title:"New Group Member Created",
-                //     subtitle:`Group Member has been successfully created`,
-                //     messageType:MessageType.SUCCESS
-                // })
             })
         }catch(err){
             toast({

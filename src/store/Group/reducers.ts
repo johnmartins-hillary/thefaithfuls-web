@@ -35,25 +35,27 @@ export function groupReducer(state = initialState,action:Action):GroupState {
         case ActionTypes.CREATE_GROUP_MEMBER:{
             const filterGroups = [...state.groups]
             const foundIdx = filterGroups.findIndex(x => x.societyID === state.currentGroup.societyID)
-            const newUpdatedGroup = {
-                ...filterGroups[foundIdx],
-                memberCount:filterGroups[foundIdx].memberCount ? filterGroups[foundIdx].memberCount+1 : 1
+            if(foundIdx){
+                const newUpdatedGroup = {
+                    ...filterGroups[foundIdx],
+                    memberCount:filterGroups[foundIdx]?.memberCount ? filterGroups[foundIdx].memberCount+1 : 1
+                }
+                filterGroups.splice(foundIdx,1,newUpdatedGroup)
             }
-            filterGroups.splice(foundIdx,1,newUpdatedGroup)
-            let newGroupMember = {
-                societyMemberID:action.payload[0].societyMemberID,
-                personId:action.payload[0].personId,
-                churchId:action.payload[0].churchId,
-                societyId:action.payload[0].societyId,
-                positionName:"",
-                leaderId:action.payload[0].leaderId,
-                pictureUrl:action.payload[0].person.picture_url,
-                leadersPosition:"",
-                fullname:action.payload[0].person.fullname,
-                church:action.payload[0].church,
-                person:action.payload[0].person,
-                society:action.payload[0].society,
-            }
+                let newGroupMember = {
+                    societyMemberID:action.payload[0].societyMemberID,
+                    personId:action.payload[0].personId,
+                    churchId:action.payload[0].churchId,
+                    societyId:action.payload[0].societyId,
+                    positionName:"",
+                    leaderId:action.payload[0].leaderId,
+                    pictureUrl:action.payload[0].person.picture_url,
+                    leadersPosition:"",
+                    fullname:action.payload[0].person.fullname,
+                    church:action.payload[0].church,
+                    person:action.payload[0].person,
+                    society:action.payload[0].society,
+                }
             return{
                 ...state,
                 groups:[...filterGroups],

@@ -73,6 +73,7 @@ export interface LiveBroadcast {
   status: StatusBroadcast
   contentDetails: ContentDetailBroadcast
   churchId: number;
+  eventId:number
   broadcastStatus: string;
 }
 
@@ -158,5 +159,6 @@ export interface LiveStreamChurchResponse {
   privacyStatus: string;
   status: "Upcoming" | "IsLive" | "Passed";
   churchId: number;
+  eventId:number;
   liveStream: StreamChurch
 }

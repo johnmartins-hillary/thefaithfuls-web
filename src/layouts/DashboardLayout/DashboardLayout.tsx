@@ -156,13 +156,6 @@ const DashboardLayout: React.FC<IProps> = (props) => {
       <div className={classes.toolbar} />
       <Stack className={classes.optionContainer} spacing={4}>
         {dashboardMenu.map((item, idx) => (
-          // <Link key={idx} to={`/church/${params.churchId}${item.link}`} >
-          //   <Flex align="center"
-          //     className={activeLink.includes(item.link) ? classes.activeLink : classes.link} >
-          //     <Icon boxSize="1rem" as={item.icon} />
-          //     <Text ml="4" fontSize="1rem" >{item.name}</Text>
-          //   </Flex>
-          // </Link>
           <Link key={idx} to={`/church/${params.churchId}${item.link}`} >
             <Flex align="center"
               className={activeLink.includes(item.link) ? classes.activeLink : classes.link} >

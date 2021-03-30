@@ -24,7 +24,7 @@ import { Input } from "@material-ui/core"
 import useToast from "utils/Toast"
 import useParams from "utils/params"
 import { Dialog } from "components/Dialog"
-import { TextInput, Select,PasswordInput } from "components/Input"
+import { TextInput, Select,PasswordInput,MaterialSelect } from "components/Input"
 import { MessageType } from "core/enums/MessageType"
 import { Formik, FormikProps } from "formik"
 import { useDispatch } from "react-redux"
@@ -78,6 +78,9 @@ const changeStaffStyles = makeStyles((theme: Theme) => createStyles({
     root: {
         "& input,select": {
             color: "initial !important"
+        },
+        "& .MuiAutocomplete-groupUl":{
+            zIndex:`5999 !important`
         }
     },
     menuContainer: {
@@ -572,6 +575,10 @@ const ChangeStaff: React.FC<IChangeStaffProps> = ({ updateStaff, closeDialog,...
     }
 
 
+    const compareClaim = (option:any, value:any) => {
+        return option.id === value.id
+    }
+
     return (
         <ModalContent py={10} bgColor="bgColor2" className={classes.root}>
             <ModalCloseButton border="2px solid rgba(0,0,0,.5)"
@@ -616,6 +623,10 @@ const ChangeStaff: React.FC<IChangeStaffProps> = ({ updateStaff, closeDialog,...
                                 overflow='auto'
                                 flexDirection={["column","row"]} alignItems="center">
                                 <VStack className={classes.menuContainer} my={[5, 10]} width={["95%", "80%"]} >
+                                    <MaterialSelect style={{width:"100%"}} label="Select Claims to add to Staff" 
+                                        getSelected={compareClaim} multiple name="claimsArr"
+                                        options={initialStaffClaims} getLabel={(label:IClaim) => label.claimName}
+                                    />
                                     <Menu isOpen={isOpen}>
                                         <Flex width="100%">
                                             <Input value={inputValue} onChange={handleInputValueChange}

@@ -12,7 +12,7 @@ import {
 import { Button } from "components/Button"
 import { TagContainer } from "components/Input/TagContainer"
 import { Dialog } from "components/Dialog"
-import { TextInput, Select,NumberStepper, Checkbox } from "components/Input"
+import { TextInput, Select,NumberStepper, Checkbox, MaterialSelect } from "components/Input"
 import { Formik, Field, FieldProps, FormikProps } from "formik"
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles"
 import DatePicker from "react-date-picker"
@@ -209,19 +209,6 @@ interface ICustomDateCreator {
     close: any
 }
 
-interface IForm {
-    title: string;
-    member?: string;
-    day: string;
-    startDate: Date;
-    endDate: Date;
-    timeStart: string;
-    timeEnd: string;
-    repeat: string;
-    speaker: string;
-    detail: string;
-    streamed: boolean
-}
 interface ICustomForm {
     FREQ: Recurring;
     INTERVAL?: number;
@@ -452,10 +439,34 @@ const NoIcon = () => (
     <Flex height="0" width="0" display="none" />
 )
 
+const currentDate = new Date()
+    
+
+const showLongDate = (arg: Date) => {
+    return (formatDate(arg, {
+        weekday: "long",
+    }))
+}
+
+const initialValues = {
+    title: "",
+    startDate: currentDate,
+    endDate: new Date((new Date()).setDate(currentDate.getDate() + 1)),
+    day: showLongDate(currentDate),
+    timeStart: '5:00',
+    timeEnd: '17:00',
+    repeat: Recurring.DAILY,
+    streamed: false,
+    speaker: "",
+    detail: "",
+    groups:[]
+}
+
+type TypeForm = typeof initialValues
+
 const Create = () => {
     const classes = useStyles()
     const history = useHistory()
-    const currentDate = new Date()
     const [schedule, setSchedule] = React.useState<ICustomForm>({
         FREQ: Recurring.DAILY,
         INTERVAL: 2,
@@ -468,9 +479,7 @@ const Create = () => {
     const toast = useToast()
     const params = useParams()
     const curBreakpoint = useBreakpoint()
-    const [selectedGroups, setSelectedGroups] = React.useState<IGroup[]>([])
     const [initialGroups, setInitialGroup] = React.useState<IGroup[]>([])
-    const [allGroups, setAllGroups] = React.useState<IGroup[]>([])
     const isDesktop = String(curBreakpoint) !== "base" && curBreakpoint !== "sm"
     const [allDay, setAllDay] = React.useState(true)
     const [showDialog, setShowDialog] = React.useState(false)
@@ -497,17 +506,6 @@ const Create = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    React.useEffect(() => {
-        setAllGroups(initialGroups)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [initialGroups])
-
-    React.useEffect(() => {
-        const newAllGroups = initialGroups.filter(item => !selectedGroups.includes(item))
-        setAllGroups(newAllGroups)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedGroups])
-
     const validationSchema = Yup.object({
         title: Yup.string().min(3, "Title of Church Activity is too short").required(),
         startDate: Yup.string().min(3, "Title of Church Activity is too short").required(),
@@ -515,13 +513,7 @@ const Create = () => {
         detail: Yup.string().min(3, "Detail is too short").required(),
     })
 
-    const showLongDate = (arg: Date) => {
-        return (formatDate(arg, {
-            weekday: "long",
-        }))
-    }
-
-    const handleSubmit = (values: IForm, { ...actions }: any) => {
+    const handleSubmit = (values: TypeForm, { ...actions }: any) => {
         actions.setSubmitting(true)
         const { title, detail,startDate, endDate, timeEnd, timeStart, repeat } = values
         const changeToTime = (arg: string) => {
@@ -590,16 +582,6 @@ const Create = () => {
         setShowDialog(!showDialog)
     }
 
-    const addToSelectedGroup = (e: IGroup) => () => {
-        setSelectedGroups([...selectedGroups, e])
-    }
-    const removeFromSelectedGroup = (e: IGroup) => () => {
-        const filteredGroup = [...selectedGroups]
-        const idx = filteredGroup.findIndex((item, idx) => item.name === e.name)
-        filteredGroup.splice(idx, 1)
-        setSelectedGroups(filteredGroup)
-    }
-
     // For transforming the selected image to base 64
     const handleImageTransformation = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files![0]
@@ -618,17 +600,9 @@ const Create = () => {
     const goBack = () => {
         history.goBack()
     }
-    const initialValues = {
-        title: "",
-        startDate: currentDate,
-        endDate: new Date((new Date()).setDate(currentDate.getDate() + 1)),
-        day: showLongDate(currentDate),
-        timeStart: '5:00',
-        timeEnd: '17:00',
-        repeat: Recurring.DAILY,
-        streamed: false,
-        speaker: "",
-        detail: ""
+
+    const compareStaff = (option:any, value:any) => {
+        return option.societyID === value.societyID
     }
 
     return (
@@ -644,7 +618,7 @@ const Create = () => {
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
                     >
-                        {(formikProps: FormikProps<IForm>) => {
+                        {(formikProps: FormikProps<TypeForm>) => {
                             // For handling date input onchange
                             const onChange = (name: string) => (e: Date | any) => {
                                 if (name === "startDate") {
@@ -713,9 +687,9 @@ const Create = () => {
                                     <VStack width="inherit" align="flex-start">
                                         <TextInput width="100%" name="title"
                                             placeholder="Add title" />
-                                        <TagContainer<IGroup, "name"> add={addToSelectedGroup}
-                                            remove={removeFromSelectedGroup} tags={allGroups}
-                                            active={selectedGroups} value="name" name="Invite all Members and groups"
+                                        <MaterialSelect style={{width:"100%"}} name="groups" label="Invite all Members and groups" 
+                                            getSelected={compareStaff} multiple
+                                            options={initialGroups} getLabel={(label:IGroup) => label.name}
                                         />
                                         <Stack my={5} direction={["column", "row"]}
                                             align="center">
