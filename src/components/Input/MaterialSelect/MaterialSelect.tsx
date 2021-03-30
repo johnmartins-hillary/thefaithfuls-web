@@ -2,9 +2,10 @@
 // import fetch from 'cross-fetch';
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete,{AutocompleteProps} from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {FieldProps,Field} from "formik"
+import { AutoCompleteProps } from 'material-ui';
 
 interface CountryType {
   name: string;
@@ -16,7 +17,8 @@ function sleep(delay = 0) {
   });
 }
 
-interface IProps {
+interface IProps extends Partial<AutocompleteProps<any,any,any,any>> {
+  style?:object;
   options:any[];
   getLabel?:(arg:any) => string;
   getSelected:(arg1:any,arg2:any) => any;
@@ -29,7 +31,8 @@ interface IProps {
 }
 
 const MaterialSelect:React.FC<IProps> = ({
-  name,func,className,label,val,children,options,getLabel,getSelected
+  name,func,className,label,val,children,options,getLabel,getSelected,style
+  ,...props
 }) => {
   const [open, setOpen] = React.useState(false);
   // const [options, setOptions] = React.useState<CountryType[]>([]);
@@ -67,6 +70,8 @@ const MaterialSelect:React.FC<IProps> = ({
   //   }
   // }, [open]);
 
+
+
   return (
     <Field name={name} >
       {({field,form}:FieldProps) => (
@@ -79,17 +84,15 @@ const MaterialSelect:React.FC<IProps> = ({
         onClose={() => {
           setOpen(false);
         }}
+        style={style || undefined}
         onChange={(evt:any,newValue:any | null) => {
           form.setFieldValue(name,newValue,true)
         }} 
-        // onInputChange={(event,newInputValue) => {
-        //   console.log("this is the new input value",newInputValue)
-        //   form.setFieldValue(name,newInputValue,true)
-        // }}
         value={field.value}
         getOptionSelected={getSelected}
         getOptionLabel={getLabel}
         options={options} loading={loading} autoHighlight
+        {...props}
         renderInput={(params:any) => (
           <TextField
             {...params}

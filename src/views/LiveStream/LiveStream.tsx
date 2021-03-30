@@ -122,7 +122,6 @@ const LiveStream = () => {
 
     // 1. Get the detail about the current broadcast
     React.useEffect(() => {
-        console.log("Calling this functiin")
         const apiBroadCastCall = async () => {
             if(selectedStream?.liveBroadcastID.length){
                 const broadCastDetail = await streamService.getBroadCastDetail(selectedStream!.liveBroadcastID)
@@ -132,7 +131,7 @@ const LiveStream = () => {
             }
         }
         const apiStreamCall = async () => {
-            if(selectedStream?.liveStreamID.length){
+            if(selectedStream?.liveBroadcastID.length){
                 const liveStreamDetail = await streamService.getStreamDetail(selectedStream.liveStreamID)
                 if(liveStreamDetail?.items[0]){
                     setCurrentLiveStream(liveStreamDetail.items[0])
@@ -163,7 +162,8 @@ const LiveStream = () => {
 
     },[currentBroadCastDetail])
 
-    console.log("this is the current live stream",currentLiveStream)
+    console.log("this is the selected stream detail",selectedStream)
+
 
     const changeActive = (broadcast: LiveStreamChurchResponse) => () => {
         setSelectedStream(broadcast)
@@ -200,8 +200,7 @@ const LiveStream = () => {
         }
     }
 
-    // console.log("this is the selected stream",selectedStream)
-    // console.log("this is the selected stream",selectedStream)
+    const liveStreamAPI = process.env.REACT_APP_LIVESTREAM_API || "";
 
     return (
         <Flex direction={["column", "column", "row"]} className={classes.root}>
@@ -287,9 +286,11 @@ const LiveStream = () => {
                             </Flex>
                             <Box id="iframeContainer"/>
                             <Box>
-                                <Button onClick={handleStatusChange("testing")}>
-                                    Start Testing
-                                </Button>
+                                <a href={`${liveStreamAPI}?broadCastId=${selectedStream?.liveBroadcastID}&eventId=${selectedStream?.eventId}`}>
+                                    <Button>
+                                        Start Testing
+                                    </Button>
+                                </a>
                                 <Button ml={3} variant="outline" onClick={handleStatusChange("live")} >
                                     Go Live
                                 </Button>

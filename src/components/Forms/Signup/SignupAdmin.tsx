@@ -464,10 +464,7 @@ const SignupAdmin = () => {
                                                     <TextInput name="phoneNumber" placeholder="Phone Number" />
                                                     {/* <MaterialSelect/> */}
                                                     <MaterialSelect name="genderID" label="Select Gender" 
-                                                    getSelected={(option:any, value:any) => {
-                                                        // console.log("this is the options",option)
-                                                        // console.log("this is the value",value)
-
+                                                        getSelected={(option:any, value:any) => {
                                                         if(value.value){
                                                             return option.value === value.value
                                                         }else{
@@ -475,14 +472,6 @@ const SignupAdmin = () => {
                                                         }
                                                       }}
                                                      options={genderOptions} getLabel={label => label.option || ""} />
-                                                    {/* <Select name="genderID" placeholder="Gender">
-                                                        <option value={1}>
-                                                            Male
-                                                        </option>
-                                                        <option value={2}>
-                                                            Female
-                                                        </option>
-                                                    </Select> */}
                                                     <PasswordInput name="password" placeholder="Password" />
                                                     <PasswordInput name="confirmPassword" placeholder="Confirm Password" />
                                                     <Button disabled={formikProps.isSubmitting || !formikProps.isValid}

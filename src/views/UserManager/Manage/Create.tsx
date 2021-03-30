@@ -2,12 +2,11 @@ import React from "react"
 import { useHistory } from "react-router-dom"
 import { Heading, HStack, IconButton, VStack } from "@chakra-ui/react"
 import { Button } from "components/Button"
-import { TextInput } from "components/Input"
+import { TextInput,MaterialSelect } from "components/Input"
 import { Formik, FormikProps } from "formik"
 import { getStaffByChurch } from "core/services/account.service"
 import { IStaff } from "core/models/Staff"
 import { createStyles, makeStyles } from "@material-ui/styles"
-import { TagContainer } from "components/Input/TagContainer"
 import useToast from "utils/Toast"
 import useParams from "utils/params"
 import { MessageType } from "core/enums/MessageType"
@@ -17,12 +16,6 @@ import { assignRoleClaimToUser, createRole, createRoleClaim, getAllClaims } from
 import { CreateLayout } from "layouts"
 import axios from "axios"
 import { BiLeftArrowAlt } from "react-icons/bi"
-
-interface IForm {
-    name: string;
-    claim: string;
-    staff: string;
-}
 
 
 const useStyles = makeStyles((theme) => createStyles({
@@ -53,19 +46,21 @@ const useStyles = makeStyles((theme) => createStyles({
     }
 }))
 
+
+const initialValues = {
+    name: "",
+    claimsArr: [] as IClaim[],
+    staffArr: [] as IStaff[]
+}
+
+type TypeForm = typeof initialValues
 const CreateRole = () => {
     const classes = useStyles()
     const params = useParams()
     const history = useHistory()
     const toast = useToast()
-
-    const [selectedStaff, setSelectedStaff] = React.useState<IStaff[]>([])
     const [initialStaff, setInitialStaff] = React.useState<IStaff[]>([])
-    const [allStaff, setAllStaff] = React.useState<IStaff[]>([])
-
-    const [selectedClaim, setSelectedClaim] = React.useState<IClaim[]>([])
     const [initialClaim, setInitialClaim] = React.useState<IClaim[]>([])
-    const [allClaim, setAllClaim] = React.useState<IClaim[]>([])
 
     React.useEffect(() => {
         const cancelToken = axios.CancelToken.source()
@@ -103,64 +98,6 @@ const CreateRole = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    function useReactEffect<T>(state: T, setState: React.Dispatch<React.SetStateAction<T>>) {
-        React.useEffect(() => {
-            setState(state)
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [state])
-        return state
-    }
-    function useFilterState<T>(state: T[], setState: React.Dispatch<React.SetStateAction<T[]>>, changedState: T[]) {
-        React.useEffect(() => {
-            const newState = state.filter(item => !changedState.includes(item))
-            setState(newState)
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [changedState])
-    }
-
-    function addToSelected<T>(state: T[], setState: React.Dispatch<React.SetStateAction<T[]>>) {
-        return (
-            (newValue: T) => (
-                () => {
-                    setState([...state, newValue])
-                }
-            )
-        )
-    }
-
-    interface extendsString {
-        [key: string]: string
-    }
-
-    function removeFromSelected<T>(state: T[], setState: React.Dispatch<React.SetStateAction<T[]>>, filterValue: string) {
-        return (
-            (newValue: T) => (
-                () => {
-                    const filteredState = [...state]
-                    const idx = filteredState.findIndex((item, idx) => (item as unknown as extendsString)[filterValue] === (newValue as unknown as extendsString)[filterValue])
-                    filteredState.splice(idx, 1)
-                    setState(filteredState)
-                }
-            )
-        )
-    }
-
-    useReactEffect(initialStaff, setAllStaff)
-    useFilterState(initialStaff, setAllStaff, selectedStaff)
-    const addToSelectedStaff = addToSelected(selectedStaff, setSelectedStaff)
-    const removeFromSelectedStaff = removeFromSelected(selectedStaff, setSelectedStaff, "staffID")
-
-    useReactEffect(initialClaim, setAllClaim)
-    useFilterState(initialClaim, setAllClaim, selectedClaim)
-    const addToSelectedClaim = addToSelected(selectedClaim, setSelectedClaim)
-    const removeFromSelectedClaim = removeFromSelected(selectedClaim, setSelectedClaim, "id")
-
-    const initialValues = {
-        name: "",
-        claim: "",
-        staff: ""
-    }
-
     const validationSchema = Yup.object({
         name: Yup.string().min(1, "Name is too short ").required()
     })
@@ -169,9 +106,9 @@ const CreateRole = () => {
         history.goBack()
     }
 
-    const handleSubmit = async (values: IForm, { ...actions }: any) => {
+    const handleSubmit = async (values: TypeForm, { ...actions }: any) => {
         // actions.setSubmitting(true)
-        if (selectedClaim.length <= 0) {
+        if (values.claimsArr.length <= 0) {
             setTimeout(() => {
                 actions.setErrors({})
             }, 1000)
@@ -185,7 +122,7 @@ const CreateRole = () => {
         createRole(newRole).then(payload => {
             let claimString = "";
             // eslint-disable-next-line
-            selectedClaim.map((item) => {
+            values.claimsArr.map((item) => {
                 claimString += `&claims=${item.claimName}`
             })
             // Adding claims to role via role claim
@@ -195,7 +132,7 @@ const CreateRole = () => {
 
                 // Adding role to the staff
                 // eslint-disable-next-line
-                selectedStaff.map((item) => {
+                values.staffArr.map((item) => {
                     let roleClaimUserString = "";
                     roleClaimUserString += encodeURI(`roleName=${values.name}&agentUserId=${item.staffID}`
 
@@ -208,7 +145,7 @@ const CreateRole = () => {
                     value.map((item, idx) => {
                         if (item.status === "fulfilled") {
                             toast({
-                                title: `Successfully Added Role to Staff ${selectedStaff[idx].fullname}`,
+                                title: `Successfully Added Role to Staff ${values.staffArr[idx].fullname}`,
                                 subtitle: "",
                                 messageType: "success"
                             })
@@ -239,6 +176,13 @@ const CreateRole = () => {
         })
     }
 
+    const compareClaim = (option:any, value:any) => {
+        return option.id === value.id
+    }
+    const compareStaff = (option:any, value:any) => {
+        return option.staffID === value.staffID
+    }
+
     return (
         <VStack p={{ md: 6 }} pt={["2rem","auto"]} className={classes.root} >
                 <HStack>
@@ -254,21 +198,21 @@ const CreateRole = () => {
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
-                    {(formikProps: FormikProps<IForm>) => (
+                    {(formikProps: FormikProps<TypeForm>) => (
                         <>
                             <VStack width="inherit" align="flex-start">
                                 <TextInput width="100%" name="name"
                                     placeholder="Role Name" />
                                 <VStack spacing={5} width="100%" >
-                                    <TagContainer<IClaim, "claimName"> add={addToSelectedClaim}
-                                        remove={removeFromSelectedClaim} tags={allClaim}
-                                        active={selectedClaim} value="claimDisplayValue" name="Claim"
+                                    <MaterialSelect style={{width:"100%"}} name="claimsArr" label="Select all Claim to add to Role" 
+                                        getSelected={compareClaim} multiple
+                                        options={initialClaim} getLabel={(label:IClaim) => label.claimName}
+                                    />
+                                    <MaterialSelect style={{width:"100%"}} name="staffArr" label="Invite all Members and groups" 
+                                        getSelected={compareStaff} multiple
+                                        options={initialStaff} getLabel={(label:IStaff) => label.fullname}
                                     />
                                     <TextInput name="claim" className={classes.removeInput} />
-                                    <TagContainer<IStaff, "fullname"> add={addToSelectedStaff}
-                                        remove={removeFromSelectedStaff} tags={allStaff}
-                                        active={selectedStaff} value="fullname" name="Staff"
-                                    />
                                     <TextInput name="staff" className={classes.removeInput} />
                                 </VStack>
                             </VStack>

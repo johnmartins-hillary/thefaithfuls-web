@@ -123,7 +123,7 @@ class Gapi {
       }
     }
   }
-  createBroadCast = async (payload:Partial<LiveBroadcast>,churchId:number) => {
+  createBroadCast = async (payload:Partial<LiveBroadcast>,{churchId,eventId}:{churchId:number,eventId:number}) => {
     if(this.state !== "ready"){
       return(
         this.toast({
@@ -184,7 +184,11 @@ class Gapi {
         "churchId": churchId,
         "broadcastStatus": broadcastRes.result.status.lifeCycleStatuss || "UpComing"
       }
-      const response = await this.createLiveFeed(result as any)
+
+      const response = await this.createLiveFeed({
+        ...result as any,
+        eventId
+      })
       return response
     }catch(err){
       this.toast({
