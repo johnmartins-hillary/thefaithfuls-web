@@ -18,7 +18,7 @@ export interface SnippetBroadcast {
   broadCastUrl?: string;
 }
 
-interface StatusBroadcast {
+export interface StatusBroadcast {
   lifeCycleStatus?:
     | "complete"
     | "created"

@@ -88,7 +88,12 @@ const Create = () => {
     const isDesktop = String(curBreakpoint) !== "base" && curBreakpoint !== "sm"
     const [showTime, setShowTime] = React.useState(true)
     const [isStreamed,setIsStreamed] = React.useState(false)
-    const googleService = new GoogleService(toast)
+    const [state,setState] = React.useState<"not-ready" | "starting" | "ready" | "unauthenticated">("not-ready")
+    const googleService = new GoogleService({
+        toast,
+        setState,
+        state
+    })
 
     const handleGoogleAuthenticated = () => {
         googleService.authenticate()

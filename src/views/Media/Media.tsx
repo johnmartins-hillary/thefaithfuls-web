@@ -697,12 +697,14 @@ const Media = () => {
                         <SearchInput setValue={handleInput} flex={6} maxW="md"
                             display={{ base: "none", md: "inline-block" }} value={inputValue} />
                         <Flex flex={3} flexShrink={4} />
-                        <Button variant="outline" borderWidth="3px">
-                            <Flex align="center" >
-                                <Icon as={BsCameraVideoFill} />
-                                <Text>Live Stream</Text>
-                            </Flex>
-                        </Button>
+                        <Link to={`/church/${params.churchId}/livestream`}>
+                            <Button variant="outline" borderWidth="3px">
+                                <Flex align="center" >
+                                    <Icon as={BsCameraVideoFill} />
+                                    <Text>Live Stream</Text>
+                                </Flex>
+                            </Button>
+                        </Link>
                     </Flex>
                     <Flex flex={1} />
                     <SearchInput setValue={handleInput} flex={2.5} mb={2}
@@ -771,12 +773,14 @@ const Media = () => {
                         <SearchInput setValue={handleVideoInput} flex={10} maxW="md"
                             display={{ base: "none", md: "inline-block" }} value={videoInputValue} />
                         <Flex flex={3} flexShrink={4} />
-                        <Button variant="outline" mt={[2, "initial"]} borderWidth="3px" colorScheme="primary" color="primary" >
-                            <Flex align="center" >
-                                <Icon as={BsCameraVideoFill} />
-                                <Text>Live Stream</Text>
-                            </Flex>
-                        </Button>
+                        <Link to={`/church/${params.churchId}/livestream`}>
+                            <Button variant="outline" mt={[2, "initial"]} borderWidth="3px" colorScheme="primary" color="primary" >
+                                <Flex align="center" >
+                                    <Icon as={BsCameraVideoFill} />
+                                    <Text>Live Stream</Text>
+                                </Flex>
+                            </Button>
+                        </Link>
                     </Flex>
                     <Flex flex={1} />
                     <SearchInput setValue={handleVideoInput}

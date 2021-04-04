@@ -58,7 +58,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 const PendingStream = () => {
     const classes = useStyles()
     const toast = useToast()
-    const streamService = new GoogleService(toast)
+    const [streamState,setStreamState] = React.useState<"not-ready" | "starting" | "ready" | "unauthenticated">("not-ready")
+    const streamService = new GoogleService({
+        toast,
+        state:streamState,
+        setState:setStreamState
+    })
     const [pendingBroadCast, setPendingBroadCast] = React.useState<LiveStreamChurchResponse[]>([])
     const [selectedStream, setSelectedStream] = React.useState<LiveStreamChurchResponse>()
     const [state, setState] = React.useState<"ready" | "preparing" | "stop">("stop")

@@ -27,7 +27,7 @@ interface constructorArgsType {
     // checkedRef:HTMLInputElement;
     constraint?:IConstraint;
     alert:(arg:string) => void;
-    state:"stopped" | "ready" | "streaming" | "paused";
+    state:"stopped" | "ready" | "streaming" | "paused" | "testing" | "live" | "complete";
 }
 
 const socketOptions = {
@@ -41,13 +41,14 @@ const socketOptions = {
 };
 class LiveStream {
     private mediaRecorder:InstanceType<typeof MediaRecorder> | null;
-    public constraint:IConstraint;
+    public constraint:MediaStreamConstraints;
     private toast:ToastFunc;
     private videoRef:HTMLVideoElement;
     public audiobitrate:number;
-    private socket:Socket<DefaultEventsMap, DefaultEventsMap>;
+    private socket:Socket<DefaultEventsMap, DefaultEventsMap> | undefined;
     // private checkedRef:HTMLInputElement;
-    private state:"stopped" | "ready" | "streaming" | "paused" ;
+    private state:"stopped" | "ready" | "streaming" | "paused" | "testing" | "live" | "complete" ;
+    private liveStreamUrl = process.env.REACT_APP_LIVESTREAM_API || ""
     alert:(arg:string) => void
     
     constructor(arg:constructorArgsType){
@@ -56,36 +57,34 @@ class LiveStream {
         this.alert = arg.alert
         this.videoRef = videoRef;
         this.audiobitrate = audiobitrate;
-        this.socket = io("http://127.0.0.1:3001",{
-            secure: true, reconnection: true, 
-            reconnectionDelay: 1000, timeout:15000, 
-            // pingTimeout: 15000,
-            //  pingInterval: 45000,
-            query: {framespersecond: "15", audioBitrate: "22050"}})
+        this.connectToServer()
+        // this.socket = io(this.liveStreamUrl,socketOptions)
         // this.checkedRef = checkedRef;
         this.state = state
         this.constraint = constraint ||  {
             audio:{
                 echoCancellation:true,
-                sampleRate:22050
+                sampleRate:22050,
             },
             video:{
-                width:{
-                    min:100,
-                    ideal:240,
-                    max:1920
-                },
-                height:{
-                    min:100,
-                    ideal:240,
-                    max:1080
-                },
-                framerate:15
+
+                // width:{
+                //     min:100,
+                //     ideal:1920,
+                //     max:1920
+                // },
+                // height:{
+                //     min:100,
+                //     ideal:1080,
+                //     max:1080,
+                // },
+                // framerate:15
             }
         }
-        console.log("this is the socket",this.socket)
         this.mediaRecorder = null
     }
+
+
 
     showVideo = (stream:MediaStream) => {
         if("srcObject" in this.videoRef){
@@ -104,8 +103,10 @@ class LiveStream {
         },false)
     }
 
-    requestMedia = () => {
-        console.log("this is the socket",this.socket)
+    requestMedia = (streamUrl:string) => {
+        if(!this.socket){
+            return;
+        }
         navigator.getUserMedia = (navigator.mediaDevices.getUserMedia ||
             (navigator.mediaDevices as any).mozGetUserMedia || 
             (navigator.mediaDevices as any).mszGetUserMedia || 
@@ -123,6 +124,8 @@ class LiveStream {
             this.mediaRecorder = new MediaRecorder(stream);
             this.mediaRecorder.start(250);
             const that = this
+            this.socket!.emit("config_rtmpDestination", streamUrl);
+            this.socket!.emit("start", "start");
             this.mediaRecorder.onstop = (e) => {
                 stream.getTracks().forEach(function(track){
                     track.stop()
@@ -134,7 +137,13 @@ class LiveStream {
                     subtitle:""
                 })
             }
-            this.mediaRecorder.onpause = function (e) {}
+            this.mediaRecorder.onpause = (e) => {
+                this.toast({
+                    messageType:"info",
+                    title:"The Media Recorder has been paused",
+                    subtitle:""
+                })
+            }
             this.mediaRecorder.onerror = (evt) => {
                 const error = evt.error;
                 this.toast({
@@ -144,13 +153,13 @@ class LiveStream {
                 })
             }
             this.mediaRecorder.ondataavailable = (e) => {
-                this.socket.emit("binarystream",e.data)
+                this.socket!.emit("binarystream",e.data)
                 this.state = "streaming"
             }
         }).catch(err => {
             this.toast({
                 messageType:"error",
-                title:"Something went wrong",
+                title:"Error while requesting for user media",
                 subtitle:`Error:${err}`
             })
         })
@@ -162,8 +171,12 @@ class LiveStream {
         }
     }
     connectToServer = () => {
-        if(this.mediaRecorder){
+        if(this.socket){
             return;
+        }
+        this.socket = io(this.liveStreamUrl,socketOptions)
+        if(this.socket.connected){
+            this.alert("Successfully connected to rtmp server")
         }
         this.socket.on("connect_timeout", (timeout) => {
             this.alert("state on connection timeout= " + timeout);
@@ -183,7 +196,7 @@ class LiveStream {
         });
     
         this.socket.on("message",  (m) => {
-            alert(JSON.stringify(m,null,2))
+            this.alert(JSON.stringify(m,null,2))
             this.alert("state on message= " + this.state);
             this.alert("recv server message");
             this.alert("SERVER:" + m);
