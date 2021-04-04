@@ -1,9 +1,10 @@
-import {LiveStreamChurchResponse,SnippetStream,CdnStream,StatusStream, LiveBroadcast, ContentDetailStream} from '../models/livestreamRequest'
+import {LiveStreamChurchResponse,SnippetStream,CdnStream,StatusStream, LiveBroadcast, ContentDetailStream, ILiveStream, ContentDetailBroadcast, SnippetBroadcast} from '../models/livestreamRequest'
 import config from "utils/config"
 import { ToastFunc } from 'utils/Toast';
 import { IResponse } from 'core/models/Response';
 import axios, { AxiosRequestConfig,CancelTokenSource } from 'axios';
 import {merge} from "lodash"
+// import gapiTypes from "@types/"
 
 const gapi = (window as any).gapi
 
@@ -24,6 +25,21 @@ interface getAllBroadCastRequest {
   broadcastType:"all" | "event" | "persistent"
   id:string[];
   mine:boolean
+}
+interface BroadCastReturn {
+  etag:string;
+  items:{
+    contentDetails:ContentDetailBroadcast;
+    etags:string;
+    id:string;
+    kind:string;
+    snippet:SnippetBroadcast
+  }[];
+  kind:string;
+  pageInfo:{
+    totalResult:string;
+    resultersPerPage:number
+  }
 }
 type PartType = "id" | "snippet" | "cdn" | "contentDetails" | "status"
     
@@ -56,9 +72,11 @@ class Gapi {
 
   // Load the API for creating the broadcast
   private loadClient = () => {
-    gapi.client.setApiKey(config.googleApiKey)
-    return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest", "v3").then(() => {
+    this.gapi.client.setApiKey(config.googleApiKey)
+    return this.gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest", "v3").then(() => {
       this.state = "ready"
+      const response = this.gapi.auth.getToken()
+      // console.log(JSON.stringify(response,null,2))
     }).catch((err:any) => {
       this.toast({
         messageType:"error",
@@ -69,6 +87,7 @@ class Gapi {
   }
   // Authenticate the user
   authenticate = () => {
+    console.log("Calling this funcion")
     if(this.state !== "ready"){
       return(
         this.toast({
@@ -92,7 +111,9 @@ class Gapi {
     }
   }
 
-  getBroadCastDetail = async (broadCastId:string) => {
+
+  getBroadCastDetail = async (broadCastId:string):Promise<BroadCastReturn | undefined > => {
+    // console.log(this.gapi.client)
     if(this.gapi.client.youtube){
       try{
         const response = await this.gapi.client.youtube.liveBroadcasts.list({
@@ -156,7 +177,7 @@ class Gapi {
             streamStatus:"inactive"
           }
         }
-      });
+      })
       // Bind both the broadcast and stream together
       const broadcastStreamBind = await this.bindStreamToBroadCast({
           id:broadcastRes.result.id != null ? broadcastRes.result.id : "",
@@ -175,10 +196,10 @@ class Gapi {
           "resolution": streamInsertResp.cdn.resolution,
           "frameRate": streamInsertResp.cdn.frameRate,
           "ingestionType": streamInsertResp.cdn.ingestionType,
-          "ingestionAddress": streamInsertResp.cdn.ingestionInfo.ingestionAddress,  
-          "rtmpsIngestionAddress": streamInsertResp.cdn.ingestionInfo.rtmpsIngestionAddress,
-          "rtmpsBackupIngestionAddress":streamInsertResp.cdn.ingestionInfo.rtmpsBackupIngestionAddress,
-          "streamName":streamInsertResp.cdn.ingestionInfo.streamName
+          "ingestionAddress": streamInsertResp.cdn.ingestionInfo?.ingestionAddress,  
+          "rtmpsIngestionAddress": streamInsertResp.cdn.ingestionInfo?.rtmpsIngestionAddress,
+          "rtmpsBackupIngestionAddress":streamInsertResp.cdn.ingestionInfo?.rtmpsBackupIngestionAddress,
+          "streamName":streamInsertResp.cdn.ingestionInfo?.streamName
         },
         "churchId": churchId,
         "broadcastStatus": broadcastRes.result.status.lifeCycleStatuss || "UpComing"
@@ -197,8 +218,9 @@ class Gapi {
       })
     }
   }
+  
   // Create the media stream 
-  private createLiveStream = async (arg:{
+  createLiveStream = async (arg:{
     "part":PartType[],
     "resource": {
       "cdn"?: CdnStream,
@@ -208,7 +230,7 @@ class Gapi {
         "streamStatus": "created" | "active" | "inactive" | "ready" | "error"
       }
     }
-  }):Promise<any> => {
+  }):Promise<ILiveStream> => {
     try{
       const newStreamRequest = merge({
         part:["snippet","cdn","contentDetails","status"],

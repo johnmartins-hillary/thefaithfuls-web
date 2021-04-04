@@ -10,9 +10,15 @@ import { makeStyles, createStyles } from "@material-ui/styles"
 const useStyles = makeStyles(theme => (
     createStyles({
         input: {
+            border:"1px solid #000000",
+            background:"transparent !important",
             "&::placeholder": {
                 color: "black",
                 fontSize: "1rem"
+            },
+            "&:focus":{
+                borderColor: "#b603c9 !important",
+                boxShadow: "0 0 0 1px #b603c9 !important"
             }
         }
     })
@@ -22,10 +28,11 @@ const useStyles = makeStyles(theme => (
 
 interface IProps extends NumberInputProps {
     name: string;
+    label?:string;
     [key:string]:any;
 }
 
-const NormalInput: React.FC<IProps> = ({name,...props }) => {
+const NormalInput: React.FC<IProps> = ({name,label,...props }) => {
     
     const styles = useStyleConfig("Input", {})
     const classes = useStyles()

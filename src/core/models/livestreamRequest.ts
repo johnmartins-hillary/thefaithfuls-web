@@ -1,4 +1,4 @@
-interface SnippetBroadcast {
+export interface SnippetBroadcast {
   publishedAt?: Date;
   channelId?: string;
   thumbnails?: {
@@ -34,7 +34,7 @@ interface StatusBroadcast {
   selfDeclarendMadeForKids?: boolean;
 };
 
-interface ContentDetailBroadcast {
+export interface ContentDetailBroadcast {
   boundStreamId?: string;
   boundStreamLastUpdateTimeMs?: Date;
   monitorStream: {
@@ -120,7 +120,7 @@ export interface ContentDetailStream {
   isReusable?: boolean;
 }
 
-export interface LiveStream {
+export interface ILiveStream {
   kind: string;
   stag: string;
   id: string;
