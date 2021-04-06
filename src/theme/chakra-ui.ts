@@ -35,7 +35,7 @@ const Input = {
     solid: {
       border:"1px solid rgba(0, 0, 0, .3)",
       // opacity:.9,
-      bgColor:"white",
+      bgColor:"transparent",
       borderRadius:"4px",
       color:"#00000099",
       fontSize:"1.25rem",
