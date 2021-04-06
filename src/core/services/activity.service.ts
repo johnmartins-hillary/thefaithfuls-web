@@ -70,3 +70,13 @@ export const getChurchEvent = async (churchId:string,cancelToken:CancelTokenSour
         throw err
     }
 }
+export const getEventByID = async (eventId:string,cancelToken:CancelTokenSource):Promise<IResponse<IEvent>> => {
+    const url = `${baseUrl}/Activity/GetEventById?id=${eventId}`
+    try{
+        const config:AxiosRequestConfig = {headers:{Accept:"text/plain"},cancelToken:cancelToken.token}
+        const response = await axios.get(url,config)
+        return response.data
+    }catch(err){
+        throw err
+    }
+}

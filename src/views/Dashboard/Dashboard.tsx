@@ -427,7 +427,7 @@ const Dashboard = () => {
                                     </HStack>
                                 </DashboardCard>
                                 <DashboardCard heading="" color="green.500">
-                                    <RouterLink to={`/church/${params.churchId}/livestream`} >
+                                    <RouterLink to={`/church/${params.churchId}/livestream`}>
                                         <Button>
                                             Show LiveStream
                                         </Button>

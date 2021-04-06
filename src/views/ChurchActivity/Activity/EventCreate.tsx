@@ -4,10 +4,10 @@ import { useHistory } from "react-router-dom"
 import {
     Flex, Heading, useBreakpoint, HStack, FormControl,
     Textarea, Box, Text, AspectRatio, Image,
-    Icon, FormLabel, Switch, Stack, VStack
+    Icon, FormLabel,Checkbox, Switch, Stack, VStack
 } from "@chakra-ui/react"
 import { Button } from "components/Button"
-import { TextInput, Checkbox,MaterialSelect } from "components/Input"
+import { TextInput ,MaterialSelect } from "components/Input"
 import { Formik, Field, FieldProps, FormikProps } from "formik"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 import DatePicker from "react-date-picker"
@@ -87,7 +87,25 @@ const Create = () => {
     const [initialGroups, setInitialGroup] = React.useState<IGroup[]>([])
     const isDesktop = String(curBreakpoint) !== "base" && curBreakpoint !== "sm"
     const [showTime, setShowTime] = React.useState(true)
-    const googleService = new GoogleService(toast)
+    const [isStreamed,setIsStreamed] = React.useState(false)
+    const [state,setState] = React.useState<"not-ready" | "starting" | "ready" | "unauthenticated">("not-ready")
+    const googleService = new GoogleService({
+        toast,
+        setState,
+        state
+    })
+
+    const handleGoogleAuthenticated = () => {
+        googleService.authenticate()
+    }
+
+    const toggleStreamed = () => {
+
+        if(!isStreamed){
+            handleGoogleAuthenticated()
+        }
+        setIsStreamed(!isStreamed)
+    }
 
     const [image, setImage] = React.useState({
         name: "",
@@ -189,10 +207,7 @@ const Create = () => {
         }
 
         activityService.createEvent(newEvent).then( async payload => {
-            actions.setSubmitting(false)
-            actions.resetForm()
-            history.goBack()
-            if(values.streamed){
+            if(isStreamed){             
                 const response = await handleCreateStream({
                     title,
                     description:detail,
@@ -200,8 +215,10 @@ const Create = () => {
                     scheduledEndTime:time.endDateTime,
                     eventId:payload.data.eventId as number
                 })
-                console.log("this is the response",response)
             }
+            actions.setSubmitting(false)
+            actions.resetForm()
+            history.goBack()
             toast({
                 title: 'New Event has been created',
                 subtitle: "",
@@ -387,11 +404,13 @@ const Create = () => {
                                         )}
                                     </Field>
                                 </VStack>
-                                <Checkbox name="streamed" >
-                                    <Text textStyle="h" fontSize="1rem" whiteSpace="nowrap" >
-                                        This Event will be Streamed Live
-                                    </Text>
+                                <Checkbox  onChange={toggleStreamed} colorScheme="green">
+                                    This Event will be Streamed Live
                                 </Checkbox>
+                                {/* <Checkbox name="streamed" >
+                                    <Text textStyle="h" fontSize="1rem" whiteSpace="nowrap" >
+                                    </Text>
+                                </Checkbox> */}
                                 <Stack direction={["column", "row"]} spacing={2}
                                     width="100%">
                                     <Button px={5} py={2} isLoading={formikProps.isSubmitting}

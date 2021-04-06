@@ -3,6 +3,7 @@ import {useParams} from "react-router-dom"
 
 interface IParams {
     churchId:string;
+    broadcastId:string
     roleId:string
 }
 

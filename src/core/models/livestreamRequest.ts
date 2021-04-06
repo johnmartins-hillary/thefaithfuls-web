@@ -1,4 +1,4 @@
-interface SnippetBroadcast {
+export interface SnippetBroadcast {
   publishedAt?: Date;
   channelId?: string;
   thumbnails?: {
@@ -18,7 +18,7 @@ interface SnippetBroadcast {
   broadCastUrl?: string;
 }
 
-interface StatusBroadcast {
+export interface StatusBroadcast {
   lifeCycleStatus?:
     | "complete"
     | "created"
@@ -34,7 +34,7 @@ interface StatusBroadcast {
   selfDeclarendMadeForKids?: boolean;
 };
 
-interface ContentDetailBroadcast {
+export interface ContentDetailBroadcast {
   boundStreamId?: string;
   boundStreamLastUpdateTimeMs?: Date;
   monitorStream: {
@@ -79,6 +79,7 @@ export interface LiveBroadcast {
 
 export interface CdnStream {
   ingestionType: "dash" | "hls" | "rtmp";
+  
   ingestionInfo?: {
     streamName: string;
     ingestionAddress: string;
@@ -120,7 +121,7 @@ export interface ContentDetailStream {
   isReusable?: boolean;
 }
 
-export interface LiveStream {
+export interface ILiveStream {
   kind: string;
   stag: string;
   id: string;
