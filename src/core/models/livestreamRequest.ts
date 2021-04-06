@@ -79,6 +79,7 @@ export interface LiveBroadcast {
 
 export interface CdnStream {
   ingestionType: "dash" | "hls" | "rtmp";
+  
   ingestionInfo?: {
     streamName: string;
     ingestionAddress: string;
