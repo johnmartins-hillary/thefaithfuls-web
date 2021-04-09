@@ -23,7 +23,7 @@ import { Recurring } from "core/enums/Recurring"
 import useParams from "utils/params"
 import * as Yup from "yup"
 import { CreateLayout } from "layouts"
-import GoogleService from "core/services/livestream.service"
+import StreamingService from "core/services/livestream.service"
 
 
 interface IForm {
@@ -88,15 +88,17 @@ const Create = () => {
     const isDesktop = String(curBreakpoint) !== "base" && curBreakpoint !== "sm"
     const [showTime, setShowTime] = React.useState(true)
     const [isStreamed,setIsStreamed] = React.useState(false)
-    const [state,setState] = React.useState<"not-ready" | "starting" | "ready" | "unauthenticated">("not-ready")
-    const googleService = new GoogleService({
-        toast,
-        setState,
-        state
-    })
+    const [streamState,setStreamState] = React.useState<"not-ready" | "starting" | "ready" | "unauthenticated">("not-ready")
+    // const streamService = new streamService({
+    //     toast,
+    //     setState,
+    //     state
+    // })
+    const streamService = React.useRef<StreamingService | null>(null)
+    
 
     const handleGoogleAuthenticated = () => {
-        googleService.authenticate()
+        streamService.current?.authenticate()
     }
 
     const toggleStreamed = () => {
@@ -107,11 +109,18 @@ const Create = () => {
         setIsStreamed(!isStreamed)
     }
 
+    console.log({isStreamed})
+
     const [image, setImage] = React.useState({
         name: "",
         base64: ""
     })
     React.useEffect(() => {
+        streamService.current = new StreamingService({
+            toast:toast,
+            state:streamState,
+            setState:setStreamState
+        })
         const getAllGroupsForChurch = async () => {
             await getGroupByChurch(params.churchId).then(payload => {
                 setInitialGroup(payload.data)
@@ -150,31 +159,33 @@ const Create = () => {
             scheduledEndTime:string;
             eventId:number;
         }) => {  
-            googleService.authenticate().then(async () => {
-                await googleService.createBroadCast({
-                    part:["snippet","status","contentDetails"],
-                    snippet:{
-                        title,
-                        description,
-                        scheduledStartTime,
-                        scheduledEndTime
-                    },
-                    status:{
-                        privacyStatus:"unlisted"
-                    },
-                    contentDetails:{
-                        monitorStream:{
-                            enableMonitorStream:true
+            return new Promise((resolve,reject) => {
+                streamService.current?.authenticate().then(async () => {
+                    await streamService.current?.createBroadCast({
+                        part:["snippet","status","contentDetails"],
+                        snippet:{
+                            title,
+                            description,
+                            scheduledStartTime,
+                            scheduledEndTime
+                        },
+                        status:{
+                            privacyStatus:"unlisted"
+                        },
+                        contentDetails:{
+                            monitorStream:{
+                                enableMonitorStream:true
+                            }
                         }
-                    }
-                },{
-                    churchId:params.churchId as any,
-                    eventId:eventId as number
+                    },{
+                        churchId:params.churchId as any,
+                        eventId:eventId as number
+                    }).then(resolve).catch(reject)
                 })
             })
         }
 
-
+console.log({streamState})
 
     const handleSubmit = (values: IForm, { ...actions }: any) => {
         actions.setSubmitting(true)
@@ -207,23 +218,34 @@ const Create = () => {
         }
 
         activityService.createEvent(newEvent).then( async payload => {
-            if(isStreamed){             
-                const response = await handleCreateStream({
+            
+            // if(isStreamed){             
+                await handleCreateStream({
                     title,
                     description:detail,
                     scheduledStartTime:time.startDateTime,
                     scheduledEndTime:time.endDateTime,
                     eventId:payload.data.eventId as number
+                }).then(() => {
+                    actions.setSubmitting(false)
+                    actions.resetForm()
+                    history.push(`/church/${params.churchId}/dashboard`)
+                    toast({
+                        title: 'New Event has been created',
+                        subtitle: "",
+                        messageType: MessageType.SUCCESS
+                    })
                 })
-            }
-            actions.setSubmitting(false)
-            actions.resetForm()
-            history.goBack()
-            toast({
-                title: 'New Event has been created',
-                subtitle: "",
-                messageType: MessageType.SUCCESS
-            })
+            // }else{
+            //     actions.setSubmitting(false)
+            //     actions.resetForm()
+            //     history.push(`/church/${params.churchId}/dashboard`)
+            //     toast({
+            //         title: 'New Event has been created',
+            //         subtitle: "",
+            //         messageType: MessageType.SUCCESS
+            //     })
+            // }
         }).catch(err => {
             actions.setSubmitting(false)
             toast({
@@ -284,7 +306,10 @@ const Create = () => {
             className={classes.root} >
             <Heading textStyle="h4" >
                 New Church Event
-                </Heading>
+            </Heading>
+            <Button onClick={handleClick}>
+                Sign IN with Google
+            </Button>
             <CreateLayout>
                 <Formik
                     initialValues={initialValues}

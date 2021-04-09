@@ -87,7 +87,6 @@ class Gapi {
           this.loadClient();
         })
         .catch((err: any) => {
-          console.log("this si the err", err);
           this.toast({
             messageType: "error",
             title: "Unable to complete google api loading",
@@ -106,11 +105,13 @@ class Gapi {
         "v3"
       )
       .then(() => {
+        console.log("calling this functionsdnsiod")
         if(!this.gapi.auth2.getAuthInstance().isSignedIn.get()){
           this.setState("unauthenticated")
         }else{
           this.setState("ready")
         }
+        console.log(this.state)
       })
       .catch((err: any) => {
         this.toast({
@@ -184,13 +185,14 @@ class Gapi {
     payload: Partial<LiveBroadcast>,
     { churchId, eventId }: { churchId: number; eventId: number }
   ) => {
-    if (this.state !== "ready") {
-      return this.toast({
-        messageType: "info",
-        title: "Google API is stil Loading",
-        subtitle: "",
-      });
-    }
+    console.log(this.state)
+    // if (this.state !== "ready") {
+    //   return this.toast({
+    //     messageType: "info",
+    //     title: "Google API is stil Loading",
+    //     subtitle: ""
+    //   });
+    // }
     try {
       // First Create a broadcast
       const broadcastRes = await gapi.client.youtube.liveBroadcasts.insert(
