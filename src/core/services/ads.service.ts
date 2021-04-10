@@ -1,5 +1,5 @@
 import axios,{AxiosRequestConfig,CancelTokenSource} from "axios"
-import {IAdvert} from "core/models/Advert"
+import {IAdvert,IAdvertSetting} from "core/models/Advert"
 import {IResponse} from "core/models/Response"
 
 
@@ -44,8 +44,8 @@ export const deleteAdvert = async (advertId:number):Promise<IResponse<IAdvert>> 
     }
 }
 
-export const getAdvert = async (churchId:number):Promise<IResponse<IAdvert>> => {
-    const url = `${baseUrl}/getAdvert?churchId=${churchId}`
+export const getAdvertSetting= async ():Promise<IResponse<IAdvertSetting[]>> => {
+    const url = `${baseUrl}/getAdvertSetting`
     try{
         const config:AxiosRequestConfig = {headers:{
             "Accept":"text/plain"

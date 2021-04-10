@@ -35,6 +35,7 @@ import {SearchInput} from "components/Input"
 import {primary} from "theme/palette"
 import axios from "axios"
 import {NoContent} from "components/NoContent"
+import {getChurchOnlyDonationTransactions,withdrawalToChurch} from "core/services/payment.service"
 
 const donationStyles = makeStyles((theme:Theme) => createStyles({
     root:{
@@ -140,11 +141,6 @@ interface ITransaction {
     date:Date;
     title:string;
     amount:number
-}
-
-interface IWithdrawAccount {
-    amount:number | null;
-    account:number;
 }
 
 interface IForm {
@@ -314,25 +310,48 @@ interface IWithdrawAccountProps {
     churchAccount:IChurchBankDetail[]
 }
 
+const initialValuesForWithdrawal = {
+    amount:0,
+    account:"",
+    beneficiary:""
+}
+
+type withdrawalType = typeof initialValuesForWithdrawal
+
 const WithdrawFromAccount:React.FC<IWithdrawAccountProps> = ({close,churchAccount}) => {
-    const initialValues = {
-        amount: null,
-        account:0
-    }
+    const toast = useToast()
+    const params = useParams()
     const validationSchema = Yup.object({
-        title: Yup.string().required(),
-        accountNo: Yup.number().required(),
-        bank: Yup.string().required(),
+        amount: Yup.string().required(),
+        account: Yup.string().required(),
+        beneficiary: Yup.string().min(5,"Beneficiary name is too short").max(20,"Beneficiary name is too short").required(),
     })
-    const handleSubmit = (values: IWithdrawAccount, { ...actions }: any) => {
-        console.log(actions)
+    const handleSubmit = (values: withdrawalType, { ...actions }: any) => {
+        console.log(values)
+        const bankAccount:IChurchBankDetail = JSON.parse(values.account)
         actions.setSubmitting(true)
-        setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            actions.setSubmitting(false);
-            actions.resetForm()
-        }, 1000);
+        withdrawalToChurch({
+            amount:values.amount,
+            beneficiary:values.beneficiary,
+            churchBankId:bankAccount.churchBankId as number,
+            churchId:params.churchId,
+            currency:"NGN",
+            societyId:bankAccount.societyId
+        }).then((payload) => {
+            toast({
+                messageType:"success",
+                title:"Request is successful",
+                subtitle:`Request for withdrawal of amount NGN${values.amount} is successful`
+            })
+        }).catch(err => {
+            toast({
+                title:"Unable to complete request",
+                subtitle:`Error:${err}`,
+                messageType:"error"
+            })
+        })
     }
+
     return(
         <ModalContent bgColor="#F3F3F3" >
             <ModalHeader color="primary" fontWeight="400" >
@@ -345,26 +364,34 @@ const WithdrawFromAccount:React.FC<IWithdrawAccountProps> = ({close,churchAccoun
             <ModalBody display="flex" justifyContent="center" >
                 <Flex my="10" direction="column" align="center"
                         flex={1}  maxWidth="lg" >
-                    <Formik initialValues={initialValues}
+                    <Formik initialValues={initialValuesForWithdrawal}
                         validationSchema={validationSchema}
-                        onSubmit={handleSubmit}
+                        onSubmit={handleSubmit} 
                         >
-                            {(formProps: FormikProps<IWithdrawAccount>) => (
-                                <>
-                                    <TextInput width="100%"
-                                    name="amount" placeholder="Enter Amount" />
-                                    <Select name="account" placeholder="Select Account" >
-                                        {churchAccount.map((item,idx) => (
-                                            <option value={item.accountNumber} key={item.churchBankId || idx } >
-                                                {item.name}
-                                            </option>
-                                        ))}
-                                    </Select>
-                                    <Button mt={{sm:"5",md:"20"}} width="40%" bgColor="primary" color="white" >
-                                        Withdraw
-                                    </Button>
-                                </>
-                            )}
+
+                            {(formikProps: FormikProps<withdrawalType>) => {
+                                return(
+                                    <>
+                                        <TextInput width="100%"
+                                            name="beneficiary" placeholder="Enter Beneficiary" />
+                                        <TextInput width="100%"
+                                            name="amount" placeholder="Enter Amount" />
+                                        <Select name="account" placeholder="Select Account" >
+                                            {churchAccount.map((item,idx) => (
+                                                <option value={JSON.stringify(item)} key={item.churchBankId || idx } >
+                                                    {item.name}
+                                                </option>
+                                            ))}
+                                        </Select>
+                                        <Button mt={{sm:"5",md:"20"}} width="40%"
+                                        disabled={ !formikProps.isValid || formikProps.isSubmitting}
+                                        onClick={formikProps.handleSubmit as any} role="submit"
+                                        bgColor="primary" color="white" >
+                                            Withdraw
+                                        </Button>
+                                    </>
+                                )
+                            }}
                     </Formik>
                 </Flex>
             </ModalBody>
@@ -548,6 +575,7 @@ const Donation:React.FC<IDonationProps> = ({close,addToDonation,churchAccount}) 
 const Finance = () => {
     const history = useHistory()
     const classes = useStyles()
+    const [churchTransaction,setChurchTransaction] = React.useState<any[]>([])
     const defaultDonation:IDonation = {
         churchID:0,
         donationDescription:"",
@@ -627,7 +655,27 @@ const Finance = () => {
                 }
             })
         }
+        const getChurchTransaction = () => {
+            getChurchOnlyDonationTransactions({
+                churchId:params.churchId,
+                page:1,
+                take:10,
+                cancelToken:cancelToken
+            }).then(payload => {
+                setChurchTransaction(payload.data ?? [])
+            }).catch(err => {
+                if(!axios.isCancel(err)){
+                    toast({
+                        title:"Unable to Load church transaction",
+                        subtitle:`Error:${err}`,
+                        messageType:"error"
+                    })
+                }  
+            })
+        }
+
         getChurchBankAccountApi()
+        getChurchTransaction()
         getChurchDonationApi()
         return () => {
             cancelToken.cancel()
@@ -743,6 +791,7 @@ const Finance = () => {
                         </Wrap>
                     </Stack>
                 </Stack>
+
                 <Stack zIndex={1000} pt={10} maxWidth={{md:"24rem"}} width="100%"
                  pl={[3,10]} flex={3} ml={{md:4}} align="center" bgColor="white" mt={{base:"3",md:"0"}}
                     borderRadius="10px" shadow=" 0px 5px 20px #0000001A"
@@ -768,7 +817,13 @@ const Finance = () => {
                             Recent Transactions
                         </Heading>
                         <Stack className={classes.transactionContainer} >
-                            <Text>No Available Transaction History</Text>
+                            {
+                                churchTransaction.map((item,idx) => (
+                                    <Transaction key={idx} amount={10000}
+                                     title="First Transaction" withdraw={false}
+                                        date={new Date()} />
+                                ))
+                            }
                         </Stack>
                     </Stack>
                         <Flex direction="column" my="5" className={classes.buttonHolder} >

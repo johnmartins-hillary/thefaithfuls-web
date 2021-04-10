@@ -338,6 +338,7 @@ const LiveStream = () => {
             }
         }
     }
+    
     const startStreaming = async () => {
         try {
             // Create the new Stream
