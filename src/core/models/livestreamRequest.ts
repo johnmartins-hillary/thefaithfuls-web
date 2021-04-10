@@ -158,7 +158,7 @@ export interface LiveStreamChurchResponse {
   scheduledStartTime: Date | string;
   scheduledEndTime: Date | string;
   privacyStatus: string;
-  status: "Upcoming" | "IsLive" | "Passed";
+  status: "Upcoming" | "IsLive" | "Complete" | "NotCompleted" | "Testing";
   churchId: number;
   eventId:number;
   liveStream: StreamChurch

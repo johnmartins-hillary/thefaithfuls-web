@@ -484,16 +484,16 @@ const Donation:React.FC<IDonationProps> = ({close,addToDonation,churchAccount}) 
                                                         General
                                                 </FormLabel>
                                                 <FormLabel>
-                                                    <Field type="radio" name="donationType" value="Seed" />
-                                                    Seed
-                                                </FormLabel>
-                                                <FormLabel>
-                                                    <Field type="radio" name="donationType" value="Offering" />
-                                                    Offering
+                                                    <Field type="radio" name="donationType" value="Levy" />
+                                                    Levy
                                                 </FormLabel>
                                                 <FormLabel>
                                                     <Field type="radio" name="donationType" value="Tithe" />
                                                     Tithe
+                                                </FormLabel>
+                                                <FormLabel>
+                                                    <Field type="radio" name="donationType" value="GroupLevy" />
+                                                    GroupLevy
                                                 </FormLabel>
                                                 {/* <FormLabel>
                                                     <Field type="radio" name="donationType" value="LEVY" />
