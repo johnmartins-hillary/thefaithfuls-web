@@ -316,7 +316,10 @@ const LiveStream = () => {
             if (recentBroadCastDetail.items[0].status.lifeCycleStatus === status) {
                 showAlert(`Video is ${status} succesful`)
                 clearInterval(broadCastInterval)
-                if (status === "live") {
+                if(status === "testing"){
+                    setStreamIFrame(recentBroadCastDetail.items[0].contentDetails.monitorStream.embedHtml as string)
+
+                }else if(status === "live") {
                     setTimeout(async () => {
                         await streamService.current?.updateBroadcastStatus({
                             broadcastId: broadCast!.id,
@@ -325,7 +328,6 @@ const LiveStream = () => {
                         })
                     }, 2500)
                 } else if (status === "complete") {
-                    setStreamIFrame(recentBroadCastDetail.items[0].contentDetails.monitorStream.embedHtml as string)
                     setTimeout(async () => {
                         await streamService.current?.updateBroadcastStatus({
                             broadcastId: broadCast!.id,

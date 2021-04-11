@@ -83,12 +83,12 @@ export const getChurchOnlyDonationTransactions = async ({
     churchId: string;
     page: number;
     take: number;
-    cancelToken: CancelTokenSource
+    cancelToken?: CancelTokenSource
 }): Promise<IResponse<any>> => {
   try {
     const url = `${baseUrl}/GetChurchOnlyDonationTransactions?churchId=${churchId}&page=${page}&take=${take}`;
     const response = await axios.get(url,{
-        cancelToken:cancelToken.token
+        ...(cancelToken && {cancelToken:cancelToken.token})
     });
 
     return response.data;
