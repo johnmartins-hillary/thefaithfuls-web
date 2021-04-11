@@ -427,7 +427,6 @@ const LiveStream = () => {
             })
         })
     }
-    console.log(streamState)
     return (
         <>
             <Dialog open={open} close={handleToggle} >
