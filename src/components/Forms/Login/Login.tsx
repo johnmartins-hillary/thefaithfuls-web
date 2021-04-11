@@ -7,7 +7,7 @@ import {useSelector} from "react-redux"
 import {AppState} from "store"
 // eslint-disable-next-line
 import {Formik,FormikProps} from "formik"
-import {TextInput} from "components/Input"
+import {TextInput,PasswordInput} from "components/Input"
 import useToast from "utils/Toast"
 import {login} from "store/System/actions"
 import * as Yup from "yup"
@@ -73,7 +73,7 @@ const Signup = () => {
                 return (
                     <Box my={["4"]} width={["90vw", "100%"]} maxWidth="sm" >
                         <TextInput name="phoneNo" placeholder="Phone Number" />
-                        <TextInput mt="6" name="password" type="password" placeholder="Password" />
+                        <PasswordInput mt="6" name="password" type="password" placeholder="Password" />
                         <FormControl>
                             <FormHelperText cursor="pointer" mb="3" ml="2" onClick={moveToChangePassword}>
                                 Forgot Password

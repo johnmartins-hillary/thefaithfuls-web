@@ -1,13 +1,13 @@
 import React from "react"
 import { useHistory } from "react-router-dom"
 import {
-    Flex, Text, Heading, HStack, IconButton, FormControl,
-    Icon, FormErrorMessage, Stack, VStack, AspectRatio, Image
+    Flex, Text, Heading, HStack, IconButton,
+    Icon, Stack, VStack, AspectRatio, Image,Box
 } from "@chakra-ui/react"
 import { BsCardImage } from "react-icons/bs"
 import { Button } from "components/Button"
-import NormalInput from "components/Input/Normal"
-import { createAdvert } from "core/services/ads.service"
+import {TextInput as NormalInput,Select} from "components/Input"
+import { createAdvert,getAdvertSetting } from "core/services/ads.service"
 import {generateReference,verifyTransaction} from "core/services/payment.service"
 import { Formik,FormikProps } from "formik"
 import { createStyles, makeStyles } from "@material-ui/styles"
@@ -24,6 +24,7 @@ import {CreateLayout} from "layouts"
 import {useSelector} from "react-redux"
 import {AppState} from "store"
 import {PaymentButton} from "components/PaymentButton"
+import {IAdvert,IAdvertSetting} from "core/models/Advert"
 import axios from "axios"
 import * as advertDraftHelper from "./advertUtil"
 
@@ -90,6 +91,8 @@ const Create = () => {
     const toast = useToast()
     const classes = useStyles()
     const currentDate = new Date()
+    const [advertSetting,setAdvertSetting] = React.useState<IAdvertSetting[]>([])
+    const [currentAdvertSetting,setCurrentAdvertSetting] = React.useState<IAdvertSetting>()
     const [difference, setDifference] = React.useState<number>(1)
     const currentChurch = useSelector((state:AppState) => state.system.currentChurch)
     const [submitting,setSubmitting] = React.useState(false)
@@ -305,7 +308,17 @@ const Create = () => {
                                 <VStack width="100%" >
                                     <VStack width="inherit" align="flex-start" >
                                         <NormalInput width="100%" name="title" placeholder="Input title" />
-                                        <NormalInput width="100%" name="link" placeholder="Input Link for Advert" />
+                                        <Box flexDirection={["column","row"]} display="flex" w="100%" justifyContent="space-between">
+                                            <Select name="stateID"
+                                                placeholder="" >
+                                                {advertSetting.map((item, idx) => (
+                                                    <option key={item.audience} value={item.audience} >
+                                                        {item.title}
+                                                    </option>
+                                                ))}
+                                            </Select>
+                                            <NormalInput width="100%" name="link" placeholder="Input Link for Advert" />
+                                        </Box>
                                         <VStack align="flex-start" w="100%">
                                             <Stack my={5} w="100%" justify="space-between" direction={["column", "row"]} align="center">
                                                 <VStack align="flex-start">

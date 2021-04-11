@@ -14,14 +14,14 @@ import { IEvent } from "core/models/Event"
 import { getEventByID } from "core/services/activity.service"
 import { Dialog } from "components/Dialog"
 import useParams from "utils/params"
-import {VscLoading} from "react-icons/vsc"
-import {primary} from "theme/palette"
+import { VscLoading } from "react-icons/vsc"
+import { primary } from "theme/palette"
 import { LiveBroadcast, ILiveStream, ContentDetailBroadcast, SnippetBroadcast } from "core/models/livestreamRequest"
 
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        position:"relative",
+        position: "relative",
         "& p,label": {
             color: "#00000099",
             fontSize: "1rem",
@@ -90,9 +90,17 @@ const useStyles = makeStyles((theme) => createStyles({
             borderRadius: "4px"
         }
     },
-    svg:{
-        fontSize:"4rem",
-        color:primary
+    svg: {
+        fontSize: "4rem",
+        color: primary
+    },
+    iframeContainer:{
+        display:"flex",
+        flexDirection:"column",
+        alignItems:"center",
+        "& > *":{
+            margin:theme.spacing(2)
+        }
     }
 }))
 
@@ -111,8 +119,10 @@ const LiveStream = () => {
     const date = new Date()
     const toast = useToast()
     const streamService = React.useRef<StreamingService | null>(null)
+    const iframeContainer = React.useRef<HTMLDivElement | null>(null)
     const [state, setState] = React.useState<"stopped" | "ready" | "streaming" | "live" | "testing" | "paused" | "complete">("stopped")
-    const [streamState,setStreamState] = React.useState<"not-ready" | "starting" | "ready" | "unauthenticated">("not-ready")
+    const [streamState, setStreamState] = React.useState<"not-ready" | "starting" | "ready" | "unauthenticated">("not-ready")
+    const [streamIFrame,setStreamIFrame] = React.useState("")
     const detailRef = React.useRef<HTMLTextAreaElement>(null)
     const alertRef = React.useRef<HTMLTextAreaElement>(null)
     const videoRef = React.useRef<HTMLVideoElement>(null)
@@ -174,9 +184,9 @@ const LiveStream = () => {
             alert: showOutput
         })
         streamService.current = new StreamingService({
-            toast:toast,
-            state:streamState,
-            setState:setStreamState
+            toast: toast,
+            state: streamState,
+            setState: setStreamState
         })
         const urlParams = new URLSearchParams(window.location.search);
         const eventId = urlParams.get("eventId") || ""
@@ -206,6 +216,12 @@ const LiveStream = () => {
         }
 
     }, [])
+    React.useEffect(() => {
+        if(streamIFrame){
+            const newFrame = document.createRange().createContextualFragment(streamIFrame)
+            iframeContainer.current?.appendChild(newFrame)
+        }
+    },[streamIFrame])
 
     // Gets the detail about the broadcast from the google API
     const connectToServer = async () => {
@@ -269,8 +285,7 @@ const LiveStream = () => {
                 const currentStreamDataResponse = await streamService.current!.getStreamDetail(liveStream.id)
 
                 showAlert(`Stream Status ${JSON.stringify(currentStreamDataResponse?.items[0]?.status, null, 2)}`)
-                console.log("this is the current stream", currentStreamDataResponse)
-
+                
                 if (currentStreamDataResponse?.items[0]?.status.streamStatus === "active") {
                     setState("streaming")
                     showAlert("Video is streaming successfully")
@@ -283,7 +298,7 @@ const LiveStream = () => {
         })
     }
 
-    async function getCurrentBroadcastDetail(status:"testing" | "live" | "complete") {
+    async function getCurrentBroadcastDetail(status: "testing" | "live" | "complete") {
         broadCastInterval = setInterval(getBroadcastDetail, 3000)
 
         async function getBroadcastDetail() {
@@ -301,10 +316,31 @@ const LiveStream = () => {
             if (recentBroadCastDetail.items[0].status.lifeCycleStatus === status) {
                 showAlert(`Video is ${status} succesful`)
                 clearInterval(broadCastInterval)
+                if(status === "testing"){
+                    setStreamIFrame(recentBroadCastDetail.items[0].contentDetails.monitorStream.embedHtml as string)
+
+                }else if(status === "live") {
+                    setTimeout(async () => {
+                        await streamService.current?.updateBroadcastStatus({
+                            broadcastId: broadCast!.id,
+                            churchId: params.churchId,
+                            status: "IsLive"
+                        })
+                    }, 2500)
+                } else if (status === "complete") {
+                    setTimeout(async () => {
+                        await streamService.current?.updateBroadcastStatus({
+                            broadcastId: broadCast!.id,
+                            churchId: params.churchId,
+                            status: "Complete"
+                        })
+                    }, 2500)
+                }
                 setState(status)
             }
         }
     }
+    
     const startStreaming = async () => {
         try {
             // Create the new Stream
@@ -377,6 +413,7 @@ const LiveStream = () => {
             })
         }
     }
+
     const transitionToComplete = async () => {
         setOpen(false)
         if (!broadCast?.id || !liveStream?.id) {
@@ -419,67 +456,68 @@ const LiveStream = () => {
     const loginToGoogle = () => {
         streamService.current?.authenticate().then(() => {
             setStreamState("ready")
-        }).catch((err:any) => {
+        }).catch((err: any) => {
             toast({
-                messageType:"info",
-                title:"Something went wrong",
-                subtitle:`Error:${err}`
+                messageType: "info",
+                title: "Something went wrong",
+                subtitle: `Error:${err}`
             })
         })
     }
+    
     return (
         <>
             <Dialog open={open} close={handleToggle} >
-                {showForLive ? 
-            <ModalContent>
-                <ModalBody display="flex" flexDirection="column"
-                    justifyContent="center" alignItems="center">
-                    <Heading textAlign="center">
-                        Once you go Live, You can't go back
-                    </Heading>
-                </ModalBody>
-                <ModalFooter display="flex" justifyContent="center" >
-                    <Button variant="outline" onClick={handleToggle}>
-                        Cancel
+                {showForLive ?
+                    <ModalContent>
+                        <ModalBody display="flex" flexDirection="column"
+                            justifyContent="center" alignItems="center">
+                            <Heading textAlign="center">
+                                Once you go Live, You can't go back
+                        </Heading>
+                        </ModalBody>
+                        <ModalFooter display="flex" justifyContent="center" >
+                            <Button m={3} variant="outline" onClick={handleToggle}>
+                                Cancel
+                            </Button>
+                            <Button m={3} variant="outline" onClick={transitionToLive}>
+                                Continue
                     </Button>
-                    <Button variant="outline" onClick={transitionToLive}>
-                        Continue
-                    </Button>
-                </ModalFooter>
-            </ModalContent> : 
-            <ModalContent>
-            <ModalBody display="flex" flexDirection="column"
-                justifyContent="center" alignItems="center">
-                <Heading textAlign="center">
-                    Once you Click Complete Stream, You can't go back
+                        </ModalFooter>
+                    </ModalContent> :
+                    <ModalContent>
+                        <ModalBody display="flex" flexDirection="column"
+                            justifyContent="center" alignItems="center">
+                            <Heading textAlign="center">
+                                Once you Click Complete Stream, You can't go back
                 </Heading>
-            </ModalBody>
-            <ModalFooter display="flex" justifyContent="center" >
-                <Button variant="outline" onClick={handleToggle}>
-                    Cancel
+                        </ModalBody>
+                        <ModalFooter display="flex" justifyContent="center" >
+                            <Button m={3} variant="outline" onClick={handleToggle}>
+                                Cancel
                 </Button>
-                <Button variant="outline" onClick={stopStreaming}>
-                    Complete Stream
+                            <Button m={3} variant="outline" onClick={stopStreaming}>
+                                Complete Stream
                 </Button>
-            </ModalFooter>
-        </ModalContent>    
-            }
+                        </ModalFooter>
+                    </ModalContent>
+                }
             </Dialog>
             <VStack pl={{ base: 2, md: 12 }} pt={{ md: 6 }}
                 className={classes.root} >
-                    <VStack bg="rgba(0,0,0,.5)" zIndex={3}
+                <VStack bg="rgba(0,0,0,.5)" zIndex={3}
                     display={streamState !== "ready" ? "flex" : "none"} alignItems="center" justifyContent="center"
-                     position="absolute" w="100%" h="100%"
-                     >
-                         {streamState === "not-ready" && 
-                            <VscLoading className={`App-logo ${classes.svg}`} />
-                         }
-                         {streamState === "unauthenticated" && 
-                         <Button onClick={loginToGoogle}>
+                    position="absolute" w="100%" h="100%"
+                >
+                    {streamState === "not-ready" &&
+                        <VscLoading className={`App-logo ${classes.svg}`} />
+                    }
+                    {streamState === "unauthenticated" &&
+                        <Button onClick={loginToGoogle}>
                             Please Login to Continue
                         </Button>
-                         }
-                     </VStack>
+                    }
+                </VStack>
                 <Heading textStyle="h4" >
                     Live Stream Service
                 </Heading>
@@ -493,14 +531,14 @@ const LiveStream = () => {
                                 Start Streaming
                         </Button>
                             {
-                                state === "live" ? 
-                                <Button onClick={showCompleteDialog}>
-                                    Complete Streaming
+                                state === "live" ?
+                                    <Button onClick={showCompleteDialog}>
+                                        Complete Streaming
                                 </Button>
-                                 :
-                                <Button onClick={mediaService.current?.stopStream}
-                                 disabled={state === "stopped"}>
-                                    Stop Streaming
+                                    :
+                                    <Button onClick={mediaService.current?.stopStream}
+                                        disabled={state === "stopped"}>
+                                        Stop Streaming
                                 </Button>
                             }
                         </Stack>
@@ -517,7 +555,9 @@ const LiveStream = () => {
                     </VStack>
                     {/* <Collapse> */}
                     <Box className={classes.videoContainer}>
-                        <video autoPlay={true} ref={videoRef} />
+                        <div className={classes.iframeContainer} ref={iframeContainer}>
+                            <video autoPlay={true} ref={videoRef} />
+                        </div>
                         <FormControl id="rtmpLink">
                             <FormLabel>RTMP streaming url</FormLabel>
                             <Input readOnly value={inputValue} />

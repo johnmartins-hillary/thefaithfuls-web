@@ -240,7 +240,7 @@ const PendingStream = () => {
                                         </Text>
                                     </Box>
                                 </Box>
-                                {
+                                {/* {
                                     selectedStream?.liveBroadcastID &&
                                     <Menu>
                                         <MenuButton disabled={state === "stop"} >
@@ -259,7 +259,7 @@ const PendingStream = () => {
                                             </MenuItem>
                                         </MenuList>
                                     </Menu>
-                                }
+                                } */}
                             </Flex>
                             <Box>
                                 <Link to={`/church/${params.churchId}/livestream/${selectedStream?.liveBroadcastID}?eventId=${selectedStream?.eventId}`}>
@@ -267,20 +267,12 @@ const PendingStream = () => {
                                         Start Testing
                                     </Button>
                                 </Link>
-                                <Button ml={3} variant="outline" >
-                                    Go Live
-                                </Button>
                             </Box>
                         </Stack> :
                         <NoContent>
                             <Text color="primary">
                                 No Pending Broad Cast yet
                             </Text>
-                            <Button>
-                                <Link to="groups/create" >
-                                    Add Event Broadcast
-                                </Link>
-                            </Button>
                         </NoContent>
                 }
             </Flex>
