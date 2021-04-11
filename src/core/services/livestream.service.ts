@@ -14,6 +14,7 @@ import { ToastFunc } from "utils/Toast";
 import { IResponse } from "core/models/Response";
 import axios, { AxiosRequestConfig, CancelTokenSource } from "axios";
 import { merge } from "lodash";
+import { string } from "yup";
 // import gapiTypes from "@types/"
 
 const gapi = (window as any).gapi;
@@ -124,7 +125,7 @@ class Gapi {
   // Authenticate the user
   authenticate = () => {
     return new Promise((resolve,reject) => {
-      if (this.state === "not-ready") {
+      if (!this.gapi.auth2) {
         return resolve(this.toast({
           messageType: "info",
           title: "Google API is stil Loading",
@@ -186,16 +187,16 @@ class Gapi {
     { churchId, eventId }: { churchId: number; eventId: number }
   ) => {
     console.log(this.state)
-    // if (this.state !== "ready") {
-    //   return this.toast({
-    //     messageType: "info",
-    //     title: "Google API is stil Loading",
-    //     subtitle: ""
-    //   });
-    // }
+    if (!this.gapi.client.youtube) {
+      return this.toast({
+        messageType: "info",
+        title: "Google API is stil Loading",
+        subtitle: ""
+      });
+    }
     try {
       // First Create a broadcast
-      const broadcastRes = await gapi.client.youtube.liveBroadcasts.insert(
+      const broadcastRes = await this.gapi.client.youtube.liveBroadcasts.insert(
         payload
       );
 
@@ -431,7 +432,36 @@ class Gapi {
       throw err;
     }
   };
-  
+
+  // Update broadCast status
+  updateBroadcastStatus = async ({broadcastId,churchId,status}:{
+    churchId:string;
+    broadcastId:string;
+    status:"Upcoming" | "IsLive" | "Complete" | "NotCompleted" | "Testing"
+  }):Promise<IResponse<null>> => {
+    const url = `${this.baseUrl}/UpdateBroadcastStatus?churchId=${churchId}&broadcastId=${broadcastId}&status=${status}`
+    try{
+      const response = await axios.put(url)
+      return response.data;
+    }catch(err){
+      throw err
+    }
+  }
+  // Get Broadcast by status
+  getBroadcastByStatus = async({
+    churchId,status
+  }:{
+    churchId:string;
+    status:"Upcoming" | "IsLive" | "Complete" | "NotCompleted" | "Testing"
+  }):Promise<IResponse<null>> => {
+    const url = `${this.baseUrl}/GetBroadcastByStatus?churchId=${churchId}&status=${status}`
+    try{
+      const response = await axios.get(url)
+      return response.data;
+    }catch(err){
+      throw err
+    }
+  }
 }
 
 export default Gapi;

@@ -52,37 +52,6 @@ const NormalInput: React.FC<IProps> = ({
             isInvalid={Boolean(form.touched[name]) && Boolean(form.errors[name])}>
             { label && <FormLabel fontWeight="500" color="primary">{label}</FormLabel>}
             {
-              // // if type is a password
-              // type === "password" ?
-              //   <InputGroup size="md">
-              //     <Input sx={styles} className={classes.input}
-              //       pr="4.5rem" {...field} id={name} ref={ref}
-              //       type={show ? "text" : "password"}
-              //       placeholder={placeholder} readOnly={readOnly}
-              //     />
-              //     <InputRightElement width="4.5rem">
-              //       <Icon cursor="pointer" color="black" bgColor="green"
-              //         onClick={handleClick}
-              //         as={show ? BiShow : AiFillEyeInvisible}
-              //       />
-              //     </InputRightElement>
-              //   </InputGroup> :
-              //   // if there exist an icon props
-              //   typeof icon == "function" ?
-              //     <InputGroup size="md">
-              //       <Input sx={styles} className={classes.input}
-              //         pr="4.5rem" {...field}
-              //         type="text" id={name}
-              //         placeholder={placeholder}
-              //       />
-              //       <InputRightElement width="4.5rem">
-              //         <Icon cursor="pointer" color="black" onClick={handleClick}
-              //           as={icon}
-              //         />
-              //       </InputRightElement>
-              //     </InputGroup>
-              //     :
-              //     // A normal input
                   <Input sx={styles} type={type || "text"} {...field} id={name}
                     placeholder={placeholder} />
             }

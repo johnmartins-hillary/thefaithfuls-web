@@ -151,6 +151,10 @@ const DashboardLayout: React.FC<IProps> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const signOut = () => {
+    dispatch(logout())
+  }
+
   const drawer = (
     <>
       <div className={classes.toolbar} />
@@ -208,7 +212,7 @@ const DashboardLayout: React.FC<IProps> = (props) => {
                     Profile
                   </MenuItem>
                 }
-                <MenuItem color="rgba(0,0,0,.6)" onClick={logout}>
+                <MenuItem color="rgba(0,0,0,.6)" onClick={signOut}>
                   <Icon as={FiLogOut} />
                     Logout
                   </MenuItem>

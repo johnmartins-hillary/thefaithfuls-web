@@ -4,3 +4,11 @@ export interface IResponse<T>{
     message:string;
     data:T
 }
+
+export interface PaginatedResult<T> {
+    currentPage:number;
+    pageSize:number;
+    records:T[];
+    totalPages:number;
+    totalRecords:number
+}

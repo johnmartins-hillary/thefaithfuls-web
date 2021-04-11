@@ -14,6 +14,12 @@ import {useDispatch} from "react-redux"
 import {setPageTitle} from "store/System/actions"
 import {Table,TableRow} from "components/Table"
 import {SearchInput} from "components/Input"
+import {getUserByRoleAndChurchId} from "core/services/account.service"
+import useToast from "utils/Toast"
+import useParams from "utils/params"
+import {IChurchMember} from "core/models/ChurchMember"
+import axios, { CancelTokenSource } from "axios"
+import { getChurchOnlyDonationTransactions } from "core/services/payment.service"
 
 
 const useStyles = makeStyles((theme) => {
@@ -121,10 +127,14 @@ const ReportCard: React.FC<IReportCard> = ({ heading,showMonth, number, bgColor,
 
 const Reports = () => {
     const classes = useStyles()
+    const toast = useToast()
+    const params = useParams()
     const breakpoint = useBreakpoint()
     const notBaseBreakpoint = breakpoint !== "base"
     const dispatch = useDispatch()
     const [inputText,setInputText] = React.useState("")
+    const [churchMember,setChurchMember] = React.useState<IChurchMember[]>([])
+    const [churchTransaction,setChurchTransaction] = React.useState<any[]>([])
     const defaultFinancialReport = [
         <Checkbox/>,<Avatar name="Dan Abrahmov" size={!notBaseBreakpoint ? "sm" : "md"} src="https://bit.ly/dan-abramov" />,
         "Bismark Achodo","Offering","123456789","21-5-2020",<Text color="primary">₦3454</Text>
@@ -137,11 +147,72 @@ const Reports = () => {
     const handleInputChange = (e:React.SyntheticEvent<HTMLInputElement>) => {
         setInputText(e.currentTarget.value)
     }
+    const churchMemberDetail = ({page,count,cancelToken}:{
+        page:number;
+        count:number;
+        cancelToken?:CancelTokenSource
+    }) => {
+        getUserByRoleAndChurchId({
+            churchId:params.churchId as any,
+            count,
+            page,
+            role:"ChurchMember",
+            cancelToken:cancelToken
+        }).then(payload => {
+            setChurchMember(payload.data.records)
+        }).catch(err => {
+            if(!axios.isCancel(err)){
+                toast({
+                    messageType:"error",
+                    subtitle:`Error:${err}`,
+                    title:"Unable to completed get user request"
+                })
+            }
+        })
+    }
+    const getChurchTransaction = ({
+       cancelToken,page,take
+    }:{
+        page:number;
+        take:number;
+        cancelToken?:CancelTokenSource
+    }) => {
+        getChurchOnlyDonationTransactions({
+            churchId:params.churchId,
+            page,
+            take,
+            cancelToken:cancelToken
+        }).then(payload => {
+            setChurchTransaction(payload.data ?? [])
+        }).catch(err => {
+            if(!axios.isCancel(err)){
+                toast({
+                    title:"Unable to Load church transaction",
+                    subtitle:`Error:${err}`,
+                    messageType:"error"
+                })
+            }  
+        })
+    }
+    
+    React.useEffect(() => {
+        const cancelToken = axios.CancelToken.source()
+        churchMemberDetail({
+            count:10,
+            page:1,
+            cancelToken
+        })
+        getChurchTransaction({
+            take:10,
+            page:1,
+            cancelToken,
+        })
+        return () => {
+            cancelToken.cancel()
+        }
+    },[])
     const demoFinancialReport: any[] = []
-    const demoMemberReport: any[] = []
-    // const demoFinancialReport = new Array(1).fill(defaultFinancialReport)
-    // const demoMemberReport = new Array(1).fill(defaultMemberReport)
-
+    
     React.useEffect(() => {
         dispatch(setPageTitle("Reports"))
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -240,9 +311,12 @@ const Reports = () => {
                                         Download Excel File
                                         </Button>
                                 </HStack>
-                                <Table rowLength={demoMemberReport.length} heading={[null,null,"Name","Email","Phone","Date","Group"]}>
-                                    {demoMemberReport.map((item,idx) => (
-                                        <TableRow key={idx} isLoaded={true} fields={item} />
+                                <Table rowLength={churchMember.length} heading={[null,null,"Name","Email","Phone","Date","Group"]}>
+                                    {churchMember.map((item,idx) => (
+                                        <TableRow key={idx} isLoaded={true} fields={[
+                                            <Checkbox/>,<Avatar name="Dan Abrahmov" size={!notBaseBreakpoint ? "sm" : "md"} src="https://bit.ly/dan-abramov" />,
+                                            item.fullname,item.email,item.phoneNumber,item.status,item.role
+                                        ]} />
                                     ))}
                                 </Table>
                             </Stack>

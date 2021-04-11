@@ -307,9 +307,6 @@ console.log({streamState})
             <Heading textStyle="h4" >
                 New Church Event
             </Heading>
-            <Button onClick={handleClick}>
-                Sign IN with Google
-            </Button>
             <CreateLayout>
                 <Formik
                     initialValues={initialValues}

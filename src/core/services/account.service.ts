@@ -2,7 +2,7 @@ import axios,{AxiosRequestConfig,CancelTokenSource} from "axios"
 import {IChurchMember} from "core/models/ChurchMember"
 import {IChurch} from "core/models/Church"
 import {IStaff} from "core/models/Staff"
-import {IResponse} from "core/models/Response"
+import {IResponse,PaginatedResult} from "core/models/Response"
 import {IRole} from "core/models/Role"
 
 
@@ -88,6 +88,25 @@ export const deleteStaff = async (deleteStaffId:string):Promise<IResponse<null>>
     const url = `${baseUrl}/deleteStaff?personId=${deleteStaffId}`
     try{
         const response = await axios.delete(url)
+        return response.data
+    }catch(err){
+        throw err
+    }
+}
+export const getUserByRoleAndChurchId = async({
+    churchId,page,count,role,cancelToken
+}:{
+    role:"ChurchMember" | "ChurchAdmin";
+    churchId:number;
+    page:number;
+    count:number;
+    cancelToken?:CancelTokenSource
+}):Promise<IResponse<PaginatedResult<IChurchMember>>> => {
+    try{
+        const url = `${baseUrl}/getUserByRoleAndChurchId?role=${role}&churchId=${churchId}&page=${page}&count=${count}`
+        const response = await axios.get(url,{
+            cancelToken:cancelToken?.token
+        })
         return response.data
     }catch(err){
         throw err
