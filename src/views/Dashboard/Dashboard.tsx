@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => createStyles({
         position:"relative",
         backgroundRepeat:"no-repeat",
         backgroundPosition:"center",
-        height:"17.5rem",
+        height:"11.5rem",
         width:"100%",
         backgroundSize:"cover",
         "& > div:first-child":{
@@ -78,11 +78,11 @@ const useStyles = makeStyles((theme) => createStyles({
             position:"relative",
             zIndex:2,
             "& h5":{
-                fontSize:"1.86rem",
+                fontSize:"1.5rem",
                 color:"whitesmoke"
             },
             "& p":{
-                fontSize:"1.25rem",
+                fontSize:"1rem",
                 color:"whitesmoke"
             }
         }
@@ -186,8 +186,6 @@ const useStyles = makeStyles((theme) => createStyles({
         backgroundSize: "cover"
     },
     upgradeContainer: {
-        boxShadow: "0px 5px 20px #0000001A",
-        borderRadius: "10px",
         alignItems: "flex-start !important",
         flex: 3
     },
@@ -354,11 +352,11 @@ const Dashboard = () => {
                         </VStack>
                     </Box>
                 </Box>
-                <Box pt={["1", "12"]} px={{sm:"5", md:"10"}} >
+                <Box pt={["1", "10"]} px={{sm:"5", md:"8"}} >
                     {currentChurch.status == 2 &&
                         <Flex direction={{ base: "column-reverse", md: "row" }}
-                            my={16}  minHeight="13rem" width={["95%","100%"]}>
-                            <Flex p={6} className={`${classes.verificationContainer} ${classes.boxShadownContainer}`}>
+                            my={12}  minHeight="7rem" width={["95%","100%"]}>
+                            <Flex p={4} className={`${classes.verificationContainer} ${classes.boxShadownContainer}`}>
                                 <VStack align="flex-start" >
                                     <Heading textStyle="h6" fontSize="1.5rem">
                                         Complete your church profile
@@ -373,16 +371,13 @@ const Dashboard = () => {
                                             Verify your Church
                                         </RouterLink>
                                     </Button>
-                                    <Link to="/live-stream" >
-                                        View LiveStream
-                                    </Link>
                                 </VStack>
                                 <Image src={VerifyImg} display={{base:"none",lg:"initial"}} mr={{md:4}} boxSize={["9rem","15rem"]} />
                             </Flex>
-                            <VStack p={6} ml={{md:3}} mb={[3, 3, 0]}
-                             bg="primary" className={classes.upgradeContainer}>
+                            <VStack p={4} ml={{md:3}} mb={[3, 3, 0]}
+                             bg="primary" className={`${classes.upgradeContainer} ${classes.boxShadownContainer}`}>
                                 <Image src={Free} />
-                                <Heading fontSize={["1rem","1.75rem","2.3rem"]}
+                                <Heading fontSize={["1rem","1.5rem","2rem"]}
                                  color="white" maxW="md" >
                                     You are on currently on the free plan Kindly upgrade
                                 </Heading>
@@ -407,7 +402,7 @@ const Dashboard = () => {
                         <Stack mx={{md:"3"}} my={{base:"3", md:0}} shadow="0px 5px 10px #0000001A"
                             bgColor="#F0F4FF"
                             pt="3" pl={{md:"2"}} flex={3} divider={<StackDivider bgColor="gray.500" />}>
-                            <VStack align="flex-start" ml={10}>
+                            <VStack align="flex-start" ml={{md:6}} h="80%" justifyContent="space-between" >
                                 <DashboardCard heading="Church Name" color="primary">
                                     <Text color="#151C4D" mt="0px !important" fontSize="1rem" >
                                         {currentChurch.name}
@@ -426,13 +421,7 @@ const Dashboard = () => {
                                         </Text>
                                     </HStack>
                                 </DashboardCard>
-                                <DashboardCard heading="" color="green.500">
-                                    <RouterLink to={`/church/${params.churchId}/livestream`}>
-                                        <Button>
-                                            Show LiveStream
-                                        </Button>
-                                    </RouterLink>
-                                </DashboardCard>
+
                                 {currentSubscription.timeRemaining! > 0 && 
                                 <DashboardCard heading="Subscription Status" color="primary">
                                     <HStack>
@@ -447,7 +436,7 @@ const Dashboard = () => {
                         </Stack>
                     </Flex>
                     <Stack my="10" spacing="6" className={classes.mediaContainer} >
-                        <Text fontSize="1.88rem" as="h3" textAlign={["center", "left"]} color="activityColor" >
+                        <Text textStyle="h5">
                             Weekly Activites
                         </Text>
                         <Wrap>
@@ -478,8 +467,7 @@ const Dashboard = () => {
                         </Wrap>
                     </Stack>
                     <Box mb="16" className={classes.mediaContainer}>
-                        <Text fontSize="1.5rem" as="h3" mb="5" textAlign={["center", "left"]}
-                            color="#4C1C51" >
+                        <Text textStyle="h5">
                             Upcoming Events
                         </Text>
                         <Wrap>

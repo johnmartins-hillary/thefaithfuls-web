@@ -11,9 +11,9 @@ interface IProps extends FlexProps {
 
 const useStyles = makeStyles((theme:Theme) => createStyles({
     root:{
-        border:`1px solid rgb(21, 28, 77,.5)`,
-        borderRadius:"4px",
         "& input":{
+            border:`1px solid rgb(21, 28, 77,.5)`,
+            borderRadius:"4px",
             fontFamily:"MontserratRegular !important",
             backgroundColor:"transparent"
         }

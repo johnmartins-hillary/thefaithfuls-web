@@ -11,10 +11,14 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
     dateContainer: {
         borderColor: "2px solid black",
         width:"100%",
-        color: "grey",
+        color: "#00000099",
+        fontFamily:"MulishRegular",
+        fontWeight:"bold",
+        background:"transparent",
         "& > *": {
-            padding: ".7rem 1.7rem !important",
-            paddingLeft: ".4rem !important",
+            height:"2rem",
+            // padding: ".7rem 1.7rem !important",
+            // paddingLeft: ".4rem !important",
             borderRadius: "3px",
             "& select": {
                 appearance: "none"

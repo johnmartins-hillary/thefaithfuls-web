@@ -3,11 +3,11 @@ import {IAdvert,IAdvertSetting} from "core/models/Advert"
 import {IResponse} from "core/models/Response"
 
 
-const baseUrl = `${process.env.REACT_APP_SERVER_URL}/Advert`
+const baseUrl = `${process.env.REACT_APP_SERVER_URL}/Sponsor`
 
 
 export const createAdvert = async (arg:IAdvert):Promise<IResponse<IAdvert>> => {
-    const url = `${baseUrl}/createAdvert`
+    const url = `${baseUrl}/createSponsor`
     try{
         const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
         const response = await axios.post(url,arg,config)
@@ -18,7 +18,7 @@ export const createAdvert = async (arg:IAdvert):Promise<IResponse<IAdvert>> => {
 }
 
 export const editAdvert = async (arg:IAdvert):Promise<IResponse<IAdvert>> => {
-    const url = `${baseUrl}/Advert/editAdvert`
+    const url = `${baseUrl}/editSponsor`
     try{
         const config:AxiosRequestConfig = {headers:{
             "Content-Type":"application/json-patch+json",
@@ -33,7 +33,7 @@ export const editAdvert = async (arg:IAdvert):Promise<IResponse<IAdvert>> => {
 
 export const deleteAdvert = async (advertId:number):Promise<IResponse<IAdvert>> => {
     try{
-        const url = `${baseUrl}/Advert/deleteAdvert?AdvertId=${advertId}`
+        const url = `${baseUrl}/deleteSponsor?AdvertId=${advertId}`
         const config:AxiosRequestConfig = {headers:{
             "Accept":"text/plain"
         }}
@@ -45,7 +45,7 @@ export const deleteAdvert = async (advertId:number):Promise<IResponse<IAdvert>> 
 }
 
 export const getAdvertSetting= async ():Promise<IResponse<IAdvertSetting[]>> => {
-    const url = `${baseUrl}/getAdvertSetting`
+    const url = `${baseUrl}/getSponsorSetting`
     try{
         const config:AxiosRequestConfig = {headers:{
             "Accept":"text/plain"
@@ -58,7 +58,7 @@ export const getAdvertSetting= async ():Promise<IResponse<IAdvertSetting[]>> => 
 }
 
 export const getAdverts = async (churchId:number,cancelToken:CancelTokenSource):Promise<IResponse<IAdvert[]>> => {
-    const url = `${baseUrl}/getAdvert?churchId=${churchId}`
+    const url = `${baseUrl}/getSponsor?churchId=${churchId}`
     try{
         const config:AxiosRequestConfig = {headers:{
             "Accept":"text/plain"

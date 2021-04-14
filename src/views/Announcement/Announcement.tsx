@@ -64,7 +64,7 @@ const cardStyles = makeStyles(theme => createStyles({
     },
     textContainer:{
         textAlign:"left",
-        fontSize:"1.125rem",
+        fontSize:"1rem",
         opacity:.5,
         // maxHeight:"10rem",
         // overflowY:"auto",
@@ -90,7 +90,7 @@ const AnnouncementCard:React.FC<IAnnouncementCard> = ({heading,handleEdit,handle
                         {heading}
                     </Heading>
                     <Text color="tertiary" fontFamily="MontserratBold" textAlign="left" as="i" opacity={.5}
-                        fontSize="1.125rem" >
+                        fontSize="1rem" >
                         {subheading}
                     </Text>
                 </VStack>

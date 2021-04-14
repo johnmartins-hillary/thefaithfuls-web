@@ -1,28 +1,9 @@
 import React from "react"
 import {
-  FormControl, Icon, FormLabel,
+  FormControl, FormLabel,
   FormErrorMessage, Input, useStyleConfig,
-  InputGroup, InputRightElement
 } from "@chakra-ui/react";
 import { Field, FieldProps } from "formik"
-import { makeStyles, createStyles } from "@material-ui/styles"
-import { AiFillEyeInvisible } from "react-icons/ai"
-import { BiShow } from "react-icons/bi"
-
-
-const useStyles = makeStyles(theme => (
-  createStyles({
-    input: {
-      textTransform: "none",
-      backgroundColor: "transparent",
-      "&::placeholder": {
-        color: "black",
-        fontSize: "1rem"
-      }
-    }
-  })
-))
-
 
 
 interface IProps {
@@ -40,10 +21,7 @@ interface IProps {
 const NormalInput: React.FC<IProps> = ({ 
   placeholder, showErrors = true, icon, label,
    name, type = "text", ref, readOnly, ...props }) => {
-  const [show, setShow] = React.useState(false);
-  const handleClick = () => setShow(!show);
   const styles = useStyleConfig("Input", {})
-  const classes = useStyles()
   return (
     <Field name={name}>
       {({ field, form }: FieldProps) => {

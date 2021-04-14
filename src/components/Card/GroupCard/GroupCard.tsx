@@ -15,9 +15,9 @@ interface IProps {
 const GroupCard:React.FC<IProps> = ({name,active,imgSrc,member,...props}) => {
 
     return(
-        <Flex shadow="0px 5px 10px #00000005"
+        <Flex shadow="0px 5px 10px #00000005" alignItems="center"
          borderRadius="4px" py="5" bgColor="white" px="3" {...props} >
-            <Avatar size="lg" name={name} mr="2" bgColor="blue.100"
+            <Avatar size="md" name={name} mr="2" bgColor="blue.100"
                 src={imgSrc}>
                 <AvatarBadge border="2px solid white"
                  transform="translate(-32%,-4%)"

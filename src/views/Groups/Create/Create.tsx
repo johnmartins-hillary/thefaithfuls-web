@@ -177,9 +177,9 @@ const Create = () => {
     return (
         <VStack pt={{ md: 6 }}
             className={classes.root} >
-            <Heading textStyle="h4" >
+            <Text textStyle="styleh5" >
                 New Church Group
-            </Heading>
+            </Text>
             <CreateLayout>
                 <Stack w="100%" maxW="70rem" align="flex-start">
                     <Formik initialValues={initialValues}

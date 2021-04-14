@@ -1,5 +1,5 @@
 export {default as Checkbox} from "./Checkbox"
-export {default as Select} from "./Select"
+export {default as Select,NormalSelect} from "./Select"
 export {default as TextInput} from "./Normal"
 export {default as OutlinedInput} from "./OutlinedInput"
 export {default as NumberStepper} from "./NumberStepper"

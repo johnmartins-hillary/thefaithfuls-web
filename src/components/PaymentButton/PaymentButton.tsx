@@ -27,7 +27,7 @@ const PaymentButton:React.FC<IPaymentButton> = ({onSuccess,onClose,paymentCode,a
         publicKey: paymentCode.publicKey,
         metadata:{
             custom_field:([currentUser.fullname,
-                currentUser.phoneNumber,currentUser.email] as unknown as Record<string, string>[])
+                currentUser.phoneNumber,currentUser.email] as any)
         }
     };
     const initializePayment = usePaystackPayment(config);
@@ -40,9 +40,9 @@ const PaymentButton:React.FC<IPaymentButton> = ({onSuccess,onClose,paymentCode,a
     //     onClose()
     //     // implementation for  whatever you want to do when the Paystack dialog closed.
     // } 
-    const doNothing = () => {}
+
     return (
-        <Flex onClick={currentUser.id ? handleSubmit : doNothing} {...props} >
+        <Flex onClick={currentUser.id ? handleSubmit : undefined} {...props} >
             {children}
         </Flex>    
     );

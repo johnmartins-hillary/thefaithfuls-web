@@ -100,85 +100,9 @@ const PendingStream = () => {
         }
     },[pendingBroadCast])
 
-    // // 1. Get the detail about the current broadcast
-    // React.useEffect(() => {
-    //     const apiBroadCastCall = async () => {
-    //         if(selectedStream?.liveBroadcastID.length){
-    //             const broadCastDetail = await streamService.getBroadCastDetail(selectedStream!.liveBroadcastID)
-    //             if(broadCastDetail?.items[0]){
-    //                 setCurrentBroadCastDetail(broadCastDetail.items[0])
-    //             }
-    //         }
-    //     }
-    //     const apiStreamCall = async () => {
-    //         if(selectedStream?.liveBroadcastID.length){
-    //             const liveStreamDetail = await streamService.getStreamDetail(selectedStream.liveStreamID)
-    //             if(liveStreamDetail?.items[0]){
-    //                 // setCurrentLiveStream(liveStreamDetail.items[0])
-    //             }
-    //         }
-    //     }
-    //     apiBroadCastCall()
-    //     apiStreamCall()
-    // },[selectedStream])
-
-    // // 2. Use the current broadcast detail to add an iframe to view
-    // React.useEffect(() => {
-    //     if(currentBroadCastDetail?.contentDetails.monitorStream.embedHtml){
-    //         const {embedHtml} = currentBroadCastDetail.contentDetails.monitorStream
-    //         const foundContainer = document.getElementById("iframeContainer")
-    //         if(foundContainer){
-    //             if(foundContainer.childNodes){
-    //                 foundContainer.childNodes.forEach(item => {
-    //                     item.remove()
-    //                 })
-    //             }
-    //             const range = document.createRange();
-    //             range.selectNodeContents(foundContainer)
-    //             const frag = range.createContextualFragment(embedHtml)
-    //             foundContainer.appendChild(frag)
-    //         }
-    //     }
-
-    // },[currentBroadCastDetail])
-
     const changeActive = (broadcast: LiveStreamChurchResponse) => () => {
         setSelectedStream(broadcast)
     }
-    // const handleStatusChange = (status:"testing" | "live") => async () => {
-    //     try{
-    //         const response = streamService.changeBroadCastStatus({
-    //             broadCastId:selectedStream!.liveBroadcastID,
-    //             cdn:{
-    //                 frameRate:"60fps",
-    //                 ingestionType:"rtmp",
-    //                 resolution:"1080p"
-    //             },
-    //             snippet:{
-    //                 title:selectedStream!.title,
-    //                 description:selectedStream!.description
-    //             },
-    //             status,
-    //             streamStatus:{
-    //                 streamStatus:"active"
-    //             }
-    //         })
-    //         toast({
-    //             messageType:"info",
-    //             title:`Broadcast is now at the ${status} stage`,
-    //             subtitle:""
-    //         })
-    //     }catch(err){
-    //         toast({
-    //             messageType:"error",
-    //             subtitle:`Error:${err.message}`,
-    //             title:"Something went wrong"
-    //         })
-    //     }
-    // }
-
-    const liveStreamAPI = process.env.REACT_APP_LIVESTREAM_API || "";
-
     return (
         <Flex direction={["column", "column", "row"]} className={classes.root}>
             <Flex flex={3} bgColor="#F3F3F3" maxWidth={{ md: "md" }}
