@@ -1,7 +1,7 @@
 import React from "react"
 import {createAnnouncement} from "core/services/announcement.service"
 import {useHistory} from "react-router-dom"
-import {Heading,Stack,HStack,VStack,Textarea,Icon} from "@chakra-ui/react"
+import {Text,Stack,HStack,VStack,Textarea,Icon} from "@chakra-ui/react"
 import {getGroupByChurch} from "core/services/group.service"
 import { Formik,Field,FieldProps,FormikProps } from "formik"
 import {createStyles,makeStyles} from "@material-ui/styles"
@@ -128,9 +128,9 @@ const Create = () => {
     return (
         <VStack pl={{ base:2, md: 12 }} pt={{ md: 6 }}
              className={classes.root} >
-                <Heading textStyle="h4" >
+                <Text textStyle="styleh5">
                     New Announcement
-                </Heading>
+                </Text>
                 <CreateLayout>
                 <Formik initialValues={initialValues}
                                 validationSchema={validationSchema}

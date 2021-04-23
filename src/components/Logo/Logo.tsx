@@ -8,16 +8,10 @@ import {Logo as LogoImage,LogoBlack} from "assets/images"
 const Logo = ({white = true}) => {
   const history = useHistory()
   return (
-      <Flex onClick={() => history.push("/")} cursor="pointer" align="center" mx="1em" ml="0">
-        <Image src={white ? LogoImage : LogoBlack}
-         color="primary" />
-        {/* <Heading fontFamily="ProductSans" as="h3"
-         size="xs">
-           <Stack color="black" ml="2" spacing="1">
-             <Text  >THE</Text>
-             <Text>FAITHFULS</Text>
-           </Stack>
-        </Heading> */}
+      <Flex onClick={() => history.push("/church")} cursor="pointer" align="center" mx="1em" ml="0">
+        <Image src={white ? LogoImage : LogoBlack} 
+        objectFit="contain"
+         color="primary" width={["10rem","7.5rem"]} height={["3rem","2rem"]} />
       </Flex>
     );
 };

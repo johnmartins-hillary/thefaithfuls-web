@@ -304,9 +304,9 @@ console.log({streamState})
     return (
         <VStack pt={6}
             className={classes.root} >
-            <Heading textStyle="h4" >
+            <Text textStyle="styleh5">
                 New Church Event
-            </Heading>
+            </Text>
             <CreateLayout>
                 <Formik
                     initialValues={initialValues}
@@ -341,17 +341,17 @@ console.log({streamState})
                         }
                         return (
                             <>
-                                <VStack width="inherit" maxW="md" align="flex-start" >
+                                <VStack width={["95%","inherit"]} maxW="md" align="flex-start" >
                                     <TextInput width="100%" name="title"
                                         placeholder="Add title" />                          
                                     <MaterialSelect style={{width:"100%"}} name="groups" label="Invite all Members and groups" 
                                         getSelected={compareStaff} multiple
                                         options={initialGroups} getLabel={(label:IGroup) => label.name}
                                     />
-                                    <Stack my={5} direction={["column", "row"]}
-                                        align="center">
-                                        <HStack direction={{ base: "column", md: "row" }}
-                                            align="center" >
+                                    {/* <Stack my={5} direction={["column", "row"]}
+                                        align="center"  mx={["auto",""]} > */}
+                                        <Stack direction={{ base: "column", md: "row" }}
+                                            align="center" alignSelf={["center","initial"]}>
                                             <VStack>
                                                 <HStack width={["50"]} className={classes.mainDateContainer}>
                                                     <DatePicker minDetail="month" format="MMM dd,y" calendarIcon={null} clearIcon={null}
@@ -399,8 +399,8 @@ console.log({streamState})
                                                     All day
                                                 </FormLabel>
                                             </FormControl>
-                                        </HStack>
-                                    </Stack>
+                                        </Stack>
+                                    {/* </Stack> */}
                                     <Flex alignSelf="center" p={3}
                                         border="2px dashed rgba(0,0,0,.4)" flex={7}>
                                         <input id="image" type="file" accept="image/jpeg,image/png"
@@ -429,10 +429,6 @@ console.log({streamState})
                                 <Checkbox  onChange={toggleStreamed} colorScheme="green">
                                     This Event will be Streamed Live
                                 </Checkbox>
-                                {/* <Checkbox name="streamed" >
-                                    <Text textStyle="h" fontSize="1rem" whiteSpace="nowrap" >
-                                    </Text>
-                                </Checkbox> */}
                                 <Stack direction={["column", "row"]} spacing={2}
                                     width="100%">
                                     <Button px={5} py={2} isLoading={formikProps.isSubmitting}

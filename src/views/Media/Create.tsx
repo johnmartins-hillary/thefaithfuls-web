@@ -194,9 +194,9 @@ const Content = () => {
     return (
         <VStack p={{ base: 2, md: 12 }}
             className={classes.root} >
-            <Heading textStyle="h4" >
+            <Text textStyle="styleh5">
                 New Sermon
-            </Heading>
+            </Text>
             <CreateLayout>
             <VStack width={{base:"100%", md:"90%"}} 
                     spacing={3}>

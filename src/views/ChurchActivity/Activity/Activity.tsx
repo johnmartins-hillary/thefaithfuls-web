@@ -22,13 +22,14 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
             fontFamily:"Bahnschrift !important",
         },
         "& button":{
-            fontSize:".9rem",
+            fontSize:".75rem",
             [theme.breakpoints.up("sm")]:{
-                fontSize:"1.3rem"
+                fontSize:"1rem"
             }
         }
     }
 }))
+
 
 const Activity = () => {
     const toast = useToast()

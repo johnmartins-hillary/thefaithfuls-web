@@ -6,15 +6,11 @@ import Autocomplete,{AutocompleteProps} from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {FieldProps,Field} from "formik"
 import { AutoCompleteProps } from 'material-ui';
+import { createStyles } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/core';
 
 interface CountryType {
   name: string;
-}
-
-function sleep(delay = 0) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay);
-  });
 }
 
 interface IProps extends Partial<AutocompleteProps<any,any,any,any>> {
@@ -30,6 +26,16 @@ interface IProps extends Partial<AutocompleteProps<any,any,any,any>> {
   // [key:string]:any;
 }
 
+const useStyles = makeStyles((theme) => createStyles({
+  root:{
+    "& label":{
+      color: "#00000099",
+      fontWeight: "bold",
+      fontFamily: 'MulishRegular'
+    }
+  }
+}))
+
 const MaterialSelect:React.FC<IProps> = ({
   name,func,className,label,val,children,options,getLabel,getSelected,style
   ,...props
@@ -37,7 +43,7 @@ const MaterialSelect:React.FC<IProps> = ({
   const [open, setOpen] = React.useState(false);
   // const [options, setOptions] = React.useState<CountryType[]>([]);
   const loading = open && options.length === 0;
-
+  const classes = useStyles()
   React.useEffect(() => {
     let active = true;
 
@@ -72,6 +78,7 @@ const MaterialSelect:React.FC<IProps> = ({
 
 
 
+
   return (
     <Field name={name} >
       {({field,form}:FieldProps) => (
@@ -96,7 +103,7 @@ const MaterialSelect:React.FC<IProps> = ({
         renderInput={(params:any) => (
           <TextField
             {...params}
-            label={label}
+            label={label} className={classes.root}
             error={Boolean(form.touched[name] && form.errors[name])}
             helperText={form.touched[name]  && form.errors[name]} 
             variant="outlined" fullWidth

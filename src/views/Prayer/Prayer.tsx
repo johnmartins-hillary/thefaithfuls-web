@@ -92,9 +92,9 @@ const useStyles = makeStyles((theme) => {
                         "& > div": {
                             minWidth: "18.5rem",
                             width: "100%",
-                            shadow: "5px 0px 6px #0000001A",
+                            boxShadow: "5px 0px 6px #0000001A",
                             backgroundColor: "white",
-                            padding: "1.75rem",
+                            // padding: "1rem",
                             borderRadius: "6px",
                             alignItems: "flex-start !important"
 
@@ -131,7 +131,7 @@ const useStyles = makeStyles((theme) => {
                 "& > button": {
                     whiteSpace: "nowrap",
                     flex: 1,
-                    fontSize: "1.25rem",
+                    fontSize: "1rem",
                     marginBottom: ".2px",
                     borderRadius: "10px 10px 0px 0px",
                     color: "#151C4D",
@@ -212,11 +212,11 @@ const Prayer = () => {
     const apiChurchTestimony = (cancelToken: CancelTokenSource) => () => {
         getTestimony({ churchId: Number(params.churchId), testimonyType: "General" }, cancelToken).then(payload => {
             const newChurchTestimony = payload.data.map((item) => {
-                const timeLapsedInMilli = (new Date()).getTime() - (new Date(item.dateEntered)).getTime()
-                const timeLapsed = String(Math.round(timeLapsedInMilli / (1000 * 3600 * 24)))
+                // const timeLapsedInMilli = (new Date()).getTime() - (new Date(item.dateEntered)).getTime()
+                // const timeLapsed = String(Math.round(timeLapsedInMilli / (1000 * 3600 * 24)))
                 return ({
                     ...item,
-                    timeLapsed
+                    dateEntered:new Date(item.dateEntered)
                 })
             })
             setChurchTestimony(newChurchTestimony)
@@ -369,7 +369,7 @@ const Prayer = () => {
             })
         })
     }
-    const optionForDate = { month: 'long' };
+    const optionForDate:Intl.DateTimeFormatOptions = { month: 'long' };
     const dateMonth = new Intl.DateTimeFormat('en-US', optionForDate).format(new Date())
 
     return (
@@ -377,22 +377,24 @@ const Prayer = () => {
             pl={{ md: "12" }} pt={{ md: "12" }} direction={{ base: "column", md: "row" }}>
             <Tabs index={tabIndex} onChange={handleTabChange} >
                 <TabList className={classes.buttonContainer} width="100%">
-                    <Tab _selected={{ ...selected }} px={["2", "10"]} py="4">
+                    <Tab _selected={{ ...selected }} px={["2", "5"]} py="4">
                         Prayer Requests
                         </Tab>
                     <Tab _selected={{ ...selected, shadow: " -3px 0px 6px #00000029" }}
-                        px={["2", "10"]} py="3" >
+                        px={["2", "5"]} py="3" >
                         Testimonies
                         </Tab>
                     <Tab _selected={{ ...selected, shadow: " -3px 0px 6px #00000029" }}
-                        px={["2", "10"]} py="3" >
+                        px={["2", "5"]} py="3" >
                         Church Prayers
                         </Tab>
                     <Tab _selected={{ ...selected, shadow: " -3px 0px 6px #00000029" }}
-                        px={["2", "10"]} py="3" >
+                        px={["2", "5"]} py="3" >
                         Daily Verse
                         </Tab>
                 </TabList>
+
+
                 <TabPanels mb={{ base: "5rem", md: "10rem" }}
                     className={classes.tabContainer}>
                     <TabPanel mt="3">
@@ -401,7 +403,7 @@ const Prayer = () => {
                             {prayerRequest.length > 0 && prayerRequest.map((item, idx) => (
                                 <DetailCard title={item.fullName} key={item.prayerRequestID || idx}
                                     subtitle={item.prayerTile}
-                                    image={item.pictureUrl} timing={`${item.timeLapsed}d`}
+                                    image={item.pictureUrl} timing={item.dateEntered}
                                     body={item.prayerDetail} isLoaded={Boolean(item.prayerRequestID)}
                                 >
                                     <HStack width="100%" justify="space-between">
@@ -439,7 +441,7 @@ const Prayer = () => {
                         <Wrap spacing={6}>
                             {churchTestimony.length > 0 && churchTestimony.map((item, idx) => (
                                 <WrapItem key={item.testimonyID || idx} bgColor="white">
-                                    <DetailCard title="Bismark Achodo" timing={`${item.timeLapsed}d`}
+                                    <DetailCard title="Bismark Achodo" timing={item.dateEntered}
                                         image="https://bit.ly/ryan-florence" isLoaded={Boolean(item.testimonyID)}
                                         smallText={(new Date(item.dateEntered)).toLocaleDateString()}
                                         body={item.testimonyDetail}

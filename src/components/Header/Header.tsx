@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme:any) => (
       "& p,a":{
         textAlign:"center",
         color:"white",
-        fontSize:"1.125rem",
+        fontSize:"1rem",
         letterSpacing:"0px",
         fontWeight:"normal"
       }

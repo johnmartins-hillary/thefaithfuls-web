@@ -265,9 +265,10 @@ const Booking = () => {
                     <TabPanels mb={{ base: "5rem", md: "10rem" }}
                         className={classes.tabContainer}>
                         <TabPanel mt="3">
+
                             <SimpleGrid minChildWidth="17.5rem" alignItems={{ base: "center", md: "flex-start" }} gridGap="1.5rem" className={classes.prayerContainer}>
                                 {churchTestimony.length > 0 && churchTestimony.map((item, idx) => (
-                                    <DetailCard title="Bismark Achodo" key={item.testimonyID || idx} timing="2d"
+                                    <DetailCard title="Bismark Achodo" key={item.testimonyID || idx} timing={item.dateEntered}
                                         image="https://bit.ly/ryan-florence"
                                         subtitle={item.testimonyTile} isLoaded={Boolean(item.testimonyID)}
                                         smallText={(new Date(item.dateEntered)).toLocaleDateString()}
