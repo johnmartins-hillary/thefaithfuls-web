@@ -26,10 +26,7 @@ import { MessageType } from 'core/enums/MessageType'
 import { useDispatch } from "react-redux"
 import { IChurchForm } from "components/Forms/Interface"
 import { assignRoleClaimToUser } from 'core/services/user.service'
-import { BiLeftArrowCircle } from "react-icons/bi"
 import { useHistory } from "react-router-dom"
-
-
 
 interface IChurchMemberForm extends IChurchMember {
     confirmPassword: string;
@@ -310,7 +307,7 @@ const SignupAdmin = () => {
             email,
             firstname,
             lastname,
-            genderID,
+            genderID:(genderID as any).value,
             countryID,
             stateID,
             cityID,
