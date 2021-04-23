@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
     root:{
         "& a":{
             fontFamily:"MulishRegular",
-            margin:theme.spacing(3),
-            padding:theme.spacing(3,2),
+            margin:theme.spacing(1,3),
+            padding:theme.spacing(2),
             paddingLeft:0,
             width:"90%",
             [theme.breakpoints.up("md")]:{
@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
             "& > h2":{
                 whiteSpace:"nowrap",
                 margin:theme.spacing(3,0),
-                marginTop:theme.spacing(1.5),
+                marginTop:theme.spacing(0),
                 marginLeft:theme.spacing(3),
                 fontWeight:"400"
             }
@@ -274,7 +274,7 @@ const Group = (props:any) => {
                             Add Group
                     </Button>
                         </Link>
-                    <Heading color="primary" >
+                    <Heading textStyle="h4" color="primary" >
                         Church Groups
                     </Heading>
                     <Stack spacing={3} maxHeight={["30vh", "30vh", "75vh", "auto"]}
@@ -298,10 +298,11 @@ const Group = (props:any) => {
                     divider={<StackDivider borderColor="gray.200" />}>
                     <Flex className={classes.groupMemberContainer} justify="space-between">
                         <Box>
-                            <Text fontSize="1rem" opacity={.4} color="secondary" >
+                            <Text fontSize=".75rem" opacity={.4} color="secondary" >
                                 Group Name
                             </Text>
-                            <Heading fontSize="1.5rem" fontWeight={600} letterSpacing="0.48px" color="tertiary">
+                            <Heading fontSize="1.25rem" fontWeight={600}
+                             letterSpacing="0.48px" color="tertiary">
                                 {currentGroup.name}
                             </Heading>
                         </Box>
@@ -329,7 +330,7 @@ const Group = (props:any) => {
 
 
                     <Box className={classes.descriptionContainer}>
-                        <Heading as="h6" fontSize="1rem" opacity={0.4} color="secondary" >
+                        <Heading as="h6" fontSize=".75rem" opacity={0.4} color="secondary" >
                             Group Description
                         </Heading>
                         <Text>
@@ -337,7 +338,7 @@ const Group = (props:any) => {
                         </Text>
                     </Box>
                     <Box className={classes.groupMemberContainer} width={{base:"90vw",md:"65vw"}}>
-                        <Heading as="h6" fontSize="1rem" opacity={.4}
+                        <Heading as="h6" fontSize=".75rem" opacity={.4}
                          color="secondary" my="2" >
                             Group Members
                         </Heading>

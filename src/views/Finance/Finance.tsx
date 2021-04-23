@@ -70,6 +70,7 @@ const donationStyles = makeStyles((theme:Theme) => createStyles({
         }
     }
 }))
+
 const useStyles = makeStyles((theme:Theme) => createStyles({
     root:{
         "& p":{
@@ -80,7 +81,7 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
         },
         "& > div":{
             "& > div":{
-                "& h2":{
+                "& h5":{
                     margin:theme.spacing(3,0),
                     fontWeight:500
                 }
@@ -117,7 +118,7 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
     walletContainer:{
         "& h3":{
             fontFamily:"Bahnschrift",
-            fontSize:"3rem",
+            fontSize:"2.75rem",
             fontWeight:"700" 
         }
     },
@@ -125,7 +126,8 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
         color:`${primary} !important`,
         fontWeight:600,
         fontFamily:"Bahnschrift",
-        fontSize:"1.9rem"
+        fontSize:"1.75rem",
+        marginTop:"0 !important"
     },
     transactionContainer:{
         maxHeight:"18rem",
@@ -723,9 +725,9 @@ const Finance = () => {
                 <Stack flex={7} spacing={16}
                  divider={<StackDivider borderColor="gray.200" />}>
                     <Stack width="100%">
-                        <Heading fontWeight="400" color="primary" >
+                        <Text as="h5" textStyle="styleh5" >
                             Accounts
-                        </Heading>
+                        </Text>
                         <Flex my={3} className={classes.buttonContainer}>
                             <Button onClick={handleDonation("Bank")}>
                                 Add Bank Account
@@ -757,7 +759,7 @@ const Finance = () => {
                         </Wrap>
                     </Stack>
                     <Stack width="100%">
-                        <Heading fontWeight="400" color="primary" >
+                        <Heading as="h5" textStyle="styleh5">
                             Donations
                         </Heading>
                         <Flex my={3} className={classes.buttonContainer}>
@@ -793,7 +795,7 @@ const Finance = () => {
                 </Stack>
 
                 <Stack zIndex={1000} pt={10} maxWidth={{md:"24rem"}} width="100%"
-                 pl={[3,10]} flex={3} ml={{md:4}} align="center" bgColor="white" mt={{base:"3",md:"0"}}
+                 pl={[3,10]} flex={3} ml={{md:4}} align="center" bgColor="white" mt="3"
                     borderRadius="10px" shadow=" 0px 5px 20px #0000001A"
                     divider={<StackDivider borderColor="gray.200" />}>
                     <Stack width="100%" align="center" className={classes.walletContainer}>
@@ -802,7 +804,7 @@ const Finance = () => {
                             Wallet
                         </Heading>
                         <Stack alignSelf="flex-start">
-                            <Text fontWeight="600" fontSize="1.125rem" >
+                            <Text fontWeight="600" fontSize="1rem" >
                                 Amount
                             </Text>
                             <Text className={classes.amountText}>
@@ -811,9 +813,7 @@ const Finance = () => {
                         </Stack>
                     </Stack>
                     <Stack flex={1} width="100%" maxHeight="23rem">
-                        <Heading as="h6" fontSize="1.125rem"
-                        color="tertiary"
-                        >
+                        <Heading fontSize="1rem" color="tertiary">
                             Recent Transactions
                         </Heading>
                         <Stack className={classes.transactionContainer} >

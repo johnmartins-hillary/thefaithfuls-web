@@ -11,7 +11,7 @@ import { makeStyles, createStyles } from "@material-ui/core/styles"
 import { Dialog, VerifyDialog } from "components/Dialog"
 import { Link } from "components/Link"
 import { login } from "store/System/actions"
-import { TextInput, Select, Checkbox, PasswordInput,MaterialSelect } from "components/Input"
+import { TextInput, Select,Checkbox, PasswordInput} from "components/Input"
 import * as Yup from "yup"
 import { IChurchResponse } from "core/models/ChurchResponse"
 import { MinorLoginLayout } from "layouts"
@@ -26,10 +26,7 @@ import { MessageType } from 'core/enums/MessageType'
 import { useDispatch } from "react-redux"
 import { IChurchForm } from "components/Forms/Interface"
 import { assignRoleClaimToUser } from 'core/services/user.service'
-import { BiLeftArrowCircle } from "react-icons/bi"
 import { useHistory } from "react-router-dom"
-
-
 
 interface IChurchMemberForm extends IChurchMember {
     confirmPassword: string;
@@ -81,6 +78,8 @@ const useStyles = makeStyles(theme => createStyles({
     },
     inputContainer: {
         width: "100%",
+        maxHeight: "32rem",
+        overflow: "auto"
     },
     button: {
         marginLeft: "50%",
@@ -308,7 +307,7 @@ const SignupAdmin = () => {
             email,
             firstname,
             lastname,
-            genderID,
+            genderID:(genderID as any).value,
             countryID,
             stateID,
             cityID,
@@ -436,14 +435,16 @@ const SignupAdmin = () => {
             <MinorLoginLayout showLogo={true}>
                 <Flex className={classes.root} px={{ sm: "3" }}
                     alignItems={["center", "flex-start"]} flex={[1, 3]}>
-                    <Stack spacing={3} my={5} align={["center", "flex-start"]} >
-                        <Heading fontSize="43px" >
+                    <Stack spacing={2} my={0} align={["center", "flex-start"]} >
+                        <Heading textStyle="h3" textAlign={["center", "left"]}>
                             Sign Up
                         </Heading>
-                        <Text textStyle="h6" maxWidth="sm">
+                        <Text textStyle="h6" opacity={.8} textAlign={["center", "left"]}
+                            maxWidth="sm">
                             Tell us about your church
                         </Text>
                     </Stack>
+
                     <Flex className={classes.inputContainer} direction="column" >
                         <Fade mountOnEnter unmountOnExit timeout={150} in={!showChurchForm} >
                             <Box>
@@ -453,7 +454,6 @@ const SignupAdmin = () => {
                                     onSubmit={submitNewUserForm}
                                 >
                                     {(formikProps: FormikProps<IChurchMemberForm>) => {
-                                        console.log("this is the formikProps",formikProps.values)
                                         return (
                                             <Box my={["4"]} width={["90vw", "100%"]}
                                                 maxWidth="24rem" px="1" mx={["auto", "initial"]} >
@@ -462,16 +462,13 @@ const SignupAdmin = () => {
                                                     <TextInput name="lastname" placeholder="Last Name" />
                                                     <TextInput name="email" placeholder="email" />
                                                     <TextInput name="phoneNumber" placeholder="Phone Number" />
-                                                    {/* <MaterialSelect/> */}
-                                                    <MaterialSelect name="genderID" label="Select Gender" 
-                                                        getSelected={(option:any, value:any) => {
-                                                        if(value.value){
-                                                            return option.value === value.value
-                                                        }else{
-                                                            return option.value === value
-                                                        }
-                                                      }}
-                                                     options={genderOptions} getLabel={label => label.option || ""} />
+                                                    <Select name="genderID" placeholder="Select Gender">
+                                                        {genderOptions.map((item, idx) => (
+                                                            <option key={idx} value={item.value}>
+                                                                {item.option}
+                                                            </option>
+                                                        ))}
+                                                    </Select>
                                                     <PasswordInput name="password" placeholder="Password" />
                                                     <PasswordInput name="confirmPassword" placeholder="Confirm Password" />
                                                     <Button disabled={formikProps.isSubmitting || !formikProps.isValid}
@@ -521,15 +518,12 @@ const SignupAdmin = () => {
                                             }
                                         }
                                         return (
-                                            <Box my={["4"]} px="4" maxWidth={image.banner.base64 ? "lg" : "24rem"}>
+                                            <Box my={["4"]} px="4" pl={0} maxWidth={image.banner.base64 ? "lg" : "24rem"}>
                                                 {
                                                     open ?
                                                         <Fade mountOnEnter unmountOnExit in={open}>
                                                             <Box>
-                                                                    <TextInput name="name" placeholder="Church Name" />
-                                                                {/* <HStack>
-                                                                    <GoBack func={handleFormToggle} />
-                                                                </HStack> */}
+                                                                <TextInput name="name" placeholder="Church Name" />
                                                                 <Select name="denominationId" placeholder="Select Denomination">
                                                                     {denomination && denomination.map((item, idx) => (
                                                                         <option key={idx} value={item.denominationID}>

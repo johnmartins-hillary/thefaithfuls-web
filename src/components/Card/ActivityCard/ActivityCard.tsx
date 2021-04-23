@@ -121,10 +121,10 @@ export const FinanceActivity: React.FC<IFinanceActivity> = ({ heading,isLoaded, 
                         icon={<RiDeleteBinLine />} />
                 </HStack>
                 <Stack spacing={4} direction="column" mx={5} mb={10} >
-                    <Heading as="h3" color="tertiary" fontSize="1.5rem">
+                    <Heading as="h3" color="tertiary" fontSize="1.25rem">
                         {heading}
                     </Heading>
-                    <Stack fontSize="1.125rem"
+                    <Stack fontSize="1rem"
                         color="#151C4D" opacity={.5} >
                         {subHeading &&
                             <Text color="tertiary">

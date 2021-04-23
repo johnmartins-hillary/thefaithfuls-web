@@ -27,9 +27,7 @@ import { RiGroupFill } from "react-icons/ri"
 import { AiFillFile } from "react-icons/ai"
 import { FaUserAlt, FaPrayingHands, FaCalendarCheck } from "react-icons/fa"
 
-
-
-const drawerWidth = 300;
+const drawerWidth = 250;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,8 +47,9 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "white",
       zIndex: theme.zIndex.drawer + 1,
     },
+
     optionContainer: {
-      margin: ".5rem",
+      marginTop:theme.spacing(3),
       "& a": {
         textDecoration: "none",
         "& > div": {
@@ -157,14 +156,14 @@ const DashboardLayout: React.FC<IProps> = (props) => {
 
   const drawer = (
     <>
-      <div className={classes.toolbar} />
-      <Stack className={classes.optionContainer} spacing={4}>
+      {/* <div className={classes.toolbar} /> */}
+      <Stack className={classes.optionContainer} spacing={2}>
         {dashboardMenu.map((item, idx) => (
           <Link key={idx} to={`/church/${params.churchId}${item.link}`} >
             <Flex align="center"
               className={activeLink.includes(item.link) ? classes.activeLink : classes.link} >
               <Icon boxSize="1rem" as={item.icon} />
-              <Text ml="4" fontSize="1.13rem" >{item.name}</Text>
+              <Text ml="4" fontSize=".9rem" >{item.name}</Text>
             </Flex>
           </Link>
         ))}
@@ -190,7 +189,7 @@ const DashboardLayout: React.FC<IProps> = (props) => {
             <Logo white={false} />
           </Flex>
           <Flex flex={4} justify="flex-end">
-            <Heading color="primary" fontFamily="MulishRegular" fontSize="1.875rem" whiteSpace="nowrap" display={["none", "initial"]}>
+            <Heading color="primary" fontFamily="MulishRegular" fontSize="1rem" whiteSpace="nowrap" display={["none", "initial"]}>
               {pageTitle}
             </Heading>
           </Flex>
@@ -241,13 +240,12 @@ const DashboardLayout: React.FC<IProps> = (props) => {
               display="flex" justifyContent="center"
             >
               <Avatar border="2px solid #B603C9"
-                size="2xl" name={currentChurch.name}
+                size="md" name={currentChurch.name}
                 src={currentChurch.churchLogo || "https://bit.ly/ryan-florence"} />
-              <Heading as="h2" color="primary" fontSize="1.7rem" fontWeight="400" >
+              <Text textStyle="h4" color="primary">
                 {currentChurch.name}
-              </Heading>
+              </Text>
             </Flex>
-
             {drawer}
           </Drawer>
         </Hidden>
@@ -263,13 +261,12 @@ const DashboardLayout: React.FC<IProps> = (props) => {
               display="flex" justifyContent="center"
             >
               <Avatar border="2px solid #B603C9"
-                size="xl" name={currentChurch.name}
+                size="md" name={currentChurch.name}
                 src={currentChurch.churchLogo || "https://bit.ly/ryan-florence"} />
-              <Heading as="h2" color="primary" textAlign="center" fontSize="1.7rem" fontWeight="400" >
+              <Text textStyle="h4" color="primary" textAlign="center">
                 {currentChurch.name}
-              </Heading>
+              </Text>
             </Flex>
-
             {drawer}
           </Drawer>
         </Hidden>

@@ -12,6 +12,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         alignItems: "center",
         "& p,button":{
             fontFamily:"MulishRegular"
+        },
+        "& .react-time-picker, .react-date-picker__wrapper":{
+            height:"2.5rem",
+            minWidth:"7rem",
+            fontFamily:"MulishRegular",
+            fontWeight:"bold"
         }
     },
     formContainer: {
@@ -30,9 +36,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     }
 }))
 
-
-
-
 interface IProps {
     showCancel?:boolean
 }
@@ -47,7 +50,7 @@ const CreateLayout:React.FC<IProps> = ({showCancel = true,children}) => {
             <Icon color="tertiary" opacity={.75} fontSize="2rem" as={CgCloseO} />
         </GoBackButton>}
             <VStack spacing={14} className={classes.formContainer} pr={{ md: 16 }}
-                width={["98%", "100%", "75%"]} p={{ base: 3, md: 12 }}>
+                width={["90vw", "100%", "75%"]} p={{ base: 3, md: 12 }}>
                     {children}
             </VStack>
         </Stack>

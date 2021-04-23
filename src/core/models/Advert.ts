@@ -9,26 +9,16 @@ export interface IAdvert {
     churchId:number;
     audience:string
     status?:number;
+    settingsId?:number
 }
 
 export interface IAdvertSetting {
-    advertID:number;
-    title:string;
-    dateFrom:Date;
-    detaTo:Date;
-    advertUrl:string;
-    churchId:number;
-    audience:"isInternal" | "isExternal";
-    status:number;
-    advertLink:string;
-    settingId:number;
-    advertSetting:{
-        id:number;
-        title:string;
-        duration:string;
-        price:number;
-        discount:number;
-        status:number;
-        persons:string[]
-    }
+    discount: number;
+    duration:"Daily" | "Weekly" | "Monthly" | "Quarterly" | "Annually";
+    id: number;
+    price: number;
+    status: "Active" | "Pending" | "";
+    title: string;
+    howLong?:number;
+    perDay?:number
 }

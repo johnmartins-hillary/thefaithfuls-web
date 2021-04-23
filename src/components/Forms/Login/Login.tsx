@@ -1,7 +1,7 @@
 import React from "react"
 import {useHistory} from "react-router-dom"
 import {useDispatch} from "react-redux"
-import {Box,Heading,FormHelperText,FormControl} from "@chakra-ui/react"
+import {Box,Text,FormHelperText,FormControl} from "@chakra-ui/react"
 import {Button} from "components/Button"
 import {useSelector} from "react-redux"
 import {AppState} from "store"
@@ -23,7 +23,7 @@ const Signup = () => {
     const dispatch = useDispatch()
     const history = useHistory()
     const isAuthenticated = useSelector((state:AppState) => state.system.isAuthenticated)
-    const isLoading = useSelector((state:AppState) => state.system.isLoading)
+    // const isLoading = useSelector((state:AppState) => state.system.isLoading)
     const currentUser = useSelector((state:AppState) => state.system.currentUser)
     const toast = useToast()
     const moveToChangePassword = () => {
@@ -59,9 +59,9 @@ const Signup = () => {
 
     return (
         <>
-        <Heading mb={"6"} textAlign={["center", "left"]}>
+        <Text textStyle="h3" mb={"6"} textAlign={["center", "left"]}>
             Login
-        </Heading>   
+        </Text>   
         <Formik initialValues={{
             password: "",
             phoneNo: "",
@@ -80,9 +80,9 @@ const Signup = () => {
                             </FormHelperText>
                         </FormControl>
                         <Button 
-                        disabled={ isLoading || formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}
+                        disabled={formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}
                         loadingText={`Login User`}
-                         width={["90vw", "100%"]} color="white" maxWidth="sm" isLoading={isLoading}
+                         width={["90vw", "100%"]} color="white" maxWidth="sm" isLoading={formikProps.isSubmitting}
                           onClick={(formikProps.handleSubmit as any)} backgroundColor="primary" my="3">
                             { formikProps.isValid ? "Login" : "Please Fill Form"}
                         </Button>

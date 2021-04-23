@@ -42,9 +42,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         backgroundColor: `#707070 !important`,
         color: activityHeader,
         borderColor: "transparent !important",
-        fontSize: ".9rem !important",
+        fontSize: ".75rem !important",
         [theme.breakpoints.up("sm")]: {
-          fontSize: "1.5rem !important"
+          fontSize: "1rem !important"
         }
       },
       "& th,td": {

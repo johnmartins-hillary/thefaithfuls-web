@@ -2,20 +2,18 @@ import React from "react"
 import { formatDate } from "@fullcalendar/react"
 import { useHistory } from "react-router-dom"
 import {
-    Flex, Heading, useBreakpoint, HStack, FormControl,
+    Flex, useBreakpoint, HStack, FormControl,
     ModalContent, Textarea, ModalHeader, Radio, RadioGroup,
     ModalFooter, Box, ModalBody, Text, useRadio, AspectRatio, Image,
     ModalCloseButton, Icon, FormLabel, useRadioGroup,
-    Switch, Stack, VStack,
-    Select as SelectChakra,
+    Switch, Stack, VStack
 } from "@chakra-ui/react"
 import { Button } from "components/Button"
-import { TagContainer } from "components/Input/TagContainer"
 import { Dialog } from "components/Dialog"
 import { TextInput, Select,NumberStepper, Checkbox, MaterialSelect } from "components/Input"
 import { Formik, Field, FieldProps, FormikProps } from "formik"
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles"
-import DatePicker from "react-date-picker"
+import {DatePicker} from "components/Input"
 import TimePicker from "react-time-picker"
 import { BiRightArrowAlt, BiDownArrowAlt } from "react-icons/bi"
 import { IGroup } from "core/models/Group"
@@ -32,7 +30,6 @@ import * as Yup from "yup"
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        // alignItems: "center"
         paddingLeft:"0 !important"
     },
     inputContainer: {
@@ -49,17 +46,15 @@ const useStyles = makeStyles((theme) => createStyles({
         }
     },
     dateContainer: {
-        borderColor: "2px solid black",
-        color: "grey",
-        marginRight: theme.spacing(2),
-        "& > *": {
-            padding: ".7rem 1.7rem !important",
-            paddingLeft: ".4rem !important",
-            borderRadius: "3px",
-            "& select": {
-                appearance: "none"
-            }
-        }
+        // marginRight: theme.spacing(2),
+        // "& > *": {
+        //     // padding: ".7rem 1.7rem !important",
+        //     // paddingLeft: ".4rem !important",
+        //     borderRadius: "3px",
+        //     "& select": {
+        //         appearance: "none"
+        //     }
+        // }
     }
 }))
 
@@ -398,7 +393,7 @@ const CustomDateCreator: React.FC<ICustomDateCreator> = ({ customForm, close, ha
                                                 <Radio value="on">On</Radio>
                                                 {formikProps.values.ends === "on" &&
                                                     <Flex className={classes.extraContainer}>
-                                                        <DatePicker format="MMM dd,y" calendarIcon={null} clearIcon={null}
+                                                        <DatePicker name="until" format="MMM dd,y" calendarIcon={null} clearIcon={null}
                                                             onChange={onChange("UNTIL")} value={(formikProps.values.UNTIL as Date)}
                                                             className={classes.input} minDate={currentDate}
                                                         />
@@ -609,9 +604,9 @@ const Create = () => {
         <>
             <VStack pl={{ base: 2, md: 12 }} pt={{ md: 6 }}
                 className={classes.root} >
-                <Heading textStyle="h4" >
+                <Text textStyle="styleh5">
                     New Church Activity
-                </Heading>
+                </Text>
                 <CreateLayout>
                 <Formik
                         initialValues={initialValues}
@@ -684,7 +679,7 @@ const Create = () => {
                             }
                             return (
                                 <>
-                                    <VStack width="inherit" align="flex-start">
+                                    <VStack width={["95%","inherit"]} align="flex-start">
                                         <TextInput width="100%" name="title"
                                             placeholder="Add title" />
                                         <MaterialSelect style={{width:"100%"}} name="groups" label="Invite all Members and groups" 
@@ -697,9 +692,9 @@ const Create = () => {
                                                 align="center" >
                                                 <VStack>
                                                     <HStack width={["50"]} className={classes.mainDateContainer}>
-                                                        <DatePicker minDetail="month" format="MMM dd,y" calendarIcon={null}
+                                                        <DatePicker name="startDate" minDetail="month" format="MMM dd,y"
                                                             onChange={onChange("startDate")} value={formikProps.values.startDate}
-                                                            className={classes.dateContainer} minDate={currentDate} clearIcon={null}
+                                                            className={classes.dateContainer}
                                                         />
                                                         {
                                                             !allDay &&
@@ -713,7 +708,7 @@ const Create = () => {
                                                     </HStack>
                                                     <Icon as={isDesktop ? BiRightArrowAlt : BiDownArrowAlt} />
                                                     <HStack width={['50']} className={classes.mainDateContainer}>
-                                                        <DatePicker minDetail="month" minDate={formikProps.values.startDate}
+                                                        <DatePicker name="endDate" minDetail="month" minDate={formikProps.values.startDate}
                                                             className={classes.dateContainer} calendarIcon={null} format="MMM dd,y"
                                                             onChange={onChange("endDate")} value={formikProps.values.endDate}
                                                             clearIcon={null} />
@@ -744,10 +739,9 @@ const Create = () => {
                                                 </FormControl>
                                             </HStack>
                                         </Stack>
-                                        
                                         <VStack align="center"
                                             width="100%">
-                                            <SelectChakra name="repeat" placeholder=""
+                                            <Select name="repeat" placeholder=""
                                                 onChange={handleChange} >
                                                 {/* <option value={Recurring.NOREPEAT}>Does not Repeat</option> */}
                                                 <option value={Recurring.DAILY}>Daily</option>
@@ -758,13 +752,13 @@ const Create = () => {
                                                 <option value={Recurring.CUSTOM}>
                                                     Custom...
                                                 </option>
-                                            </SelectChakra>
+                                            </Select>
                                             <Flex align="center" p={3} w={image.base64 ? "100%" : ""}
                                                 border="2px dashed rgba(0,0,0,.4)" flex={7}>
                                                 <input id="image" type="file" accept="image/jpeg,image/png"
                                                     onChange={handleImageTransformation}
                                                     style={{ display: "none" }} />
-                                                <FormLabel htmlFor="image" w="100%" >
+                                                <FormLabel htmlFor="image" w="100%" m={0} >
                                                 {image.name.length > 0 ? 
                                                 <AspectRatio w="100%" ratio={21 / 9}>
                                                 <Image src={image.base64} objectFit="cover" />

@@ -12,7 +12,7 @@ const AuthForm = () => {
     const isLogin = location.pathname === "/login"
     return (
         <MinorLoginLayout showLogo={true}>
-            <Flex flexDirection="column" justifyContent="center" px={{ sm: "3" }} flex={[1, 3]} >
+            <Flex flexDirection="column" justifyContent="center" alignItems={{base:"center",md:"initial"}} px={{ sm: "3" }} pl={{sm:0}} flex={[1, 3]} >
                 {isLogin ? 
                 <Login/>:<ResetPassword/>
                 }

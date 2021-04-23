@@ -1,13 +1,14 @@
 import { VStack,Skeleton, HStack,Avatar,Text, Heading } from "@chakra-ui/react"
 import React from "react"
 import {makeStyles,createStyles,Theme} from "@material-ui/core/styles"
+import {formatDistanceToNow} from "date-fns"
 
 interface IDetailProps {
     image?:string;
     title:string;
     smallText?:string;
     subtitle?:string;
-    timing?:string
+    timing?:Date
     body?:string;
     isLoaded?:boolean
 }
@@ -17,15 +18,18 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
         backgroundColor:"white",
         "& > div":{
             maxWidth:"25rem",
-            alignItems:"flex-start",
-            padding:theme.spacing(3,2)
+            padding:theme.spacing(2),
+            alignItems:"flex-start"
         },
         "& p":{
             maxHeight:"35rem",
             overflowY:"auto",
-            [theme.breakpoints.down("sm")]:{
-                fontSize:"1.5rem"
-            }
+            // [theme.breakpoints.down("sm")]:{
+            //     fontSize:"1.5rem"
+            // }
+        },
+        "& button":{
+            fontSize:"0.625rem"
         }
     }
 }))
@@ -42,7 +46,7 @@ const DetailCard:React.FC<IDetailProps> = ({image,isLoaded=true,title,children,t
                             size="md" name="Temitope Emmanuel"
                             src={image} />
                     }
-                    <VStack mr="auto" align="flex-start" width="100%" >
+                    <VStack mr="auto" align="flex-start">
                         <Heading as="h5" size="sm" >
                             {title}
                         </Heading>
@@ -54,7 +58,7 @@ const DetailCard:React.FC<IDetailProps> = ({image,isLoaded=true,title,children,t
                     </VStack>
                     {timing &&
                         <Text opacity={.9}>
-                            {timing}
+                            {formatDistanceToNow(timing as Date)}
                         </Text>
                     }
                 </HStack>
@@ -64,7 +68,7 @@ const DetailCard:React.FC<IDetailProps> = ({image,isLoaded=true,title,children,t
                         {subtitle}
                     </Heading>
                 }
-                    <Text>
+                    <Text textStyle="styleh6">
                         {body}
                     </Text>
                 </VStack>
