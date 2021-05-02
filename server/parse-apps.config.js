@@ -1,6 +1,6 @@
 module.exports = {
     apps : [{
-      name        : "Abuchi",
+      name        : "Faithful",
       script      : "npm start",
       watch       : true,
       merge_logs  : true,
