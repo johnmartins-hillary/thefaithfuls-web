@@ -1,0 +1,19 @@
+{
+    "name": "Faithful",
+    "version": "1.0.0",
+    "description": "Faithful web frontend",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "keywords": [
+        "React"
+    ],
+    "author": "Faithful",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.16.4",
+        "path": "^0.12.7",
+        "cors": "^2.8.5"
+    }
+}

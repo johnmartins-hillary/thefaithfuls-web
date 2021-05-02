@@ -1,0 +1,40 @@
+image: node:latest
+
+stages:
+  - build
+  - deploy
+
+variables:
+  CI: "false"
+
+cache:
+  paths:
+    - node_modules/
+    - .yarn
+
+install_dependencies:
+  stage: build
+  script:
+    - npm install
+    - npm run build
+  artifacts:
+    paths:
+      - build
+  only:
+        - develop
+
+deploy:
+    stage: deploy
+    before_script:
+        - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+        - eval $(ssh-agent -s)
+        - ssh-add <(echo "$SSH_PRIVATE_KEY")
+        - mkdir -p ~/.ssh
+        - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    script:
+        - ssh root@$IP_ADDRESS "mkdir -p /var/www/abuchi && exit"
+        - scp -r build root@$IP_ADDRESS:/var/www/abuchi/
+        - scp -r server root@$IP_ADDRESS:/var/www/abuchi/
+        - ssh root@$IP_ADDRESS "cd /var/www/abuchi/server && npm install && pm2 restart parse-apps.config.js && exit"
+    only:
+        - develop
