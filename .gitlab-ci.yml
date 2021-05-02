@@ -32,9 +32,9 @@ deploy:
         - mkdir -p ~/.ssh
         - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
     script:
-        - ssh root@$IP_ADDRESS "mkdir -p /var/www/abuchi && exit"
-        - scp -r build root@$IP_ADDRESS:/var/www/abuchi/
-        - scp -r server root@$IP_ADDRESS:/var/www/abuchi/
-        - ssh root@$IP_ADDRESS "cd /var/www/abuchi/server && npm install && pm2 restart parse-apps.config.js && exit"
+        - ssh root@$IP_ADDRESS "mkdir -p /var/www/faithful_web && exit"
+        - scp -r build root@$IP_ADDRESS:/var/www/faithful_web/
+        - scp -r server root@$IP_ADDRESS:/var/www/faithful_web/
+        - ssh root@$IP_ADDRESS "cd /var/www/faithful_web/server && npm install && pm2 restart parse-apps.config.js && exit"
     only:
         - develop
