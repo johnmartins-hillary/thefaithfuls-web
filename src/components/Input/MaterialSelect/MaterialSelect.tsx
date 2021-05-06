@@ -5,13 +5,9 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete,{AutocompleteProps} from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {FieldProps,Field} from "formik"
-import { AutoCompleteProps } from 'material-ui';
 import { createStyles } from '@material-ui/styles';
 import { makeStyles } from '@material-ui/core';
 
-interface CountryType {
-  name: string;
-}
 
 interface IProps extends Partial<AutocompleteProps<any,any,any,any>> {
   style?:object;

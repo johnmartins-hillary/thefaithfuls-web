@@ -576,7 +576,6 @@ const SignupAdmin = () => {
                                                                     </Button>
                                                                 </Flex>
                                                             </Box>
-
                                                         </Fade> :
                                                         <Fade mountOnEnter unmountOnExit in={!open}>
                                                             <VStack w="100%">

@@ -4,7 +4,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { Link, useLocation } from "react-router-dom"
 import {
   Stack, Icon, Heading, Text, Flex, Avatar,
-  Spacer, Menu, MenuButton, MenuItem, MenuList, DrawerHeader
+  Spacer, Menu, MenuButton, MenuItem, MenuList
 } from "@chakra-ui/react"
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';

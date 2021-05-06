@@ -1,5 +1,5 @@
 import React from "react"
-import { Box, Flex, Icon, Heading,Image,Text } from "@chakra-ui/react"
+import { Box, Flex, Heading,Image,Text } from "@chakra-ui/react"
 import { SignUpOptions } from "components/SignUpOptions"
 import { MinorLoginLayout } from "layouts"
 import { UserAdmin, UserMember } from "assets/images"
@@ -15,7 +15,7 @@ const LoginRole = () => {
                     What role would you like to <Box as="span" color="primary" >sign up</Box> for?
                     </Heading>
                 <Flex flexDirection={['column', "row"]} justifyContent={["initial", "initial", "space-between"]}
-                    w={{sm:"100%",md:"80%"}} maxW="3xl"
+                    w={{sm:"100%",lg:"80%"}} maxW="3xl"
                 >
                     <Box my={"2"} cursor="pointer" width={["auto", "auto", "50%"]}
                         mx={[0, "3", "5"]} ml={[0, 0, 0]} maxWidth="1xs" >

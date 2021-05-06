@@ -1,8 +1,8 @@
 import React from "react"
-import {FormControl,FormLabel,Input,FormErrorMessage, Flex} from "@chakra-ui/react"
+import {Flex} from "@chakra-ui/react"
 import {Field,FieldProps,} from "formik"
 import {makeStyles,createStyles,withStyles} from "@material-ui/core/styles"
-import {primary,bgColor2} from "theme/palette"
+import {primary} from "theme/palette"
 import {TextField} from "@material-ui/core"
 
 

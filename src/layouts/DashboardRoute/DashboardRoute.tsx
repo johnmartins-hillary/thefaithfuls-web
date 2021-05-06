@@ -74,7 +74,7 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
     const currentUser = useSelector((state: AppState) => (state.system.currentUser))
     const curBreakpoint = useBreakpoint()
     const isDesktop = String(curBreakpoint) !== "base" && curBreakpoint !== "sm"
-    const [open, setOpen] = React.useState(false)
+    // const [open, setOpen] = React.useState(false)
 
     React.useEffect(() => {
         dispatch(getChurch(toast))
@@ -84,7 +84,8 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
     return (
         // <Box position="relative" className={classes.rootContainer} >
             <MainLaoyu>
-            <Flex className={`${classes.root} ${isDesktop && open && classes.drawerOpen}`} flex={1}>
+            <Flex className={`${classes.root} ${isDesktop && classes.drawerOpen}`} flex={1}>
+            {/* <Flex className={`${classes.root} ${isDesktop && open && classes.drawerOpen}`} flex={1}> */}
                 <Route render={({ location }) => {
                     return (
                         // <TransitionGroup>
@@ -130,7 +131,8 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
                                             <Route path={`${path}/groups`}
                                                 exact render={() => (
                                                     <Wrapper>
-                                                        <Group ml={{ sm: open ? "1.3rem" : "" }} />
+                                                        <Group />
+                                                        {/* <Group ml={{ sm: open ? "1.3rem" : "" }} /> */}
                                                     </Wrapper>
                                                 )}
                                             />

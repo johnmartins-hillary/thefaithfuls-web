@@ -11,6 +11,10 @@ import {IChurchBankDetail} from "core/models/BankAccount"
 const baseUrl = `${process.env.REACT_APP_SERVER_URL}/Church`
 
 
+const config:AxiosRequestConfig = {headers:{
+    "Content-Type":"application/json-patch+json",
+    "Access-Control-Origin":"*"
+}}
 export const getChurchById = async (churchId:number,cancelToken?:CancelTokenSource) : Promise<IResponse<IChurch>> => {
     try{
         const url = `${baseUrl}/getchurchbyId?churchId=${churchId}`
@@ -26,7 +30,7 @@ export const getChurchById = async (churchId:number,cancelToken?:CancelTokenSour
 export const createChurch = async (createChurch:IChurchResponse):Promise<IResponse<IChurchResponse>> => {
     try{
         const url = `${baseUrl}/createChurch`
-        const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
+        console.log({url})
         const response = await axios.post(url,createChurch,config)
         return response.data
     }catch(err){
@@ -37,8 +41,6 @@ export const createChurch = async (createChurch:IChurchResponse):Promise<IRespon
 export const activateChurch = async (churchId:number):Promise<IResponse<IChurchResponse>> => {
     try{
         const urlBase = new URL(`${baseUrl}/activateChurch`)
-        const url = new URLSearchParams(baseUrl).append("churchId",String(churchId))
-        const config:AxiosRequestConfig = {headers:{"Accept":"application/json"}}
         const response = await axios.put(String(urlBase),{},config)
         return response.data
     }catch(err){
@@ -48,7 +50,7 @@ export const activateChurch = async (churchId:number):Promise<IResponse<IChurchR
 export const verifyChurch = async (arg:IChurchResponse):Promise<IResponse<IChurchResponse>> => {
     try{
         const url = `${baseUrl}/verifyChurch`
-        const config:AxiosRequestConfig = {headers:{"Accept":"application/json"}}
+        // const config:AxiosRequestConfig = {headers:{"Accept":"application/json"}}
         const response = await axios.put(url,arg,config)
         return response.data
     }catch(err){

@@ -1,7 +1,7 @@
 import React from "react"
 import {
-    Heading, HStack, Avatar, VStack, Stack,
-    Textarea, Text, Box,Flex
+    HStack,Avatar, VStack, Stack,
+    Textarea, Text, Box
 } from "@chakra-ui/react"
 import { Button } from "components/Button"
 import NormalInput from "components/Input/Normal"

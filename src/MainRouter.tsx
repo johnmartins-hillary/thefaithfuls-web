@@ -1,6 +1,5 @@
 import React from "react"
 import {Switch,Route} from "react-router-dom"
-import {TransitionGroup,CSSTransition} from "react-transition-group"
 import {Home} from "views/Home"
 import {LoginRole} from "views/LoginRole"
 import {AuthForm} from "views/AuthForm"
