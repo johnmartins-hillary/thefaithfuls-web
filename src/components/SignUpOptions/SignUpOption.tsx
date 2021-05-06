@@ -15,7 +15,7 @@ const SignUpOptions:React.FC<IProps> = ({icon,to,title,body}) => {
         <Box my={"2"} cursor="pointer" width={["auto","auto","50%"]}
             mx={[0,"3","5"]} ml={[0,0,0]} maxWidth="1xs" >
                 <Link to={to} >
-                    <Flex px="8" height="5.625rem"
+                    <Flex px="8" height="5.625rem" w="min-content"
                         alignItems="center" shadow="0px 5px 10px #410E501A"
                         justifyContent={["center","flex-start"]}>
                         <Image boxSize="1.875rem" mr="2" fontSize="2em" src={icon}/>

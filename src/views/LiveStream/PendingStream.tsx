@@ -1,8 +1,8 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Box, Text,Flex, Heading, Icon,
-     Menu, MenuButton, MenuItem, MenuList, Stack, StackDivider, AspectRatio } from "@chakra-ui/react"
+import { Box, Text,Flex, Heading,
+        Stack, StackDivider } from "@chakra-ui/react"
 import { Button } from "components/Button"
 import GoogleService from "core/services/livestream.service"
 import useToast from "utils/Toast"
@@ -11,9 +11,6 @@ import { LiveBroadcast, LiveStreamChurchResponse} from "core/models/livestreamRe
 import axios from "axios"
 import { OutlineCard, GroupCard} from "components/Card"
 import { NoContent } from "components/NoContent"
-import { CgMoreAlt } from "react-icons/cg"
-import { FcStart } from "react-icons/fc"
-import { BiStopCircle } from "react-icons/bi"
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -66,9 +63,7 @@ const PendingStream = () => {
     })
     const [pendingBroadCast, setPendingBroadCast] = React.useState<LiveStreamChurchResponse[]>([])
     const [selectedStream, setSelectedStream] = React.useState<LiveStreamChurchResponse>()
-    const [state, setState] = React.useState<"ready" | "preparing" | "stop">("stop")
     const params = useParams()
-    const [currentBroadCastDetail,setCurrentBroadCastDetail] = React.useState<LiveBroadcast | null>(null)
    
     React.useEffect(() => {
         const cancelToken = axios.CancelToken.source()

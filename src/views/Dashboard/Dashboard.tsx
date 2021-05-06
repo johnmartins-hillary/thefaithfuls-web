@@ -353,7 +353,7 @@ const Dashboard = () => {
                     </Box>
                 </Box>
                 <Box pt={["1", "10"]} px={{sm:"5", md:"8"}} >
-                    {currentChurch.status == 2 &&
+                    {currentChurch.status === 2 &&
                         <Flex direction={{ base: "column-reverse", md: "row" }}
                             my={12}  minHeight="7rem" width={["95%","100%"]}>
                             <Flex p={4} className={`${classes.verificationContainer} ${classes.boxShadownContainer}`}>

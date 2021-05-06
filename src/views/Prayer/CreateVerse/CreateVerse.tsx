@@ -82,11 +82,6 @@ const Create = () => {
         history.goBack()
     }
 
-    const handleSubmitAndNoRedirect = (func:any) => () => {
-        setRedirect(false)
-        func()
-        
-    }
     return (
         <VStack pl={{ base: 2, md: 12 }} pt={{ md: 6 }}
                 className={classes.root} >

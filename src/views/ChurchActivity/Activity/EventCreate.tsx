@@ -2,7 +2,7 @@ import React from "react"
 import { formatDate } from "@fullcalendar/react"
 import { useHistory } from "react-router-dom"
 import {
-    Flex, Heading, useBreakpoint, HStack, FormControl,
+    Flex, useBreakpoint, HStack, FormControl,
     Textarea, Box, Text, AspectRatio, Image,
     Icon, FormLabel,Checkbox, Switch, Stack, VStack
 } from "@chakra-ui/react"
@@ -286,15 +286,6 @@ console.log({streamState})
         streamed: false,
         speaker: "",
         detail: ""
-    }
-    const handleClick = () => {
-        handleCreateStream({
-            description:"This is a main description",
-            scheduledStartTime:"2021-03-17T23:27:07.522Z",
-            scheduledEndTime:"2021-03-18T23:27:07.522Z",
-            title:"This is the title",
-            eventId:1
-        })
     }
 
     const compareStaff = (option:any, value:any) => {

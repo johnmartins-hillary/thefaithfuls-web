@@ -5,7 +5,6 @@ import {
   InputGroup, InputRightElement
 } from "@chakra-ui/react";
 import { Field, FieldProps } from "formik"
-import { makeStyles, createStyles } from "@material-ui/styles"
 import { AiFillEyeInvisible } from "react-icons/ai"
 import { BiShow } from "react-icons/bi"
 import owasp from "owasp-password-strength-test"
@@ -56,7 +55,7 @@ const PasswordInput: React.FC<IProps> = ({ placeholder,label, name, ...props }) 
                   type={show ? "text" : "password"}
                 />
                 <InputRightElement width="4.5rem">
-                  <Icon cursor="pointer" color="black" bgColor="green"
+                  <Icon cursor="pointer" color="black"
                     onClick={handleClick}
                     as={show ? BiShow : AiFillEyeInvisible}
                   />

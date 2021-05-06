@@ -1,12 +1,12 @@
 import React from "react"
 import { Link, useHistory } from "react-router-dom"
 import {
-    Flex, Wrap, Heading, StackDivider, Avatar, AvatarGroup,
-     Stack, VStack, HStack,Text, Icon, IconButton,WrapItem
+    Flex, Wrap, Heading, Avatar, AvatarGroup,
+     Stack, HStack,Text, Icon, IconButton,WrapItem
 } from "@chakra-ui/react"
 import { Button } from "components/Button"
 import { createStyles, makeStyles,Theme } from '@material-ui/core/styles'
-import {Divider,Hidden} from "@material-ui/core"
+import {Divider} from "@material-ui/core"
 import { DashboardActivity } from "components/Card/ActivityCard/ActivityCard"
 import useParams from "utils/params"
 import { BiEdit, BiLeftArrowAlt } from "react-icons/bi"

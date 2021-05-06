@@ -14,10 +14,6 @@ import { ToastFunc } from "utils/Toast";
 import { IResponse } from "core/models/Response";
 import axios, { AxiosRequestConfig, CancelTokenSource } from "axios";
 import { merge } from "lodash";
-import { string } from "yup";
-// import gapiTypes from "@types/"
-
-const gapi = (window as any).gapi;
 
 interface getAllBroadCastResponse {
   kind: string;
@@ -186,7 +182,6 @@ class Gapi {
     payload: Partial<LiveBroadcast>,
     { churchId, eventId }: { churchId: number; eventId: number }
   ) => {
-    console.log(this.state)
     if (!this.gapi.client.youtube) {
       return this.toast({
         messageType: "info",
@@ -221,12 +216,7 @@ class Gapi {
           },
         },
       });
-      // Bind both the broadcast and stream together
-      const broadcastStreamBind = await this.bindStreamToBroadCast({
-        broadCastId: broadcastRes.result.id != null ? broadcastRes.result.id : "",
-        streamId: streamInsertResp.id,
-      });
-
+      
       const result = {
         broadcastId: broadcastRes.result.id,
         streamId: streamInsertResp.id,
@@ -402,7 +392,7 @@ class Gapi {
     streamStatus: StatusStream;
   }) => {
     try {
-      const { broadCastId, status, snippet, cdn, streamStatus } = arg;
+      const { broadCastId, status, snippet, cdn} = arg;
       const newStreamResponse = await this.createLiveStream({
         part: ["snippet", "cdn", "contentDetails", "status"],
         resource: {

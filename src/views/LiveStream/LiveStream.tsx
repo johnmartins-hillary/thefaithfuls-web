@@ -1,11 +1,12 @@
 import React from "react"
 import axios from "axios"
-import { VStack, Text, Heading, Stack, HStack, Textarea, Input, useStyleConfig, FormControl, FormHelperText, FormLabel, Icon, Link, ModalBody, ModalContent, ModalFooter } from "@chakra-ui/react"
-import { makeStyles, createStyles, Collapse, Box, DialogContent, DialogContentText, DialogTitle, DialogActions } from "@material-ui/core"
+import { 
+    VStack, Text, Heading, Stack, HStack, Textarea,
+    Input, FormControl, FormHelperText,
+    FormLabel,ModalBody, ModalContent, ModalFooter } from "@chakra-ui/react"
+import { makeStyles, createStyles, Collapse, Box } from "@material-ui/core"
 import { CreateLayout } from "layouts"
 import { Button } from "components/Button"
-import { Select, NumberStepper } from "components/Input"
-import { Formik, FormikProps } from "formik"
 import { RiInformationFill } from "react-icons/ri"
 import StreamingService from "core/services/livestream.service"
 import MediaService from "./livestreamClass"
@@ -16,7 +17,7 @@ import { Dialog } from "components/Dialog"
 import useParams from "utils/params"
 import { VscLoading } from "react-icons/vsc"
 import { primary } from "theme/palette"
-import { LiveBroadcast, ILiveStream, ContentDetailBroadcast, SnippetBroadcast } from "core/models/livestreamRequest"
+import { ILiveStream, ContentDetailBroadcast, SnippetBroadcast } from "core/models/livestreamRequest"
 
 
 const useStyles = makeStyles((theme) => createStyles({
@@ -112,8 +113,6 @@ const initialValues = {
     destination: "https://xd.adobe.com/view/82b278cf-0a76-41ac-8fe1-4bd0559f0788-d7e1/screen/c1590e3a-3e2e-455a-b5c3-674b5309e59e"
 }
 
-type FormType = typeof initialValues
-
 const LiveStream = () => {
     const classes = useStyles()
     const date = new Date()
@@ -148,9 +147,6 @@ const LiveStream = () => {
         title: ""
     })
 
-    const handleSubmit = (values: FormType, { ...actions }) => {
-
-    }
 
     function showOutput(str: string) {
         if (detailRef.current) {
@@ -165,8 +161,7 @@ const LiveStream = () => {
         }
     }
     const mediaService = React.useRef<MediaService | null>(null)
-    const styles = useStyleConfig("Input", {})
-
+    
     let streamInterval: NodeJS.Timeout;
     let broadCastInterval: NodeJS.Timeout;
 
@@ -214,7 +209,7 @@ const LiveStream = () => {
                 messageType: "error"
             })
         }
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     React.useEffect(() => {
         if(streamIFrame){

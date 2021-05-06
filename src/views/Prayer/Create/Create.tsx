@@ -1,7 +1,7 @@
 import React from "react"
 import {useHistory} from "react-router-dom"
 import {
-    Flex,Heading, Stack, VStack, Textarea
+    Heading, Stack, VStack, Textarea
 } from "@chakra-ui/react"
 import { Button } from "components/Button"
 import NormalInput from "components/Input/Normal"

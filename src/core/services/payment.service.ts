@@ -2,7 +2,6 @@ import axios, { CancelTokenSource } from "axios";
 import { Payment, PaymentResponse } from "core/models/Payment";
 import { IResponse } from "core/models/Response";
 import { Payment as PaymentEnum } from "core/enums/Payment";
-import { number, string } from "yup";
 
 const baseUrl = `${process.env.REACT_APP_SERVER_URL}/Payment`;
 

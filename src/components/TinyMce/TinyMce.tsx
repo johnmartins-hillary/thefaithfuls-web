@@ -1,5 +1,4 @@
 import React from "react"
-import tinymce from "tinymce"
 import 'tinymce/tinymce';
  import 'tinymce/icons/default';
  import 'tinymce/themes/silver';
