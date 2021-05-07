@@ -390,13 +390,9 @@ const Home = () => {
                     <Heading color="tertiary" fontSize={["2rem", "3rem", "4rem"]} >
                         Church Administration Made Easy
                 </Heading>
-                    <Text color="tertiary">
-                        But I must explain to you how all this mistaken idea of denouncing pleasure
-                        and praising pain was born and I will give you a complete account of the system,
-                        and expound the actual teachings of the great explorer of the truth, the master-builder
-                        of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is
-                        pleasure, but because those who do not know how to pursue pleasure rationally encounter
-                        consequences that are extremely painful.
+                <Text color="tertiary">
+                Looking for better ways to reach and engage your church members? Do not worry we have got you covered, The faithfuls is a robust church management solution with all you need to constantly spread the Gospel of Christ across the Globe.
+
                 </Text>
                     <Link to="/signup/admin" >
                         <Button className={classes.button}>
@@ -409,11 +405,8 @@ const Home = () => {
                         <Heading color="tertiary" fontSize={["2.3rem", "2.5rem"]}>
                             Church App For Members
                 </Heading>
-                        <Text color="tertiary">
-                            But I must explain to you how all this mistaken idea of denouncing
-                            pleasure and praising pain was born and I will give you a complete
-                            account of the system, and expound the actual teachings of the great
-                            explorer of the truth, the master-builder of human happiness.
+                    <Text color="tertiary">
+                    We have built a robust mobile application for church members to search and join their churches online, members can participate in church activities online, available for Android and IOS users.
                 </Text>
                         <Stack className={classes.storeContainer}>
                             <Image w="12rem" src={PlayStore} />
@@ -425,11 +418,8 @@ const Home = () => {
                         <Heading color="tertiary" fontSize={["2.3rem", "2.5rem"]}>
                             Manage Church Activities
                     </Heading>
-                        <Text color="tertiary" zIndex={5}>
-                            But I must explain to you how all this mistaken idea of denouncing
-                            pleasure and praising pain was born and I will give you a complete
-                            account of the system, and expound the actual teachings of the great
-                            explorer of the truth, the master-builder of human happiness.
+                    <Text color="tertiary" zIndex={5}>
+                    As a church administrator, you can create accounts for your churches, fellowships and special congregations, kindly note that your church will be verified before it becomes active and accessible for members to join, please dont create a church if you are not authorized to manage a church.
                     </Text>
 
                         <Button zIndex={5} className={classes.button}>
@@ -450,10 +440,8 @@ const Home = () => {
                             fontSize={["2rem", "3rem", "4rem"]} fontWeight={600}>
                             Church <br /> on the go
                 </Heading>
-                        <Text color="tertiary" textAlign="left" maxW="sm">
-                            But I must explain to you how all this mistaken idea of denouncing
-                            pleasure and praising pain was born and I will give you a complete account
-                            of the system, and expound the actual
+                    <Text color="tertiary" textAlign="left" maxW="sm">
+                    No more excuses, join the faithfuls today
                 </Text>
                         <Link to='/signup/member?find-church' >
                             <Button className={classes.button}>
@@ -512,18 +500,18 @@ const Home = () => {
                                 <Text color="tertiary">
                                     Church Members
                             </Text>
-                            </VStack>
-                        </HStack>
-                        <Divider variant="middle" />
-                    </VStack>
-                </Stack>
-                <Stack bgColor="tertiary" className={classes.footerContainer}>
-                    <Stack width={["95%", "75%"]} flexDirection={{ base: 'column', md: 'row' }}>
-                        <VStack>
-                            <Image src={Logo} />
-                            <Text color="primary">
-                                But I must explain to you how all this mistaken idea of denouncing
-                                pleasure and praising pain was born and I will give you a complete account of the.
+                        </VStack>
+                    </HStack>
+                    <Divider variant="middle" />
+                </VStack>
+            </Stack>
+            <Stack bgColor="tertiary" className={classes.footerContainer}>
+                <Stack width={["95%", "75%"]} flexDirection={{base:'column',md:'row'}}>
+                    <VStack>
+                        <Image src={Logo} />
+                        {/* <Text color="primary">
+                            But I must explain to you how all this mistaken idea of denouncing
+                            pleasure and praising pain was born and I will give you a complete account of the.
                     </Text>
                             <Text color="whitesmoke" className={classes.middleText}>
                                 1st Floor, Leasing House,C & I Leasing Drive, Off Bisola Durosinmi
@@ -543,10 +531,16 @@ const Home = () => {
                                 <Icon as={FaLinkedinIn} />
                             </HStack>
                         </VStack>
-                        <VStack>
-                            <Text>Menu</Text>
-                            <Link to="/" >
-                                Home
+                        <HStack spacing={3} className={classes.socialContainer}>
+                            <Icon as={FaFacebookF} />
+                            <Icon as={FaTwitter} />
+                            <Icon as={FaLinkedinIn} />
+                        </HStack> */}
+                    </VStack>
+                    <VStack>
+                        <Text>Menu</Text>
+                        <Link to="/" >
+                            Home
                     </Link>
                             <Link to="/">
                                 Find Your Church
