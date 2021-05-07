@@ -1,0 +1,59 @@
+/* Montserrat */
+@font-face{
+  font-family: "MontserratMedium";
+  src:local("Montserrat"),
+  url(../../fonts/Montserrat/Montserrat-Medium.ttf) format("truetype");
+  font-weight: lighter;
+  font-style: normal;
+}
+@font-face{
+  font-family: "MontserratRegular";
+  src:local("Montserrat"),
+  url(../../fonts/Montserrat/Montserrat-Regular.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face{
+  font-family: "MontserratBold";
+  src:local("Montserrat"),
+  url(../../fonts/Montserrat/Montserrat-Bold.ttf) format("truetype");
+  font-weight:bold;
+  font-style: normal;
+}
+
+
+@font-face{
+  font-family: "Bahnschrift";
+  src:local("BahnschriftRegular"),
+  url(../../fonts/Bahnscrift/Bahnschrift-Regular.ttf) format("truetype");
+}
+
+/* Mulish */
+@font-face{
+  font-family: "MulishLight";
+  src:local("Mulish"),
+  url(../../fonts/Mulish/Mulish-Light.ttf) format("truetype");
+  font-weight: lighter;
+  font-style: normal;
+}
+@font-face{
+  font-family: "MulishRegular";
+  src:local("Mulish"),
+  url(../../fonts/Mulish/Mulish-Regular.ttf) format("truetype");
+  font-weight:normal;
+  font-style: normal;
+}
+@font-face{
+  font-family: "MulishBold";
+  src:local("Mulish"),
+  url(../../fonts/Mulish/Mulish-Bold.ttf) format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face{
+  font-family: "MulishExtraBold";
+  src:local("Mulish"),
+  url(../../fonts/Mulish/Mulish-ExtraBold.ttf) format("truetype");
+  font-weight:bolder;
+  font-style: normal;
+}
