@@ -23,6 +23,8 @@ import { HiOutlineMail } from "react-icons/hi"
 import { primary } from "theme/palette"
 
 
+
+
 const useStyles = makeStyles((theme: Theme) => (
     createStyles({
         root: {
@@ -368,7 +370,7 @@ const Home = () => {
                             maxWidth="xl"
                             fontSize={["3xl", "4xl", "5xl", "5rem"]}>
                             Bringing the <Box as="span" color="primary">Church</Box> online
-                    </Heading>
+                        </Heading>
                         <Stack direction={["column", "row"]}
                          className={classes.adminButtonContainer}>
                             <Text color="primary">
