@@ -78,7 +78,6 @@ const useStyles = makeStyles((theme) => createStyles({
     }
 }))
 
-
 const currentDate = new Date()
 const initialValues = {
     title: "",
@@ -105,7 +104,6 @@ const Create = () => {
     const [minDateTo, setMinDateTo] = React.useState(() => (new Date((new Date()).setDate(currentDate.getDate() + 1))))
     const [currentAdvertSetting, setCurrentAdvertSetting] = React.useState<IAdvertSetting>()
     const [difference, setDifference] = React.useState<number>(1)
-    const [loadReference,setLoadReference] = React.useState(false)
     const [submitting,setSubmitting] = React.useState(false)
     const currentChurch = useSelector((state: AppState) => state.system.currentChurch) 
     const [amount, setAmount] = React.useState(1000)
@@ -132,7 +130,6 @@ const Create = () => {
                     reference: payload.data.reference,
                     publicKey: payload.data.publicKey
                 })
-                setLoadReference(true)
             }).catch(err => {
                 if (axios.isCancel(err)) {
                     toast({
@@ -200,6 +197,7 @@ const Create = () => {
             endDate:date.endDate,
             perDay:currentAdvertSetting?.perDay as number
         })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[date])
 
     React.useEffect(() => {
@@ -212,6 +210,7 @@ const Create = () => {
                 endDate:newMinimumDifference
             })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentAdvertSetting])
 
 

@@ -9,7 +9,6 @@ import { FaFilter } from "react-icons/fa"
 import { makeStyles, createStyles } from "@material-ui/core/styles"
 import { TiGroup } from "react-icons/ti"
 import {IoMdWallet} from "react-icons/io"
-import {IoIosArrowDown} from "react-icons/io"
 import {useDispatch} from "react-redux"
 import {setPageTitle} from "store/System/actions"
 import {Table,TableRow} from "components/Table"
@@ -135,15 +134,7 @@ const Reports = () => {
     const [inputText,setInputText] = React.useState("")
     const [churchMember,setChurchMember] = React.useState<IChurchMember[]>([])
     const [churchTransaction,setChurchTransaction] = React.useState<any[]>([])
-    const defaultFinancialReport = [
-        <Checkbox/>,<Avatar name="Dan Abrahmov" size={!notBaseBreakpoint ? "sm" : "md"} src="https://bit.ly/dan-abramov" />,
-        "Bismark Achodo","Offering","123456789","21-5-2020",<Text color="primary">₦3454</Text>
-    ]
-    const defaultMemberReport = [
-        <Checkbox/>,<Avatar name="Dan Abrahmov" size={!notBaseBreakpoint ? "sm" : "md"} src="https://bit.ly/dan-abramov" />,
-        "Bismark Achodo","achodobismark@gmail.com","09072235895","21-5-2020","Choir"
-    ]
-
+    
     const handleInputChange = (e:React.SyntheticEvent<HTMLInputElement>) => {
         setInputText(e.currentTarget.value)
     }
@@ -210,6 +201,7 @@ const Reports = () => {
         return () => {
             cancelToken.cancel()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
     const demoFinancialReport: any[] = []
     

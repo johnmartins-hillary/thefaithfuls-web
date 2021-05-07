@@ -11,10 +11,10 @@ import {IChurchBankDetail} from "core/models/BankAccount"
 const baseUrl = `${process.env.REACT_APP_SERVER_URL}/Church`
 
 
-const config:AxiosRequestConfig = {headers:{
-    "Content-Type":"application/json-patch+json",
-    "Access-Control-Origin":"*"
-}}
+// const config:AxiosRequestConfig = {headers:{
+//     "Content-Type":"application/json-patch+json",
+//     "Access-Control-Allow-Origin":"*"
+// }}
 export const getChurchById = async (churchId:number,cancelToken?:CancelTokenSource) : Promise<IResponse<IChurch>> => {
     try{
         const url = `${baseUrl}/getchurchbyId?churchId=${churchId}`
@@ -30,8 +30,7 @@ export const getChurchById = async (churchId:number,cancelToken?:CancelTokenSour
 export const createChurch = async (createChurch:IChurchResponse):Promise<IResponse<IChurchResponse>> => {
     try{
         const url = `${baseUrl}/createChurch`
-        console.log({url})
-        const response = await axios.post(url,createChurch,config)
+        const response = await axios.post(url,createChurch)
         return response.data
     }catch(err){
         throw err
@@ -41,7 +40,7 @@ export const createChurch = async (createChurch:IChurchResponse):Promise<IRespon
 export const activateChurch = async (churchId:number):Promise<IResponse<IChurchResponse>> => {
     try{
         const urlBase = new URL(`${baseUrl}/activateChurch`)
-        const response = await axios.put(String(urlBase),{},config)
+        const response = await axios.put(String(urlBase),{})
         return response.data
     }catch(err){
         throw err
@@ -51,7 +50,7 @@ export const verifyChurch = async (arg:IChurchResponse):Promise<IResponse<IChurc
     try{
         const url = `${baseUrl}/verifyChurch`
         // const config:AxiosRequestConfig = {headers:{"Accept":"application/json"}}
-        const response = await axios.put(url,arg,config)
+        const response = await axios.put(url,arg)
         return response.data
     }catch(err){
         throw err
@@ -92,7 +91,7 @@ export const updateChurch = async (updateChurch:IChurchResponse) => {
     try{
         const url = `${baseUrl}/UpdateChurch`
         const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
-        const response = await axios.post(url,updateChurch,config)
+        const response = await axios.post(url,updateChurch)
         return response.data    
     }catch(err){
         throw err
@@ -111,7 +110,7 @@ export const createChurchBankDetail = async (newBankDetail:IChurchBankDetail) =>
     try{
         const url = `${baseUrl}/createChurchBankDetail`
         const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
-        const response = await axios.post(url,newBankDetail,config)
+        const response = await axios.post(url,newBankDetail)
         return response.data
     }catch(err){
         throw err
