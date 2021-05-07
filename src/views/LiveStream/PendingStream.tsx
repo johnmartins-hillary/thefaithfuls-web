@@ -7,7 +7,7 @@ import { Button } from "components/Button"
 import GoogleService from "core/services/livestream.service"
 import useToast from "utils/Toast"
 import useParams from "utils/params"
-import { LiveBroadcast, LiveStreamChurchResponse} from "core/models/livestreamRequest"
+import { LiveStreamChurchResponse} from "core/models/livestreamRequest"
 import axios from "axios"
 import { OutlineCard, GroupCard} from "components/Card"
 import { NoContent } from "components/NoContent"
@@ -86,6 +86,7 @@ const PendingStream = () => {
         return () => {
             cancelToken.cancel()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     // Set the current selected broadcast

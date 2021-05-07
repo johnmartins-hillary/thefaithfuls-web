@@ -9,11 +9,11 @@ import {IRole} from "core/models/Role"
 const baseUrl = `${process.env.REACT_APP_SERVER_URL}/Account`
 
 
+const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
 export const createChurchMember = async (newChurchMember:IChurchMember):Promise<IResponse<IChurchMember>> => {
     try{
         const url = `${baseUrl}/createChurchMembers`
-        const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
-        const response = await axios.post(url,newChurchMember,config)
+        const response = await axios.post(url,newChurchMember)
         return response.data
     }catch(err){
         throw err
@@ -23,8 +23,8 @@ export const createChurchMember = async (newChurchMember:IChurchMember):Promise<
 export const createStaff = async(newStaff:IChurchMember):Promise<IResponse<IStaff>> => {
     try{
         const url = `${baseUrl}/createStaff`
-        const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
-        const response = await axios.post(url,newStaff,config)
+        // const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
+        const response = await axios.post(url,newStaff)
         return response.data
     }catch(err){
         throw err

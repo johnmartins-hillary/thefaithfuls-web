@@ -98,7 +98,7 @@ class LiveStream {
             that.toast({
                 messageType:"info",
                 title:"Video is ready to be test streamed",
-                subtitle:`Successfully setup video streaming @ ${this.width,this.height}`
+                subtitle:`Successfully setup video streaming @ ${this.width},${this.height}`
             })
         },false)
     }
