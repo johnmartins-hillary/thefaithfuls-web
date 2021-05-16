@@ -49,12 +49,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       },
       "& th,td": {
         border: "2px #707070 solid",
+        padding:"0 !important",
         "& > *": {
           backgroundColor: "#E1DFDF"
         }
       },
       [theme.breakpoints.up("sm")]: {
-        padding: "2rem",
+        // padding: "2rem",
         paddingTop: theme.spacing(1)
       }
     }

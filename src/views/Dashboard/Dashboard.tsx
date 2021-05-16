@@ -207,6 +207,8 @@ const Dashboard = () => {
         { name: 2019, Members: 78, Events: 30, Finances: 20, newMembers: 11 },
         { name: 2020, Members: 89, Events: 48, Finances: 18, newMembers: 90 }
     ]
+    
+    
     const defaultSubscription:SubscriptionByChurch = {
         churchId:0,
         duration:0,

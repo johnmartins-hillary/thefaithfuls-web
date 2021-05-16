@@ -84,7 +84,7 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
     return (
         // <Box position="relative" className={classes.rootContainer} >
             <MainLaoyu>
-            <Flex className={`${classes.root} ${isDesktop && classes.drawerOpen}`} flex={1}>
+            <Flex className={`${classes.root}`} flex={1}>
             {/* <Flex className={`${classes.root} ${isDesktop && open && classes.drawerOpen}`} flex={1}> */}
                 <Route render={({ location }) => {
                     return (

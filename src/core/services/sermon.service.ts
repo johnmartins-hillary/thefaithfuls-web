@@ -9,7 +9,6 @@ export const createSermon = async (arg:any):Promise<IResponse<ISermon>> => {
     const url = `${baseUrl}/CreateSermon`
     try{
         const config:AxiosRequestConfig = {headers:{
-            Accept:"text/plain",
             "Content-Type":"multipart/form-data"
         }}
         const response = await axios.post(url,arg,config)

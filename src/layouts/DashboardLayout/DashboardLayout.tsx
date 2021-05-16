@@ -97,8 +97,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: ".7rem",
       opacity: "1 !important"
     }
-  }),
-);
+  })
+)
 
 interface IProps {
   children: any

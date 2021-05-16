@@ -329,7 +329,6 @@ const WithdrawFromAccount:React.FC<IWithdrawAccountProps> = ({close,churchAccoun
         beneficiary: Yup.string().min(5,"Beneficiary name is too short").max(20,"Beneficiary name is too short").required(),
     })
     const handleSubmit = (values: withdrawalType, { ...actions }: any) => {
-        console.log(values)
         const bankAccount:IChurchBankDetail = JSON.parse(values.account)
         actions.setSubmitting(true)
         withdrawalToChurch({

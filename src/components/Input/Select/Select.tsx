@@ -71,16 +71,13 @@ export const NormalSelect: React.FC<SelectProps> = ({children,...props }) => {
   const styles = useStyleConfig("Input", {})
   const classes = useStyles()
 
-  // const handleChange = (e:React.SyntheticEvent<HTMLSelectElement>) => {
-  //   setValue(e.currentTarget.value)
-  // }
 
   return (
     <FormControl my={["2"]} className={classes.root}>
       {/* { label && <FormLabel htmlFor={name} fontWeight="500" color="primary">{label}</FormLabel>} */}
 
       <Select size="md" alignSelf="center" mx="auto"
-        width={["85%", "auto"]} sx={styles}  {...props}>
+        width={["85%", "auto"]} sx={styles}  {...props} onChange={props.onChange}>
         {children}
       </Select>
     </FormControl>
