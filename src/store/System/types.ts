@@ -2,6 +2,7 @@ import {LoggedInUser} from "core/models/LoggedInUser"
 import {IChurch} from "core/models/Church"
 import {IChurchMember} from "core/models/ChurchMember"
 
+export type breakpoints = "base" | "sm" | "md" | "lg" | "xl"
 
 interface IChurchMemberForm extends IChurchMember {
     confirmPassword:string;
@@ -11,6 +12,7 @@ export interface SystemState {
     isLoading:boolean;
     pageTitle:string;
     currentUser:LoggedInUser;
+    currentBreakpoints:breakpoints;
     currentChurch:IChurch;
     form:{
         church:IChurch;
@@ -26,6 +28,7 @@ export enum ActionTypes {
     SETCURRENTUSER = "[System] SetCurrentUser",
     SET_CURRENT_CHURCH = "[System] SetCurrentChurch",
     SET_PAGE_TITLE = "[System] SetPageTitle",
+    SET_BREAKPOINT = "[System] SET_BREAKPOINT",
     SET_CHURCH_FORM = "[System] SET_CHURCH_FORM",
     CLEAR_CHURCH_FORM = "[System] CLEAR_CHURCH_FORM",
     SET_USER_FORM = "[System] SET_USER_FORM",
@@ -45,6 +48,10 @@ export interface HideSpinnerAction {
 export interface SetTitleAction {
     type:ActionTypes.SET_PAGE_TITLE,
     payload:string
+}
+export interface setBreakpointAction {
+    type:ActionTypes.SET_BREAKPOINT,
+    payload:breakpoints
 }
 export interface LoginAction {
     type: ActionTypes.LOGIN,
@@ -70,4 +77,4 @@ export interface ClearUserForm {
 } 
 
 export type Action = HideSpinnerAction  | LoginAction | SetCurrentUserAction | ClearChurchForm | ClearUserForm|
- SetChurchAction | ShowSpinnerAction | HideSpinnerAction | SetTitleAction | SetChurchForm | SetUserForm
+ SetChurchAction | ShowSpinnerAction | HideSpinnerAction | SetTitleAction | SetChurchForm | SetUserForm | setBreakpointAction

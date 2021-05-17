@@ -97,11 +97,11 @@ export function createGroupMember (newGroupMember:ICreateGroupMember,toast:Toast
     }
 }
 
-export function setCurrentGroup(currentGroupName:string){
+export function setCurrentGroup(currentGroupId:number){
     return async(dispatch:Dispatch) => {
         dispatch<LoadCurrentGroupAction>({
             type:ActionTypes.LOAD_CURRENT_GROUP,
-            payload:currentGroupName
+            payload:currentGroupId
         })
     }    
 }

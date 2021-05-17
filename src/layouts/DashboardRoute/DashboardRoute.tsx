@@ -15,7 +15,9 @@ import {LiveStream,PendingStream} from "views/LiveStream"
 //#region 
 import { Media } from "views/Media"
 import { Activity } from "views/ChurchActivity/Activity"
+import { TableContextProvider } from "components/Table/TableContext"
 const Group = loadable(() => import('views/Groups/Group'))
+const EditGroup = loadable(() => import("views/Groups/Create/Edit"))
 const GroupCreate = loadable(() => import('views/Groups/Create/Create'))
 const DashboardView = loadable(() => import('views/Dashboard/Dashboard'))
 const MediaCreate = loadable(() => import("views/Media/Create"))
@@ -62,7 +64,6 @@ const useStyles = makeStyles((theme) => createStyles({
 }))
 
 interface IProps {
-    // children: React.ReactNode
 }
 
 
@@ -82,10 +83,8 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
     }, [currentUser])
 
     return (
-        // <Box position="relative" className={classes.rootContainer} >
-            <MainLaoyu>
-            <Flex className={`${classes.root}`} flex={1}>
-            {/* <Flex className={`${classes.root} ${isDesktop && open && classes.drawerOpen}`} flex={1}> */}
+        <MainLaoyu>
+        <Flex className={`${classes.root}`} flex={1}>
                 <Route render={({ location }) => {
                     return (
                         // <TransitionGroup>
@@ -110,9 +109,9 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
                                                 )}
                                             />
                                             <Route exact  path={`${path}/livestream`}
-                                             render={() => <PendingStream/>} />
+                                            render={() => <PendingStream/>} />
                                             <Route exact  path={`${path}/livestream/:broadcastId`}
-                                             render={() => <LiveStream/>} />
+                                            render={() => <LiveStream/>} />
 
                                             <Route path={`${path}/event/create`}
                                                 exact render={() => (
@@ -140,6 +139,13 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
                                                 exact render={() => (
                                                     <Wrapper>
                                                         <GroupCreate />
+                                                    </Wrapper>
+                                                )}
+                                            />
+                                            <Route path={`${path}/groups/edit/:groupId`}
+                                                exact render={() => (
+                                                    <Wrapper>
+                                                        <EditGroup/>
                                                     </Wrapper>
                                                 )}
                                             />
@@ -223,7 +229,9 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
                                             <Route path={`${path}/manager`}
                                                 exact render={() => (
                                                     <Wrapper>
-                                                        <UserManager />
+                                                        <TableContextProvider>
+                                                            <UserManager />
+                                                        </TableContextProvider>
                                                     </Wrapper>
                                                 )}
                                             />
@@ -284,10 +292,9 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
                     )
                 }}
                 />
-            </Flex>
-                
-            </MainLaoyu>
-        // </Box>
+        </Flex>
+            
+        </MainLaoyu>
     )
 }
 

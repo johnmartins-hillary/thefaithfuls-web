@@ -20,8 +20,10 @@ const useStyles = makeStyles((theme:Theme) => createStyles({
     }
 }))
 
-const SearchInput:React.FC<IProps> = ({value,setValue,...props}) => {
+const SearchInput:React.FC<IProps> = ({value,setValue,placeholder,...props}) => {
     const classes = useStyles()
+
+    console.log({placeholder})
 
     return (
         <Flex  {...props}>
@@ -30,7 +32,7 @@ const SearchInput:React.FC<IProps> = ({value,setValue,...props}) => {
                     pointerEvents="none"
                     children={<Icon boxSize="1.5rem" opacity={.5} as={RiSearchLine} />}
                 />
-                <Input type="text" placeholder="Search"
+                <Input type="text" placeholder={placeholder ? `Search by ${placeholder}` : "Search"}
                 value={value} onChange={setValue}
                 />
             </InputGroup>
@@ -38,4 +40,4 @@ const SearchInput:React.FC<IProps> = ({value,setValue,...props}) => {
     )
 }
 
-export default SearchInput
+export default React.memo(SearchInput)

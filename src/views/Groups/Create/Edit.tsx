@@ -82,7 +82,7 @@ const initialValues = {
 
 type FormType = typeof initialValues
 
-const Create = () => {
+const EditGroup = () => {
     const [image, setImage] = React.useState({
         name: "",
         base64: ""
@@ -246,4 +246,4 @@ const Create = () => {
 }
 
 
-export default Create
+export default EditGroup

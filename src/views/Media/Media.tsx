@@ -176,6 +176,7 @@ const MediaDialog: React.FC<IMediaDialogProps> = ({ close, updateSermon }) => {
         title: Yup.string().min(3, "Title of sermon is too short").required(),
         author: Yup.string().min(3, "Author name is not valid").required()
     })
+    
     const initialValues = {
         title: "",
         author: "",

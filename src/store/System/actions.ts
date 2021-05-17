@@ -1,6 +1,6 @@
 import {
     ActionTypes,SetTitleAction,SetChurchForm,
-    SetUserForm,SetChurchAction} from "./types"
+    SetUserForm,SetChurchAction, breakpoints, setBreakpointAction} from "./types"
 import {Dispatch} from "redux"
 import * as accountService from "core/services/account.service"
 import {getChurchById} from "core/services/church.service"
@@ -152,4 +152,10 @@ export function setPageTitle(newTitle:string):SetTitleAction{
         payload:newTitle,
         type:ActionTypes.SET_PAGE_TITLE
     }
+}
+export function setBreakpoint(arg:breakpoints):setBreakpointAction{
+    return({
+        type:ActionTypes.SET_BREAKPOINT,
+        payload:arg
+    })
 }

@@ -242,8 +242,8 @@ const Group = (props:any) => {
         dispatch(loadGroupMemberForCurrentGroup(societyId,toast))
     }
     React.useEffect(() => {
-        if(!currentGroup.name && groups[0]?.name.length > 0){
-            dispatch(setCurrentGroup(groups[0].name))
+        if(!currentGroup.name && groups.length && groups[0].societyID){
+            dispatch(setCurrentGroup(groups[0].societyID))
             setCurrentGroupMember((groups[0].societyID as number))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -252,8 +252,8 @@ const Group = (props:any) => {
     const handleToggle = () => {
         setOpen(!open)
     }
-    const changeActive = (groupName: string,groupId:number) => () => {
-        dispatch(setCurrentGroup(groupName))
+    const changeActive = (groupId:number) => () => {
+        dispatch(setCurrentGroup(groupId))
         setCurrentGroupMember(groupId)
     }
     const handleUpdate = () => {
@@ -264,6 +264,7 @@ const Group = (props:any) => {
     }
     
 
+    
     return (
         <>
             <Flex direction={["column","column", "row"]} className={classes.root} {...props}>
@@ -282,8 +283,8 @@ const Group = (props:any) => {
                         {groups.length > 0 ? 
                         groups.map((item,idx) => (
                             <OutlineCard cursor="pointer" key={idx}
-                                onClick={changeActive(item.name,item.societyID!)}
-                                active={currentGroup.name === item.name} >
+                                onClick={changeActive(item.societyID as number)}
+                                active={currentGroup.societyID === item.societyID} >
                                 <GroupCard member={item.memberCount} imgSrc={item.imageUrl || "https://bit.ly/ryan-florence"}
                                     active={!item.isDeleted} name={item.name} width="95%"
                                 />
