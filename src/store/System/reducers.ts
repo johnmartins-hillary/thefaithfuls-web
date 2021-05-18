@@ -27,6 +27,7 @@ const initialState: SystemState = {
     isAuthenticated: false,
     isLoading:true,
     pageTitle:"",
+    currentBreakpoints:"base",
     currentUser: {
         id: "",
         auth_token: "",
@@ -94,6 +95,12 @@ export function systemReducer(state = initialState, action: Action): SystemState
                     }
                 }
             }
+        case ActionTypes.SET_BREAKPOINT:{
+            return {
+                ...state,
+                currentBreakpoints:action.payload
+            }
+        }
         case ActionTypes.CLEAR_USER_FORM:
             return{
                 ...state,

@@ -232,10 +232,6 @@ const Prayer = () => {
     }
     const getChurchTestimony = apiChurchTestimony(cancelToken)
 
-
-
-
-
     React.useEffect(() => {
         dispatch(setPageTitle("Prayers/Verses"))
         setTabIndex(Number(location.search.split("=")[1]) || 0)

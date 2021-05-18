@@ -18,7 +18,7 @@ import { IStaff } from "core/models/Staff"
 import { TableRow, Table } from "components/Table"
 import { RiDeleteBinLine } from "react-icons/ri"
 import { BiEdit } from "react-icons/bi"
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io"
+import { IoIosArrowDown,IoMdArrowDropdown, IoIosArrowUp } from "react-icons/io"
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Input } from "@material-ui/core"
 import useToast from "utils/Toast"
@@ -38,6 +38,7 @@ import { BsCardImage } from "react-icons/bs"
 import {SearchInput} from "components/Input"
 import {useInputTextValue} from "utils/InputValue"
 import axios, { CancelTokenSource } from "axios"
+import useTableService from "components/Table/TableContext"
 
 
 interface IAddUser {
@@ -705,6 +706,8 @@ const ChangeStaff: React.FC<IChangeStaffProps> = ({ updateStaff, closeDialog,...
     )
 }
 
+type StaffKey = keyof IStaff
+const filterOptions:StaffKey[] = ["email","fullname","phoneNumber","role"]
 
 const UserManager = () => {
     const defaultStaff: IStaff = {
@@ -728,9 +731,18 @@ const UserManager = () => {
     const [currentStaff, setCurrentStaff] = React.useState<IStaff>(defaultStaff)
     const [submitting,setSubmitting] = React.useState(false)
     const cancelToken = axios.CancelToken.source()
-    const handleToggle = () => {
+    const handleDialogToggle = () => {
         setOpen(!open)
     }
+    const {
+        dialog:{
+            handleToggle
+        },
+        filter:{
+            selectedFilter,
+            setFilter
+        }
+    } = useTableService()
 
     const staffMemberCall = (cancelToken:CancelTokenSource) => async() => {
         getStaffByChurch(Number(params.churchId),cancelToken).then(payload => {
@@ -752,17 +764,19 @@ const UserManager = () => {
     const apiStaffMemberCall = staffMemberCall(cancelToken)
     React.useEffect(() => {
         const testString = new RegExp(inputValue,"i")
-        const filteredStaffMember = staffMember.filter(item => testString.test(item.fullname))
+        const filteredStaffMember = staffMember.filter((item:any) => testString.test(item[selectedFilter as any]))
         setDisplayStaffMember([...filteredStaffMember])
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[inputValue])
+
+
     const handleDialog = (dialogString: string) => {
         setDialog(dialogString)
     }
     const showPrivileges = (arg: IStaff) => () => {
         setCurrentStaff(arg)
         handleDialog("privileges")
-        handleToggle()
+        handleDialogToggle()
     }
     const deleteStaffFunc = (staffId:string) => () => {
         setSubmitting(true)
@@ -786,10 +800,11 @@ const UserManager = () => {
     } 
     const showAddStaff = () => {
         handleDialog("addStaff")
-        handleToggle()
+        handleDialogToggle()
     }
 
     React.useEffect(() => {
+        setFilter(filterOptions[0])
         dispatch(setPageTitle("User Manager"))
         apiStaffMemberCall()
         return () => {
@@ -826,11 +841,13 @@ const UserManager = () => {
                     divider={<StackDivider borderColor="gray.200" />}>
                     <Box>
                         <Text fontFamily="MulishRegular" fontWeight="bold" fontSize="18px">
-                            Sort By Roles
-                            <Icon ml={1} as={IoIosArrowDown} />
+                            {`Sort By ${selectedFilter}`}
+                            <Icon ml={1} as={IoMdArrowDropdown} onClick={handleToggle} />
                         </Text>
                     </Box>
-                    <Table rowLength={displayStaffMember.length} heading={["","","Name", "Email", "Phone",""]}>
+                    <Table rowLength={displayStaffMember.length} heading={["","","Name", "Email", "Phone",""]}
+                        filterOptions={filterOptions} 
+                    >
                         {displayStaffMember.map((item, idx) => (
                             <TableRow key={item.staffID || idx} isLoaded={Boolean(item.staffID)}
                              fields={[
@@ -847,12 +864,12 @@ const UserManager = () => {
                     </Table>
                 </Stack>
             </Stack>
-            <Dialog open={open} size={dialog === "privileges" ? "2xl" : "lg"} close={handleToggle} >
+            <Dialog open={open} size={dialog === "privileges" ? "2xl" : "lg"} close={handleDialogToggle} >
                 {
                     dialog === "privileges" ?
-                        <ChangeStaff closeDialog={handleToggle} currentStaff={currentStaff} updateStaff={apiStaffMemberCall} />
+                        <ChangeStaff closeDialog={handleDialogToggle} currentStaff={currentStaff} updateStaff={apiStaffMemberCall} />
                         :
-                        <AddStaff closeDialog={handleToggle} updateStaff={apiStaffMemberCall} />
+                        <AddStaff closeDialog={handleDialogToggle} updateStaff={apiStaffMemberCall} />
                 }
             </Dialog>
         </>

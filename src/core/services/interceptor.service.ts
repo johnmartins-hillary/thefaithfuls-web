@@ -1,7 +1,6 @@
 import axios from "axios";
 
 export const configureAxios = () => {
-    // axios.defaults.headers["Access-Control-Allow-Origin"] = "*"
     axios.interceptors.response.use(
         response => {
             const {data} = response;

@@ -26,7 +26,7 @@ export interface LoadMemberForCurrentGroupAction {
 }
 export interface LoadCurrentGroupAction {
     type:ActionTypes.LOAD_CURRENT_GROUP,
-    payload:string;
+    payload:number;
 }
 export interface UpdateGroupAction {
     type:ActionTypes.UPDATE_GROUP,

@@ -21,10 +21,6 @@ import {CreateLayout} from "layouts"
 import {TinyMce} from "components/TinyMce"
 
 
-
-
-
-
 interface IForm {
     title: string;
     author: string;
@@ -237,6 +233,7 @@ const Content = () => {
                         onSubmit={handleSubmit}
                     >
                         {(formikProps: FormikProps<IForm>) => {
+                            console.log({formikProps})
                             const onChange = (name: string) => (e: Date | any) => {
                                 if (name === "featureDateFrom") {
                                     const currentStartDate = new Date(e)
@@ -273,11 +270,12 @@ const Content = () => {
                                                 id="myCoolEditor"
                                                 onEditorChange={handleEditChange}
                                             />
+
                                     </VStack>
                                     <Stack direction={["column", "row"]} spacing={2}
                                         width="100%">
                                         <Button onClick={(formikProps.handleSubmit as any)} px={5} py={2}
-                                            disabled={formikProps.isSubmitting || !formikProps.dirty || !formikProps.isValid}>
+                                            disabled={formikProps.isSubmitting || !formikProps.isValid}>
                                             {formikProps.isSubmitting ? "Creating a New Sermon..." : "Publish"}
                                         </Button>
                                         <Button variant="outline" onClick={saveSermonToDraft(formikProps.values)}

@@ -28,7 +28,7 @@ const GroupMemberCard:React.FC<IProps> = ({name,imgSrc,position}) => {
                         <Text fontSize=".9rem">{position}</Text>
                     </Flex>
                     <Box>
-                        <Icon boxSize="1.3rem" as={BiEdit} mr={2} />
+                        {/* <Icon boxSize="1.3rem" as={BiEdit} mr={2} /> */}
                         <Icon boxSize="1.3rem" as={TiCancel} />
                     </Box>
                 </Flex>

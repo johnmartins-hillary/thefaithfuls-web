@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react"
 import { Button } from "components/Button"
 import { Dialog } from "components/Dialog"
-import { TextInput, Select,NumberStepper, Checkbox, MaterialSelect } from "components/Input"
+import { TextInput,NormalSelect, Select,NumberStepper, Checkbox, MaterialSelect } from "components/Input"
 import { Formik, Field, FieldProps, FormikProps } from "formik"
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles"
 import {DatePicker} from "components/Input"
@@ -389,15 +389,13 @@ const CustomDateCreator: React.FC<ICustomDateCreator> = ({ customForm, close, ha
                                     <RadioGroup onChange={setValue} value={formikProps.values.ends}>
                                         <VStack spacing={4} className={classes.radioContainer}>
                                             <Radio value="never">Never</Radio>
-                                            <HStack>
+                                            <HStack alignItems="center">
                                                 <Radio value="on">On</Radio>
                                                 {formikProps.values.ends === "on" &&
-                                                    <Flex className={classes.extraContainer}>
-                                                        <DatePicker name="until" format="MMM dd,y" calendarIcon={null} clearIcon={null}
-                                                            onChange={onChange("UNTIL")} value={(formikProps.values.UNTIL as Date)}
-                                                            className={classes.input} minDate={currentDate}
-                                                        />
-                                                    </Flex>
+                                                    <DatePicker name="until" format="MMM dd,y" calendarIcon={null} clearIcon={null}
+                                                        onChange={onChange("UNTIL")} value={(formikProps.values.UNTIL as Date)}
+                                                        className={classes.input} minDate={currentDate} alignItems="center"
+                                                    />
                                                 }
                                             </HStack>
                                             <HStack>
@@ -408,7 +406,7 @@ const CustomDateCreator: React.FC<ICustomDateCreator> = ({ customForm, close, ha
                                                          mb={0} ml={0} />
                                                         <Box>
                                                             Occurrence
-                                                    </Box>
+                                                        </Box>
                                                     </Flex>
                                                 }
                                             </HStack>
@@ -630,6 +628,7 @@ const Create = () => {
                             }
                             // For handling toggling of the custom dialog 
                             const handleChange = (e: React.SyntheticEvent<HTMLSelectElement>) => {
+                                console.log(e.currentTarget.value)
                                 if (e.currentTarget.value === "7") {
                                     // For Toggling the custom dialog
                                     handleDialog()
@@ -739,10 +738,11 @@ const Create = () => {
                                                 </FormControl>
                                             </HStack>
                                         </Stack>
+
                                         <VStack align="center"
                                             width="100%">
-                                            <Select name="repeat" placeholder=""
-                                                onChange={handleChange} >
+                                            <NormalSelect name="repeat" placeholder=""
+                                                onChange={handleChange} value={formikProps.values.repeat} >
                                                 {/* <option value={Recurring.NOREPEAT}>Does not Repeat</option> */}
                                                 <option value={Recurring.DAILY}>Daily</option>
                                                 <option value={Recurring.WEEKLY}>Weekly on {showLongDate(formikProps.values.startDate)}</option>
@@ -752,7 +752,7 @@ const Create = () => {
                                                 <option value={Recurring.CUSTOM}>
                                                     Custom...
                                                 </option>
-                                            </Select>
+                                            </NormalSelect>
                                             <Flex align="center" p={3} w={image.base64 ? "100%" : ""}
                                                 border="2px dashed rgba(0,0,0,.4)" flex={7}>
                                                 <input id="image" type="file" accept="image/jpeg,image/png"

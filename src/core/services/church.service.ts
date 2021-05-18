@@ -11,10 +11,6 @@ import {IChurchBankDetail} from "core/models/BankAccount"
 const baseUrl = `${process.env.REACT_APP_SERVER_URL}/Church`
 
 
-// const config:AxiosRequestConfig = {headers:{
-//     "Content-Type":"application/json-patch+json",
-//     "Access-Control-Allow-Origin":"*"
-// }}
 export const getChurchById = async (churchId:number,cancelToken?:CancelTokenSource) : Promise<IResponse<IChurch>> => {
     try{
         const url = `${baseUrl}/getchurchbyId?churchId=${churchId}`

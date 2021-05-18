@@ -70,7 +70,7 @@ export function groupReducer(state = initialState,action:Action):GroupState {
             };
         }
         case ActionTypes.LOAD_CURRENT_GROUP:{
-            const currentGroupIdx = state.groups.findIndex((item,idx) => item.name === action.payload)
+            const currentGroupIdx = state.groups.findIndex((item,idx) => item.societyID as any === action.payload)
             return{
                 ...state,
                 currentGroup:state.groups[currentGroupIdx]
