@@ -73,8 +73,8 @@ const DashboardLayout: React.FC<IProps> = ({ children, ...props }) => {
     const toast = useToast()
     const dispatch = useDispatch()
     const currentUser = useSelector((state: AppState) => (state.system.currentUser))
-    const curBreakpoint = useBreakpoint()
-    const isDesktop = String(curBreakpoint) !== "base" && curBreakpoint !== "sm"
+    // const curBreakpoint = useBreakpoint()
+    // const isDesktop = String(curBreakpoint) !== "base" && curBreakpoint !== "sm"
     // const [open, setOpen] = React.useState(false)
 
     React.useEffect(() => {

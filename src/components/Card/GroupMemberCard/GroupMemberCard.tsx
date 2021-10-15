@@ -2,7 +2,7 @@ import React from "react"
 import {Box,AvatarBadge,Text,Icon,Heading,Flex,Avatar} from "@chakra-ui/react"
 import {FaUserAlt} from "react-icons/fa"
 import {TiCancel} from "react-icons/ti"
-import {BiEdit} from "react-icons/bi"
+// import {BiEdit} from "react-icons/bi"
 
 
 interface IProps {

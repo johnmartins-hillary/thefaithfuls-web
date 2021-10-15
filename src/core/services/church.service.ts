@@ -86,7 +86,7 @@ export const getChurchByDenomination = async (denomationId:number,stateId:number
 export const updateChurch = async (updateChurch:IChurchResponse) => {
     try{
         const url = `${baseUrl}/UpdateChurch`
-        const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
+        // const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
         const response = await axios.post(url,updateChurch)
         return response.data    
     }catch(err){
@@ -105,7 +105,7 @@ export const getChurchMember = async (churchId:number):Promise<IResponse<IChurch
 export const createChurchBankDetail = async (newBankDetail:IChurchBankDetail) => {
     try{
         const url = `${baseUrl}/createChurchBankDetail`
-        const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
+        // const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
         const response = await axios.post(url,newBankDetail)
         return response.data
     }catch(err){

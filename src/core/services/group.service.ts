@@ -5,7 +5,7 @@ import {IGroup,ICreateGroupMember,IGroupMember} from "core/models/Group"
 const baseUrl = `${process.env.REACT_APP_SERVER_URL}/Church`
 
 
-const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
+// const config:AxiosRequestConfig = {headers:{"Content-Type":"application/json-patch+json"}}
 
 export const createGroup = async (newGroup:IGroup):Promise<IResponse<IGroup>> => {
     try{
