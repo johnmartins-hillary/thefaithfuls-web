@@ -33,13 +33,14 @@ const useStyles = makeStyles((theme:any) => (
       padding:"1.5rem",
       "& p,a":{
         textAlign:"center",
-        color:"white",
+        // color:"white",
         fontSize:"1rem",
         letterSpacing:"0px",
         fontWeight:"normal"
       }
     },
     linkContainer:{
+    
     }
   })
 ))
@@ -160,10 +161,10 @@ const Header:React.FC<IProps> = props => {
       {...props}
       p={{base:"3",md:"10"}}
     >
-      <Flex display={{base:"none",md:"inline-block"}} flex={1} />
+      <Flex display={{base:"none",md:"inline-block"}} flex={1} justifyContent="space-between"/>
       <Logo/>
       <Menu>
-      <Box display={{md: "none" }}>
+       <Box display={{md: "none", sm:"flex" }}>
         <MenuButton
           px={4}
           py={2}
@@ -181,7 +182,7 @@ const Header:React.FC<IProps> = props => {
           <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
         </svg>
         </MenuButton>
-      </Box>
+       </Box>
         <MenuList display="flex" flexDirection="column">
           <MenuItem as={Link} to="/signup/admin" color="primary">Find Your Church</MenuItem>
           <MenuItem color="primary">About us</MenuItem>
